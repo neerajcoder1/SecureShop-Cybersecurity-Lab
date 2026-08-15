@@ -9,6 +9,87 @@ SecureShop provides a realistic environment where security learners can practice
 
 ---
 
+# Resources & Further Learning
+
+## Web Application Security
+
+- [OWASP Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
+  - Comprehensive methodology for web application security testing.
+
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+  - Learn about the most critical web application security risks.
+
+- [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
+  - Learn common API security risks and testing concepts.
+
+## Security Testing Tools
+
+- [Burp Suite Documentation](https://portswigger.net/burp/documentation)
+  - HTTP interception, request analysis, and web security testing.
+
+- [OWASP ZAP Documentation](https://www.zaproxy.org/docs/)
+  - Open-source web application security testing.
+
+- [Postman Learning Center](https://learning.postman.com/)
+  - REST API testing and API development.
+
+## Web Security Concepts
+
+- [OWASP SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection)
+  - Understand SQL injection and defensive techniques.
+
+- [OWASP Cross-Site Scripting](https://owasp.org/www-community/attacks/xss/)
+  - Understand XSS and secure output handling.
+
+- [OWASP IDOR / Broken Access Control](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)
+  - Learn object-level authorization and access-control failures.
+
+- [MDN HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP)
+  - Learn HTTP requests, responses, headers, methods, and status codes.
+
+- [MDN CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS)
+  - Understand browser cross-origin security.
+
+## API & Authentication
+
+- [JWT Introduction](https://jwt.io/introduction/)
+  - Understand JSON Web Tokens and their structure.
+
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+  - Learn the backend framework used by SecureShop.
+
+- [SQLite Documentation](https://sqlite.org/docs.html)
+  - Understand the database used in the local lab.
+
+---
+
+# Suggested Learning Path
+
+```text
+HTTP Fundamentals
+       ↓
+Web Application Architecture
+       ↓
+OWASP Top 10
+       ↓
+Burp Suite / OWASP ZAP
+       ↓
+Authentication
+       ↓
+Authorization & IDOR
+       ↓
+SQL Injection
+       ↓
+XSS
+       ↓
+API Security
+       ↓
+JWT
+       ↓
+Business Logic Testing
+       ↓
+Security Reporting
+
 ## Live Application
 
 ### Frontend
