@@ -1,7 +1,7 @@
-<p align="center">
-<img width="200" height="200" alt="cyber-security-shield-logo-png-nim95-u3tqjrbn91ao1rbr" src="https://github.com/user-attachments/assets/8235a61c-0585-47fc-8a12-ab4a287e8a1d" />
+<td width="40%" align="center">
+ <img width="900" height="260" alt="cybersecurity-tools(1)" src="https://github.com/user-attachments/assets/6abd98d8-fc99-41ca-afc2-65b10c5b10d0" />
 
-</p>
+</td>
 
 <h1 align="center">SecureShop Cybersecurity Testing Lab</h1>
 
