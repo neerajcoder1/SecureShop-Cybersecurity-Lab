@@ -33,6 +33,34 @@ https://secureshop-cybersecurity-lab.onrender.com/docs
 
 <img width="1894" height="876" alt="image" src="https://github.com/user-attachments/assets/605cf75d-46ab-4bff-b644-18aafc06bbf0" />
 
+--- 
+# What You Can Practice
 
 ```text
-docs/images/secureshop-home.png
+
+
+| Security Area         | What You Can Practice                     |
+| --------------------- | ----------------------------------------- |
+| **SQL Injection**     | Test whether user input is safely handled |
+| **Authentication**    | Test login and registration controls      |
+| **Authorization**     | Test access-control enforcement           |
+| **IDOR**              | Test object-level authorization           |
+| **XSS**               | Test input/output handling                |
+| **API Security**      | Test REST API endpoints                   |
+| **JWT**               | Analyze authentication tokens             |
+| **Input Validation**  | Test unexpected or malformed input        |
+| **CORS**              | Analyze cross-origin access               |
+| **Business Logic**    | Test application workflows                |
+| **HTTP**              | Inspect requests and responses            |
+| **Database Security** | Understand parameterized queries          |
+| **Security Headers**  | Inspect browser security controls         |
+
+```
+# SQLMAP -
+<img width="957" height="395" alt="Screenshot 2026-08-15 122948" src="https://github.com/user-attachments/assets/45c2cdc5-2f7d-4ec9-872d-7d95a1500686" />
+
+ <img width="957" height="395" alt="Screenshot 2026-08-15 124436" src="https://github.com/user-attachments/assets/7c27e419-b8fd-4f49-9157-f84782885977" />
+
+ ---
+
+
