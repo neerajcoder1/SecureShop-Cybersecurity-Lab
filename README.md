@@ -1,4 +1,30 @@
-# SecureShop Cybersecurity Testing Lab
+<p align="center">
+  <img src="docs/images/secureshop-logo.png" alt="SecureShop Logo" width="160">
+</p>
+
+<h1 align="center">SecureShop Cybersecurity Testing Lab</h1>
+
+<p align="center">
+  <strong>Authorized Web Application Security Testing & Education</strong>
+</p>
+
+<p align="center">
+  <a href="https://secure-shop-cybersecurity-lab.vercel.app">
+    <img src="https://img.shields.io/badge/Live%20Frontend-Vercel-black?style=for-the-badge&logo=vercel" alt="Live Frontend">
+  </a>
+  <a href="https://secureshop-cybersecurity-lab.onrender.com">
+    <img src="https://img.shields.io/badge/API-Render-46E3B7?style=for-the-badge&logo=render" alt="Backend API">
+  </a>
+</p>
+
+<p align="center">
+  <img src="docs/images/secureshop-home.png" alt="SecureShop Website Preview" width="900">
+</p>
+
+
+---
+
+A deliberately security-focused e-commerce application designed for **authorized cybersecurity testing, penetration-testing practice, and web application security education**.
 
 A deliberately security-focused e-commerce application designed for **authorized cybersecurity testing, penetration-testing practice, and web application security education**.
 
@@ -113,6 +139,7 @@ https://secureshop-cybersecurity-lab.onrender.com/docs
 ---
 
 <img width="1894" height="876" alt="image" src="https://github.com/user-attachments/assets/605cf75d-46ab-4bff-b644-18aafc06bbf0" />
+```
 
 --- 
 # What You Can Practice
