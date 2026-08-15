@@ -31,6 +31,53 @@ SecureShop provides a realistic environment where security learners can practice
 
 ---
 
+## Why SecureShop?
+
+Cybersecurity skills require hands-on practice, but many learners face barriers such as
+lab costs, complicated setup requirements, or limited access to realistic web applications.
+
+**SecureShop Cybersecurity Testing Lab** was created as a free and open-source alternative
+for practicing web application security in a realistic e-commerce environment.
+
+### What makes SecureShop useful?
+
+- **Free to use**
+- **Open source**
+- **Browser-accessible**
+- **Realistic e-commerce workflow**
+- **Designed for authorized security testing**
+- **No paid lab subscription required**
+- **Practice common web and API security concepts**
+- **Use professional tools such as Burp Suite and OWASP ZAP**
+- **Learn both offensive testing and defensive implementation**
+
+The goal is simple:
+
+> **Learn → Test → Understand → Secure**
+
+SecureShop is intended for students, developers, cybersecurity learners,
+and security enthusiasts who want a practical environment for learning
+web application security.
+
+ ---
+
+ ## Free Cybersecurity Practice Lab
+
+SecureShop is built around the idea that practical cybersecurity education
+should be accessible.
+
+Instead of only reading about vulnerabilities, learners can interact with
+a real application, inspect HTTP requests, test authentication and
+authorization controls, analyze API behavior, and understand how secure
+implementations defend against common attacks.
+
+**Cost:** Free  
+**Source:** Open Source  
+**Access:** Web Browser + Local Deployment  
+**Purpose:** Cybersecurity Education & Authorized Testing 
+
+---
+ 
 # Resources & Further Learning
 
 ## Web Application Security
