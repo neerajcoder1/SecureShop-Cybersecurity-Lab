@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SecureShop Lab - Home</title>
+    <link rel="stylesheet" href="app.css" />
+    <script src="app.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>SecureShop Lab</h1>
+      <nav id="main-nav"></nav>
+    </header>
+
+    <div class="container">
+      <h2>Products</h2>
+
+      <div
+        class="form-group"
+        style="display: flex; gap: 10px; margin-bottom: 2rem"
+      >
+        <input type="text" id="searchInput" placeholder="Search products..." />
+        <button onclick="searchProducts()">Search</button>
+      </div>
+
+      <div id="products-list"></div>
+    </div>
+
+    <script>
+      async function loadProducts(query = "") {
+        const url = query
+          ? `${API_BASE}/products/search?q=${encodeURIComponent(query)}`
+          : `${API_BASE}/products`;
+        try {
+          const response = await fetch(url);
+          const products = await response.json();
+          const container = document.getElementById("products-list");
+
+          // SECURE: Clear existing content safely
+          container.textContent = "";
+
+          if (products.length === 0) {
+            container.appendChild(safeCreateElement("p", "No products found."));
+            return;
+          }
+
+          products.forEach((p) => {
+            const card = safeCreateElement("div", null, "product-card");
+
+            // SECURE: Using textContent internally via safeCreateElement prevents XSS if product names/descriptions were attacker-controlled
+            card.appendChild(safeCreateElement("h3", p.name));
+            card.appendChild(safeCreateElement("p", p.description));
+            card.appendChild(
+              safeCreateElement("p", `Price: $${p.price.toFixed(2)}`),
+            );
+            card.appendChild(safeCreateElement("p", `Stock: ${p.stock}`));
+
+            const buyBtn = safeCreateElement("button", "Buy Now");
+            buyBtn.onclick = () => buyProduct(p.id);
+            card.appendChild(buyBtn);
+
+            container.appendChild(card);
+          });
+        } catch (error) {
+          console.error("Error loading products:", error);
+        }
+      }
+
+      async function searchProducts() {
+        const query = document.getElementById("searchInput").value;
+        loadProducts(query);
+      }
+
+      async function buyProduct(id) {
+        if (!getToken()) {
+          window.location.href = "/login.html";
+          return;
+        }
+        try {
+          const res = await fetchWithAuth(`${API_BASE}/orders`, {
+            method: "POST",
+            body: JSON.stringify({ product_id: id, quantity: 1 }),
+          });
+          if (res.ok) {
+            alert("Order placed successfully!");
+          } else {
+            const data = await res.json();
+            alert(data.detail || "Failed to place order");
+          }
+        } catch (e) {
+          alert("Error placing order");
+        }
+      }
+
+      // Initial load
+      document.addEventListener("DOMContentLoaded", () => loadProducts());
+    </script>
+  </body>
+</html>

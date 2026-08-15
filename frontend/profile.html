@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureShop Lab - Profile</title>
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+    <header>
+        <h1>SecureShop Lab</h1>
+        <nav id="main-nav"></nav>
+    </header>
+
+    <div class="container">
+        <h2>My Profile</h2>
+        <div id="profile-info"></div>
+
+        <h2 style="margin-top: 2rem;">My Orders</h2>
+        <div id="orders-list"></div>
+    </div>
+
+    <script src="/app.js"></script>
+    <script>
+        async function loadProfile() {
+            try {
+                const res = await fetchWithAuth(`${API_BASE}/users/me`);
+                if (res && res.ok) {
+                    const user = await res.json();
+                    const container = document.getElementById('profile-info');
+                    container.appendChild(safeCreateElement('p', `Username: ${user.username}`));
+                    container.appendChild(safeCreateElement('p', `Email: ${user.email}`));
+                }
+            } catch (e) {
+                console.error("Profile load error", e);
+            }
+        }
+
+        async function loadOrders() {
+            try {
+                const res = await fetchWithAuth(`${API_BASE}/orders`);
+                if (res && res.ok) {
+                    const orders = await res.json();
+                    const container = document.getElementById('orders-list');
+                    
+                    if (orders.length === 0) {
+                        container.appendChild(safeCreateElement('p', 'No orders yet.'));
+                        return;
+                    }
+
+                    orders.forEach(o => {
+                        const div = safeCreateElement('div', null, 'product-card');
+                        div.appendChild(safeCreateElement('p', `Order ID: ${o.id}`));
+                        div.appendChild(safeCreateElement('p', `Product ID: ${o.product_id}`));
+                        div.appendChild(safeCreateElement('p', `Quantity: ${o.quantity}`));
+                        div.appendChild(safeCreateElement('p', `Status: ${o.status}`));
+                        
+                        const verifyBtn = safeCreateElement('button', 'Verify IDOR Protection (Try fetching)');
+                        verifyBtn.onclick = () => fetchOrderDetails(o.id);
+                        div.appendChild(verifyBtn);
+
+                        container.appendChild(div);
+                    });
+                }
+            } catch (e) {
+                console.error("Orders load error", e);
+            }
+        }
+
+        async function fetchOrderDetails(id) {
+            try {
+                const res = await fetchWithAuth(`${API_BASE}/orders/${id}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    alert(`Success: Fetched order details for ID ${data.id}. Try changing the ID in Burp to test IDOR!`);
+                } else {
+                    const data = await res.json();
+                    alert(`Error: ${data.detail}. IDOR Protection is active.`);
+                }
+            } catch (e) {
+                alert('Network error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!getToken()) {
+                window.location.href = '/login.html';
+                return;
+            }
+            loadProfile();
+            loadOrders();
+        });
+    </script>
+</body>
+</html>
