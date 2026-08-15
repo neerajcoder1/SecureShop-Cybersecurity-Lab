@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # SecureShop Lab
 
 SecureShop Lab is a local cybersecurity learning application designed to demonstrate **secure coding practices** in Python FastAPI. It contrasts vulnerable coding patterns (described in documentation) with robust, secure implementations.
