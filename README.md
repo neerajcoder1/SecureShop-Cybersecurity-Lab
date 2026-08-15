@@ -27,7 +27,12 @@ https://secureshop-cybersecurity-lab.onrender.com/docs
 
 ## Website Preview
 
-Add a screenshot of the deployed application to the repository:
+<img width="1916" height="878" alt="image" src="https://github.com/user-attachments/assets/da179672-b5db-42e2-a14f-2dcb87f29a8e" />
+
+---
+
+<img width="1894" height="876" alt="image" src="https://github.com/user-attachments/assets/605cf75d-46ab-4bff-b644-18aafc06bbf0" />
+
 
 ```text
 docs/images/secureshop-home.png
