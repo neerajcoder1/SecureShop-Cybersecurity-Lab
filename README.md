@@ -1,5 +1,6 @@
 <p align="center">
-  <img src="docs/images/secureshop-logo.png" alt="SecureShop Logo" width="160">
+<img width="200" height="200" alt="cyber-security-shield-logo-png-nim95-u3tqjrbn91ao1rbr" src="https://github.com/user-attachments/assets/8235a61c-0585-47fc-8a12-ab4a287e8a1d" />
+
 </p>
 
 <h1 align="center">SecureShop Cybersecurity Testing Lab</h1>
@@ -16,11 +17,6 @@
     <img src="https://img.shields.io/badge/API-Render-46E3B7?style=for-the-badge&logo=render" alt="Backend API">
   </a>
 </p>
-
-<p align="center">
-  <img src="docs/images/secureshop-home.png" alt="SecureShop Website Preview" width="900">
-</p>
-
 
 ---
 
