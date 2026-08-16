@@ -69,8 +69,22 @@
                     <h3 class="mb-1">Authentication Bypass Testing</h3>
                     <p class="text-muted mb-1">Determine whether the application's authentication controls correctly reject invalid credentials or if they can be bypassed using SQL injection or malformed tokens.</p>
                     <div class="flex gap-1 mt-1">
-                        <button class="btn btn-outline" style="opacity:0.5; pointer-events:none;">View Hint</button>
+                        <button class="btn btn-outline" onclick="showHint()">View Hint</button>
                         <button class="btn btn-primary" onclick="validateChallenge()">Submit Result</button>
+                    </div>
+                    
+                    <!-- Hidden Hint Box -->
+                    <div id="hint-box" class="mt-1" style="display: none; padding: 1rem; border-left: 3px solid var(--accent-orange); background: var(--bg-dark); font-size: 0.9rem;">
+                        <strong style="color: var(--accent-orange);">Hint:</strong> Open the Web Terminal below and type <code>curl /products</code> to observe how the API responds. Next, try running <code>sqlmap -u /login</code> to test the login portal for injection flaws.
+                    </div>
+
+                    <!-- Hidden Completion Report -->
+                    <div id="report-box" class="mt-1" style="display: none; padding: 1.5rem; border: 1px solid var(--accent-green); border-radius: 6px; background: rgba(35, 134, 54, 0.05);">
+                        <h3 style="color: var(--accent-green); margin-bottom: 0.5rem;">🎉 Challenge Completed!</h3>
+                        <p class="text-muted mb-1"><strong>Level:</strong> 1 (Beginner)</p>
+                        <p class="text-muted mb-1"><strong>Badge Awarded:</strong> 🏆 Web Security Novice</p>
+                        <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 1rem 0;">
+                        <p class="text-muted" style="font-size: 0.9rem;"><strong>Validation Report:</strong> You have successfully audited the authentication mechanisms. The backend properly parameterizes SQL queries and utilizes secure JWT validation, preventing unauthorized bypass.</p>
                     </div>
                 </div>
 
@@ -168,6 +182,15 @@ Run 'submit_report' to validate the challenge.
             }
         }
 
+        function showHint() {
+            const hintBox = document.getElementById('hint-box');
+            if (hintBox.style.display === 'none') {
+                hintBox.style.display = 'block';
+            } else {
+                hintBox.style.display = 'none';
+            }
+        }
+
         function validateChallenge() {
             // Update Status Badge
             const statusBadge = document.getElementById('challenge-status');
@@ -179,6 +202,9 @@ Run 'submit_report' to validate the challenge.
             // Update Card Border
             document.getElementById('challenge-card').classList.add('challenge-completed');
 
+            // Hide hint if open
+            document.getElementById('hint-box').style.display = 'none';
+
             // Animate Progress Bar
             document.getElementById('lab-progress').style.width = '100%';
             
@@ -189,8 +215,10 @@ Run 'submit_report' to validate the challenge.
                 document.getElementById('lab-percent').textContent = p + '%';
                 if (p >= 100) {
                     clearInterval(iv);
-                    // Show Badge
+                    // Show Sidebar Badge
                     document.getElementById('badge-container').style.display = 'block';
+                    // Show Full Report Box
+                    document.getElementById('report-box').style.display = 'block';
                     printTerm('\n[+] Challenge #01 Completed. Badge Awarded!', 'term-success');
                 }
             }, 50);
