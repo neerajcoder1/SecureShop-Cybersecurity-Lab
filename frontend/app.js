@@ -34,7 +34,7 @@ function updateNav() {
     nav.innerHTML = `
             <a href="/index.html">Home</a>
             <a href="/labs.html">Labs</a>
-            <a href="/security.html">Testing Guide</a>
+            <a href="/docs.html">Testing Guide</a>
             <a href="/docs.html">Docs</a>
             <a href="https://github.com/neerajcoder1/SecureShop-Cybersecurity-Lab" target="_blank">GitHub</a>
             <a href="/login.html" class="btn-nav">Login / Register</a>
@@ -65,7 +65,7 @@ function injectFooter() {
         <div class="footer-links">
             <a href="/labs.html">Labs</a>
             <a href="/docs.html">Documentation</a>
-            <a href="/security.html">Testing Guide</a>
+            <a href="/docs.html">Testing Guide</a>
             <a href="https://github.com/neerajcoder1/SecureShop-Cybersecurity-Lab" target="_blank">GitHub</a>
         </div>
     </div>

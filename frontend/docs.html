@@ -17,60 +17,160 @@
 
     <div class="container layout-sidebar">
         
-        <div class="sidebar-nav card">
+        <div class="sidebar-nav card" id="docs-sidebar">
             <h3 class="mb-1">Documentation</h3>
-            <a href="/docs.html" class="active">Getting Started</a>
-            <a href="#">Testing Methodology</a>
-            <a href="#">API Reference</a>
-            <a href="/security.html">Security Controls</a>
-            <a href="#">Contributing</a>
+            <a href="#" onclick="switchDoc('getting-started'); return false;" class="active" id="nav-getting-started">Getting Started</a>
+            <a href="#" onclick="switchDoc('testing'); return false;" id="nav-testing">Testing Methodology</a>
+            <a href="#" onclick="switchDoc('api'); return false;" id="nav-api">API Reference</a>
+            <a href="#" onclick="switchDoc('security'); return false;" id="nav-security">Security Controls</a>
+            <a href="#" onclick="switchDoc('contributing'); return false;" id="nav-contributing">Contributing</a>
         </div>
 
-        <div>
-            <h2><span class="logo-icon">></span> Getting Started</h2>
-            <p class="text-muted mb-2">Welcome to SecureShop Lab. This platform provides an isolated, secure backend designed to teach defensive programming and cyber-hygiene.</p>
+        <div id="docs-content-container">
+            
+            <!-- GETTING STARTED -->
+            <div id="section-getting-started" class="doc-section">
+                <h2><span class="logo-icon">></span> Getting Started</h2>
+                <p class="text-muted mb-2">Welcome to SecureShop Lab. This platform provides an isolated, secure backend designed to teach defensive programming and cyber-hygiene.</p>
 
-            <div class="card mb-2" style="border-left: 4px solid var(--accent-orange); background: rgba(210, 153, 34, 0.05);">
-                <h3 class="mb-1" style="color: var(--accent-orange);">AUTHORIZED TESTING ONLY</h3>
-                <p class="text-muted">SecureShop is intended for educational and authorized security testing.<br>Never test websites, APIs, accounts, or infrastructure that you do not own or have explicit permission to assess.</p>
-            </div>
+                <div class="card mb-2" style="border-left: 4px solid var(--accent-orange); background: rgba(210, 153, 34, 0.05);">
+                    <h3 class="mb-1" style="color: var(--accent-orange);">AUTHORIZED TESTING ONLY</h3>
+                    <p class="text-muted">SecureShop is intended for educational and authorized security testing.<br>Never test websites, APIs, accounts, or infrastructure that you do not own or have explicit permission to assess.</p>
+                </div>
 
-            <h3 class="mb-1">Web Terminal & Lab Methodology</h3>
-            <p class="text-muted mb-2">SecureShop integrates a live Web Terminal directly into your workspace. Instead of needing external tools installed locally, you can practice reconnaissance and exploit methodologies directly in your browser using simulated tools.</p>
+                <h3 class="mb-1">Web Terminal & Lab Methodology</h3>
+                <p class="text-muted mb-2">SecureShop integrates a live Web Terminal directly into your workspace. Instead of needing external tools installed locally, you can practice reconnaissance and exploit methodologies directly in your browser using simulated tools.</p>
 
-            <div class="card mb-2">
-                <h3 class="mb-1" style="color: var(--accent-blue);"><span class="logo-icon">></span> HTTP & API Inspection</h3>
-                <p class="text-muted mb-1"><strong>Theory:</strong> Modern web applications rely on APIs (Application Programming Interfaces) to fetch data. Attackers often inspect HTTP requests to find hidden endpoints, analyze response headers for version information, or manipulate parameters (like <code>?id=1</code>) to test for IDOR (Insecure Direct Object Reference) vulnerabilities.</p>
-                <div class="terminal mt-1" style="background: #0d1117; padding: 1rem; border-radius: 6px; border: 1px solid #30363d; color: #c9d1d9;">
-                    <div style="color: #58a6ff; margin-bottom: 0.5rem; font-weight: 600;">Command: <code>curl</code></div>
-                    <div style="color: #8b949e; margin-bottom: 0.3rem;">Usage: <code>curl [URL]</code></div>
-                    <div style="color: #8b949e;">Description: Sends a GET request to the target URL and returns the raw HTTP response body. Useful for footprinting APIs.</div>
-                    <div style="color: #2ea043; margin-top: 0.8rem;">Example: <code>curl /products</code></div>
+                <div class="card mb-2">
+                    <h3 class="mb-1" style="color: var(--accent-blue);"><span class="logo-icon">></span> HTTP & API Inspection</h3>
+                    <p class="text-muted mb-1"><strong>Theory:</strong> Modern web applications rely on APIs (Application Programming Interfaces) to fetch data. Attackers often inspect HTTP requests to find hidden endpoints, analyze response headers for version information, or manipulate parameters (like <code>?id=1</code>) to test for IDOR (Insecure Direct Object Reference) vulnerabilities.</p>
+                    <div class="terminal mt-1" style="background: #0d1117; padding: 1rem; border-radius: 6px; border: 1px solid #30363d; color: #c9d1d9;">
+                        <div style="color: #58a6ff; margin-bottom: 0.5rem; font-weight: 600;">Command: <code>curl</code></div>
+                        <div style="color: #8b949e; margin-bottom: 0.3rem;">Usage: <code>curl [URL]</code></div>
+                        <div style="color: #8b949e;">Description: Sends a GET request to the target URL and returns the raw HTTP response body. Useful for footprinting APIs.</div>
+                        <div style="color: #2ea043; margin-top: 0.8rem;">Example: <code>curl /products</code></div>
+                    </div>
+                </div>
+
+                <div class="card mb-2">
+                    <h3 class="mb-1" style="color: var(--accent-red);"><span class="logo-icon">></span> SQL Injection (SQLi)</h3>
+                    <p class="text-muted mb-1"><strong>Theory:</strong> SQL Injection occurs when untrusted user input is directly concatenated into a database query string. This allows an attacker to manipulate the query logic (e.g., bypassing login via <code>' OR 1=1--</code>). SecureShop defends against this by strictly using <em>Parameterized Queries</em>, meaning user input is treated only as data, never as executable code.</p>
+                    <div class="terminal mt-1" style="background: #0d1117; padding: 1rem; border-radius: 6px; border: 1px solid #30363d; color: #c9d1d9;">
+                        <div style="color: #58a6ff; margin-bottom: 0.5rem; font-weight: 600;">Command: <code>sqlmap</code></div>
+                        <div style="color: #8b949e; margin-bottom: 0.3rem;">Usage: <code>sqlmap -u [URL]</code></div>
+                        <div style="color: #8b949e;">Description: An automated SQL injection and database takeover tool. In this lab, the terminal simulates an automated barrage of time-based, boolean-based, and error-based payloads to test the robustness of the target endpoint.</div>
+                        <div style="color: #2ea043; margin-top: 0.8rem;">Example: <code>sqlmap -u /login</code></div>
+                    </div>
+                </div>
+
+                <div class="card mb-2">
+                    <h3 class="mb-1" style="color: var(--accent-green);"><span class="logo-icon">></span> Challenge Validation</h3>
+                    <p class="text-muted mb-1"><strong>Theory:</strong> Security isn't just about breaking things; it's about verifying fixes. After completing your attack simulations, you must validate that the system's defenses (like JWT validation and parameterized queries) are functioning correctly and that no critical vulnerabilities remain.</p>
+                    <div class="terminal mt-1" style="background: #0d1117; padding: 1rem; border-radius: 6px; border: 1px solid #30363d; color: #c9d1d9;">
+                        <div style="color: #58a6ff; margin-bottom: 0.5rem; font-weight: 600;">Command: <code>submit_report</code></div>
+                        <div style="color: #8b949e; margin-bottom: 0.3rem;">Usage: <code>submit_report</code></div>
+                        <div style="color: #8b949e;">Description: Triggers the validation engine to assess your lab progress, update your live dashboard stats, and award you completion badges.</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="card mb-2">
-                <h3 class="mb-1" style="color: var(--accent-red);"><span class="logo-icon">></span> SQL Injection (SQLi)</h3>
-                <p class="text-muted mb-1"><strong>Theory:</strong> SQL Injection occurs when untrusted user input is directly concatenated into a database query string. This allows an attacker to manipulate the query logic (e.g., bypassing login via <code>' OR 1=1--</code>). SecureShop defends against this by strictly using <em>Parameterized Queries</em>, meaning user input is treated only as data, never as executable code.</p>
-                <div class="terminal mt-1" style="background: #0d1117; padding: 1rem; border-radius: 6px; border: 1px solid #30363d; color: #c9d1d9;">
-                    <div style="color: #58a6ff; margin-bottom: 0.5rem; font-weight: 600;">Command: <code>sqlmap</code></div>
-                    <div style="color: #8b949e; margin-bottom: 0.3rem;">Usage: <code>sqlmap -u [URL]</code></div>
-                    <div style="color: #8b949e;">Description: An automated SQL injection and database takeover tool. In this lab, the terminal simulates an automated barrage of time-based, boolean-based, and error-based payloads to test the robustness of the target endpoint.</div>
-                    <div style="color: #2ea043; margin-top: 0.8rem;">Example: <code>sqlmap -u /login</code></div>
+            <!-- SECURITY CONTROLS -->
+            <div id="section-security" class="doc-section" style="display: none;">
+                <h2><span class="logo-icon">></span> Security Controls Documentation</h2>
+                <p class="text-muted mb-2">This lab demonstrates secure coding practices to prevent common web vulnerabilities. Compare the vulnerable patterns against the secure implementations used in this environment.</p>
+
+                <div class="card mb-2">
+                    <h3>1. SQL Injection Prevention</h3>
+                    <p class="text-muted"><span class="badge badge-advanced">Vulnerable Pattern</span> String concatenation allows attackers to inject malicious SQL commands.</p>
+                    <pre><code class="terminal"># INTENTIONALLY VULNERABLE PATTERN
+query = "SELECT * FROM products WHERE name LIKE '%" + q + "%'"
+cursor.execute(query)</code></pre>
+                    
+                    <p class="text-muted mt-1"><span class="badge badge-beginner">Secure Implementation</span> Parameterized queries ensure input is treated strictly as data, not executable code.</p>
+                    <pre><code class="terminal"># SECURE PATTERN
+query = "SELECT * FROM products WHERE name LIKE ?"
+search_term = f"%{q}%"
+cursor.execute(query, (search_term,))</code></pre>
+                </div>
+
+                <div class="card mb-2">
+                    <h3>2. IDOR (Insecure Direct Object Reference) Prevention</h3>
+                    <p class="text-muted"><span class="badge badge-advanced">Vulnerable Pattern</span> Fetching a resource by ID without verifying ownership.</p>
+                    <pre><code class="terminal"># INTENTIONALLY VULNERABLE PATTERN
+@app.get("/api/orders/{order_id}")
+def get_order(order_id: int):
+    # Missing authorization check!
+    return db.query("SELECT * FROM orders WHERE id = ?", (order_id,))</code></pre>
+                    
+                    <p class="text-muted mt-1"><span class="badge badge-beginner">Secure Implementation</span> Verifying the requested object belongs to the authenticated user.</p>
+                    <pre><code class="terminal"># SECURE PATTERN
+@app.get("/api/orders/{order_id}")
+def get_order(order_id: int, current_user = Depends(get_current_user)):
+    order = db.query("SELECT * FROM orders WHERE id = ?", (order_id,))
+    if order["user_id"] != current_user["id"]:
+        raise HTTPException(status_code=404) # 404 prevents enumeration
+    return order</code></pre>
+                </div>
+
+                <div class="card mb-2">
+                    <h3>3. XSS (Cross-Site Scripting) Prevention</h3>
+                    <p class="text-muted"><span class="badge badge-advanced">Vulnerable Pattern</span> Directly injecting untrusted data into the DOM using innerHTML.</p>
+                    <pre><code class="terminal">// INTENTIONALLY VULNERABLE PATTERN
+const reviewDiv = document.createElement('div');
+reviewDiv.innerHTML = userReview.comment; // Allows script execution</code></pre>
+                    
+                    <p class="text-muted mt-1"><span class="badge badge-beginner">Secure Implementation</span> Using textContent to ensure data is safely encoded.</p>
+                    <pre><code class="terminal">// SECURE PATTERN
+const reviewDiv = document.createElement('div');
+reviewDiv.textContent = userReview.comment; // Safely escapes HTML entities</code></pre>
                 </div>
             </div>
 
-            <div class="card mb-2">
-                <h3 class="mb-1" style="color: var(--accent-green);"><span class="logo-icon">></span> Challenge Validation</h3>
-                <p class="text-muted mb-1"><strong>Theory:</strong> Security isn't just about breaking things; it's about verifying fixes. After completing your attack simulations, you must validate that the system's defenses (like JWT validation and parameterized queries) are functioning correctly and that no critical vulnerabilities remain.</p>
-                <div class="terminal mt-1" style="background: #0d1117; padding: 1rem; border-radius: 6px; border: 1px solid #30363d; color: #c9d1d9;">
-                    <div style="color: #58a6ff; margin-bottom: 0.5rem; font-weight: 600;">Command: <code>submit_report</code></div>
-                    <div style="color: #8b949e; margin-bottom: 0.3rem;">Usage: <code>submit_report</code></div>
-                    <div style="color: #8b949e;">Description: Triggers the validation engine to assess your lab progress, update your live dashboard stats, and award you completion badges.</div>
-                </div>
+            <!-- TESTING METHODOLOGY -->
+            <div id="section-testing" class="doc-section text-center" style="display: none; padding: 4rem 0;">
+                <h1 style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;">Testing Methodology</h1>
+                <h3 style="color: var(--accent-orange);">🚧 Module Coming Soon</h3>
+                <p class="text-muted mb-2">We are currently building comprehensive guides for web application penetration testing methodologies.</p>
+                <button class="btn btn-primary" onclick="switchDoc('getting-started')">Go Back to Getting Started</button>
             </div>
+
+            <!-- API REFERENCE -->
+            <div id="section-api" class="doc-section text-center" style="display: none; padding: 4rem 0;">
+                <h1 style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;">API Reference</h1>
+                <h3 style="color: var(--accent-orange);">🚧 Module Coming Soon</h3>
+                <p class="text-muted mb-2">Interactive API documentation (Swagger/OpenAPI) is currently being integrated.</p>
+                <button class="btn btn-primary" onclick="switchDoc('getting-started')">Go Back to Getting Started</button>
+            </div>
+
+            <!-- CONTRIBUTING -->
+            <div id="section-contributing" class="doc-section text-center" style="display: none; padding: 4rem 0;">
+                <h1 style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;">Contributing</h1>
+                <h3 style="color: var(--accent-orange);">🚧 Module Coming Soon</h3>
+                <p class="text-muted mb-2">Guidelines for submitting new labs, vulnerability patterns, and pull requests will be available shortly.</p>
+                <button class="btn btn-primary" onclick="switchDoc('getting-started')">Go Back to Getting Started</button>
+            </div>
+
         </div>
     </div>
+
+    <script>
+        function switchDoc(categoryId) {
+            // Hide all sections
+            document.querySelectorAll('.doc-section').forEach(el => el.style.display = 'none');
+            
+            // Show target section
+            const target = document.getElementById('section-' + categoryId);
+            if (target) target.style.display = 'block';
+
+            // Update sidebar active state
+            document.querySelectorAll('#docs-sidebar a').forEach(el => el.classList.remove('active'));
+            const activeLink = document.getElementById('nav-' + categoryId);
+            if (activeLink) activeLink.classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+    </script>
 </body>
 </html>
 
