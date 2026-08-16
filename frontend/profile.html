@@ -43,7 +43,7 @@
         .id-label { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
         .id-value { font-family: var(--font-mono); font-weight: 600; color: var(--text-main); }
         .history-item {
-            background: #0d1117;
+            background: #000000;
             color: #c9d1d9;
             border: 1px solid #30363d;
             border-radius: 8px;
@@ -169,7 +169,7 @@
                     const container = document.getElementById('orders-list');
                     
                     if (orders.length === 0) {
-                        container.innerHTML = '<div class="terminal text-muted" style="font-size:0.85rem; background: #0d1117; border: 1px solid #30363d; color: #8b949e;">[+] Database scan complete: No active orders found for this identity.</div>';
+                        container.innerHTML = '<div class="terminal text-muted" style="font-size:0.85rem; background: #000000; border: 1px solid #30363d; color: #8b949e;">[+] Database scan complete: No active orders found for this identity.</div>';
                         return;
                     }
 
