@@ -26,24 +26,26 @@
             
             <div class="flex-col gap-1">
                 <div class="card">
-                    <h3 class="mb-1">Environment</h3>
-                    <div class="terminal text-muted" style="font-size: 0.85rem;">
-                        <p>TARGET URL: <a href="/index.html">/index.html</a></p>
-                        <p>API BASE:   <span id="api-display"></span></p>
-                        <p>AUTH:       <span id="auth-status" class="status status-red">Unauthenticated</span></p>
+                    <h3 class="mb-1">Environment Setup</h3>
+                    <div class="terminal" style="font-size: 0.85rem; background: #0d1117; color: #c9d1d9; border: 1px solid #30363d; border-radius: 6px; padding: 1.2rem;">
+                        <div style="color: #8b949e; margin-bottom: 1rem;">>_ INITIATING SECURE ENVIRONMENT...</div>
+                        <div style="margin-bottom: 0.2rem;"><span style="color: #2ea043;">[+]</span> Target API: <span id="api-display" style="color: #58a6ff;"></span></div>
+                        <div style="margin-bottom: 0.2rem;"><span style="color: #2ea043;">[+]</span> Auth Mechanism: <span style="color: #d29922;">JWT Bearer Token</span></div>
+                        <div style="margin-bottom: 1rem;"><span style="color: #2ea043;">[+]</span> Database: SQLite (Parameterized)</div>
+                        <div style="color: #8b949e;">Awaiting payload injection...</div>
                     </div>
                 </div>
 
                 <div class="card">
                     <h3 class="mb-1">Security Controls</h3>
-                    <div class="terminal text-muted" style="font-size: 0.85rem; line-height: 2;">
-                        <div class="flex justify-between"><span>Authentication</span> <span class="status status-green">Protected</span></div>
-                        <div class="flex justify-between"><span>Password Storage</span> <span class="status status-green">Hashed</span></div>
-                        <div class="flex justify-between"><span>SQL Queries</span> <span class="status status-green">Parameterized</span></div>
-                        <div class="flex justify-between"><span>JWT Auth</span> <span class="status status-green">Enabled</span></div>
-                        <div class="flex justify-between"><span>CORS</span> <span class="status status-green">Configured</span></div>
-                        <div class="flex justify-between"><span>XSS Protection</span> <span class="status status-green">Enabled</span></div>
-                        <div class="flex justify-between"><span>IDOR Protection</span> <span class="status status-green">Enabled</span></div>
+                    <div class="terminal" style="font-size: 0.85rem; line-height: 2; background: #0d1117; color: #c9d1d9; border: 1px solid #30363d; border-radius: 6px; padding: 1.2rem;">
+                        <div class="flex justify-between"><span>Authentication</span> <span style="color: #2ea043;">[Protected]</span></div>
+                        <div class="flex justify-between"><span>Password Storage</span> <span style="color: #2ea043;">[Hashed]</span></div>
+                        <div class="flex justify-between"><span>SQL Queries</span> <span style="color: #2ea043;">[Parameterized]</span></div>
+                        <div class="flex justify-between"><span>JWT Auth</span> <span style="color: #2ea043;">[Enabled]</span></div>
+                        <div class="flex justify-between"><span>CORS</span> <span style="color: #2ea043;">[Configured]</span></div>
+                        <div class="flex justify-between"><span>XSS Protection</span> <span style="color: #2ea043;">[Enabled]</span></div>
+                        <div class="flex justify-between"><span>IDOR Protection</span> <span style="color: #2ea043;">[Enabled]</span></div>
                     </div>
                 </div>
 
