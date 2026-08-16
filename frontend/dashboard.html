@@ -141,23 +141,32 @@
                 // Animate Skills
                 document.getElementById('skill-web-bar').style.width = '100%';
                 animateValue('skill-web-text', 0, 100, 1000, true);
+                
+                document.getElementById('skill-api-bar').style.width = '40%';
+                animateValue('skill-api-text', 0, 40, 1000, true);
+
+                document.getElementById('skill-auth-bar').style.width = '60%';
+                animateValue('skill-auth-text', 0, 60, 1000, true);
+                
+                animateValue('stat-areas', 0, 4, 1000);
             } else {
                 animateValue('stat-completed', 0, 0, 1000);
-                animateValue('stat-progress', 0, 1, 1000);
+                animateValue('stat-progress', 0, 0, 1000);
+                
+                document.getElementById('recent-lab-status').textContent = 'Not Started';
                 
                 // Animate Skills
-                document.getElementById('skill-web-bar').style.width = '80%';
-                animateValue('skill-web-text', 0, 80, 1000, true);
+                document.getElementById('skill-web-bar').style.width = '0%';
+                animateValue('skill-web-text', 0, 0, 1000, true);
+                
+                document.getElementById('skill-api-bar').style.width = '0%';
+                animateValue('skill-api-text', 0, 0, 1000, true);
+
+                document.getElementById('skill-auth-bar').style.width = '0%';
+                animateValue('skill-auth-text', 0, 0, 1000, true);
+                
+                animateValue('stat-areas', 0, 0, 1000);
             }
-
-            // Other default skills
-            document.getElementById('skill-api-bar').style.width = '40%';
-            animateValue('skill-api-text', 0, 40, 1000, true);
-
-            document.getElementById('skill-auth-bar').style.width = '60%';
-            animateValue('skill-auth-text', 0, 60, 1000, true);
-            
-            animateValue('stat-areas', 0, 4, 1000);
         });
     </script>
 </body>
