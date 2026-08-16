@@ -539,16 +539,15 @@ def sqli_lab_search(q: str = ""):
         cursor.execute(query)
         rows = [dict(row) for row in cursor.fetchall()]
         
-        # Check flags based on successful exploit
-        if q == "'": 
-            return {"error": "SQL syntax error", "flag": "flag{sqli_basic_error}"}
-            
-        # Give UNION flag if they successfully injected UNION and returned 5 columns instead of 3
+        # Give UNION flag if they successfully injected UNION
         if "' UNION" in q.upper():
             return {"results": rows, "flag": "flag{sqli_union_version}"}
             
         return {"results": rows}
     except Exception as e:
+        # If the input caused a SQL error and contained a quote, they found the basic injection vector!
+        if "'" in q:
+            return {"error": str(e), "hint": "Check your syntax near the quote.", "flag": "flag{sqli_basic_error}"}
         return {"error": str(e), "hint": "Check your syntax near the quote."}
     finally:
         conn.close()
