@@ -22,12 +22,21 @@
 
 A deliberately security-focused e-commerce application designed for **authorized cybersecurity testing, penetration-testing practice, and web application security education**.
 
-A deliberately security-focused e-commerce application designed for **authorized cybersecurity testing, penetration-testing practice, and web application security education**.
-
 SecureShop provides a realistic environment where security learners can practice identifying vulnerabilities, validating security controls, analyzing HTTP traffic, and understanding how secure implementations defend against common web attacks.
 
 > [!WARNING]
 > **Authorized Testing Only:** Only test this application when you have explicit authorization. Do not use the techniques described here against websites, APIs, accounts, or systems that you do not own or have permission to assess.
+
+## 💻 Tech Stack
+- **Backend:** Python, FastAPI, SQLite
+- **Frontend:** Vanilla JavaScript, HTML5, CSS3 (Custom 3D Neumorphic Dark Theme)
+- **Deployment:** Render (API), Vercel (Frontend)
+
+## 🎯 Key Features
+- **Interactive Web Terminal:** Test APIs directly from the browser using a simulated terminal. Practice commands like `curl` and `sqlmap` to validate challenges before submission.
+- **Realistic E-Commerce Workflow:** A fully functional storefront with products, carts, orders, and reviews.
+- **Dedicated Workspaces:** Track your progress as you work through specific vulnerability categories.
+- **Built-in Vulnerabilities & Protections:** Configured to allow for testing of SQLi, XSS, BOLA/IDOR, and JWT manipulation in a safe, sandboxed environment.
 
 ---
 
@@ -75,6 +84,59 @@ implementations defend against common attacks.
 **Source:** Open Source  
 **Access:** Web Browser + Local Deployment  
 **Purpose:** Cybersecurity Education & Authorized Testing 
+
+---
+
+## 🚀 Local Installation & Setup
+
+Want to run the lab locally for offline practice or to contribute to the codebase? Follow these steps:
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/neerajcoder1/SecureShop-Cybersecurity-Lab.git
+   cd SecureShop-Cybersecurity-Lab
+   ```
+
+2. **Set up the backend environment:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   pip install -r requirements.txt
+   ```
+
+3. **Run the API server:**
+   ```bash
+   cd backend
+   uvicorn main:app --reload
+   ```
+
+4. **Launch the frontend:**
+   Use any local web server (like VS Code Live Server or Python's `http.server`) to serve the `/frontend` directory on port 5500.
+   ```bash
+   # In a new terminal window
+   cd frontend
+   python -m http.server 5500
+   ```
+   Navigate to `http://localhost:5500` in your browser.
+
+---
+
+## 📂 Project Structure
+
+```text
+SecureShop-Cybersecurity-Lab/
+├── backend/          # FastAPI server, database models, and API logic
+│   ├── main.py       # API endpoints and route definitions
+│   ├── auth.py       # JWT and password hashing (Bcrypt) logic
+│   ├── database.py   # SQLite database connection and queries
+│   └── models.py     # Pydantic data models
+├── frontend/         # Pure HTML/CSS/JS frontend (Dark Hacker UI)
+│   ├── index.html    # Landing page and dashboard
+│   ├── workspace.html# Interactive terminal and challenge environment
+│   ├── app.js        # Core frontend logic and API interactions
+│   └── app.css       # Neumorphic styling and responsive layouts
+└── requirements.txt  # Python dependencies
+```
 
 ---
  
