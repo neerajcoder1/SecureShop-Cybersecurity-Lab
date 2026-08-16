@@ -72,7 +72,7 @@
                     <p class="text-muted mb-1">Determine whether the application's authentication controls correctly reject invalid credentials or if they can be bypassed using SQL injection or malformed tokens.</p>
                     <div class="flex gap-1 mt-1">
                         <button class="btn btn-outline" onclick="showHint()">View Hint</button>
-                        <button class="btn btn-primary" onclick="validateChallenge()">Submit Result</button>
+                        <button class="btn btn-primary" onclick="attemptSubmit()">Submit Result</button>
                     </div>
                     
                     <!-- Hidden Hint Box -->
@@ -114,6 +114,11 @@ Run 'submit_report' to validate the challenge.
             out.scrollTop = out.scrollHeight;
         }
 
+        let labState = {
+            hasRunCurl: false,
+            hasRunSqlmap: false
+        };
+
         async function handleCommand(cmdStr) {
             const args = cmdStr.trim().split(' ').filter(Boolean);
             if (args.length === 0) return;
@@ -131,6 +136,12 @@ Run 'submit_report' to validate the challenge.
             } else if (cmd === 'clear') {
                 document.getElementById('term-out').textContent = '';
             } else if (cmd === 'submit_report') {
+                if (!labState.hasRunCurl || !labState.hasRunSqlmap) {
+                    printTerm('[-] Verification failed: Insufficient test coverage.', 'term-err');
+                    printTerm('[-] Hint: You must test the API using both curl and sqlmap before submitting.', 'term-err');
+                    showToast("[-] Please complete the required terminal commands first.", "error");
+                    return;
+                }
                 printTerm('[*] Analyzing test coverage...', 'term-success');
                 setTimeout(() => {
                     printTerm('[+] Verification passed. No critical vulnerabilities found.', 'term-success');
@@ -138,6 +149,7 @@ Run 'submit_report' to validate the challenge.
                     validateChallenge();
                 }, 1000);
             } else if (cmd === 'curl') {
+                labState.hasRunCurl = true;
                 if (args.length < 2) {
                     printTerm('curl: try \'curl --help\' or \'curl --manual\' for more information', 'term-err');
                     return;
@@ -152,6 +164,7 @@ Run 'submit_report' to validate the challenge.
                     printTerm(`curl: (6) Could not resolve host: ${url}`, 'term-err');
                 }
             } else if (cmd === 'sqlmap') {
+                labState.hasRunSqlmap = true;
                 printTerm('        ___');
                 printTerm('       __H__');
                 printTerm(' ___ ___[\']_____ ___ ___  {1.5.2#stable}');
@@ -174,6 +187,15 @@ Run 'submit_report' to validate the challenge.
             } else {
                 hintBox.style.display = 'none';
             }
+        }
+
+        function attemptSubmit() {
+            if (!labState.hasRunCurl || !labState.hasRunSqlmap) {
+                showToast("[-] Verification Failed: You have not executed the necessary tests in the Web Terminal.", "error");
+                printTerm('\n[-] UI Submission Rejected: Missing test coverage (curl/sqlmap required).', 'term-err');
+                return;
+            }
+            validateChallenge();
         }
 
         function validateChallenge() {
