@@ -419,8 +419,8 @@ footer {
 
 /* Web Terminal UI */
 .web-terminal {
-  background-color: var(--bg-dark);
-  border: 1px solid var(--border-subtle);
+  background-color: #0d1117;
+  border: 1px solid #30363d;
   border-radius: 6px;
   padding: 1rem;
   font-family: var(--font-mono);
