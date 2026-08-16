@@ -41,6 +41,39 @@ function updateNav() {
             ${themeBtn}
         `;
   }
+
+  // Inject Mobile Toggle if not present
+  const header = document.querySelector('header');
+  if (header && !document.querySelector('.mobile-toggle')) {
+      const toggle = document.createElement('button');
+      toggle.className = 'mobile-toggle';
+      toggle.innerHTML = '☰';
+      toggle.onclick = () => nav.classList.toggle('active');
+      header.insertBefore(toggle, nav);
+  }
+}
+
+function injectFooter() {
+  if (document.querySelector('footer')) return; // Already exists
+  const footer = document.createElement('footer');
+  footer.innerHTML = `
+    <div class="footer-grid">
+        <div>
+            <div class="logo mb-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="8 10 11 13 8 16"></polyline><line x1="13" y1="16" x2="16" y2="16"></line></svg> SecureShop Cybersecurity Lab</div>
+            <p class="text-muted">Open-source cybersecurity practice environment.</p>
+        </div>
+        <div class="footer-links">
+            <a href="/labs.html">Labs</a>
+            <a href="/docs.html">Documentation</a>
+            <a href="/security.html">Testing Guide</a>
+            <a href="https://github.com/neerajcoder1/SecureShop-Cybersecurity-Lab" target="_blank">GitHub</a>
+        </div>
+    </div>
+    <div class="footer-warning">
+        Only use this platform for authorized security testing.
+    </div>
+  `;
+  document.body.appendChild(footer);
 }
 
 // SECURE: This function uses textContent instead of innerHTML to prevent XSS
@@ -91,4 +124,5 @@ initTheme();
 
 document.addEventListener("DOMContentLoaded", () => {
   updateNav();
+  injectFooter();
 });

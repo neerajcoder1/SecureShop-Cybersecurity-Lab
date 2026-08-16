@@ -6,6 +6,24 @@
     <title>SecureShop Lab - Practice Web Security</title>
     <link rel="stylesheet" href="app.css" />
     <script src="app.js"></script>
+    <style>
+      .hero-visual {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 2rem;
+        font-family: var(--font-mono);
+        color: var(--accent-green);
+        text-align: left;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      }
+      .workflow-step {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        padding: 1.5rem;
+        border-radius: 6px;
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -15,27 +33,163 @@
       <nav id="main-nav"></nav>
     </header>
 
-    <div class="hero">
-      <div class="container">
-        <h1>Practice Web Security. Break Safely. Learn Securely.</h1>
-        <p>SecureShop is an open-source cybersecurity testing lab designed for authorized hands-on web application security practice.</p>
-        <div class="flex justify-center gap-1 mt-2">
-          <a href="/labs.html" class="btn btn-primary">Start Testing</a>
-          <a href="/security.html" class="btn btn-outline">Explore Security Controls</a>
+    <!-- HERO SECTION -->
+    <div class="hero" style="padding-top: 6rem; padding-bottom: 6rem; border-bottom: 1px solid var(--border-subtle);">
+      <div class="container grid grid-cols-2 gap-2 items-center">
+        <div style="text-align: left;">
+          <h1 style="font-size: 3.5rem; line-height: 1.1;">Practice Web Security.<br>Break Safely.<br><span style="color: var(--accent-blue);">Learn Securely.</span></h1>
+          <p style="margin: 1.5rem 0; font-size: 1.2rem; max-width: 90%;">SecureShop is an open-source cybersecurity laboratory designed for hands-on web application security practice in an authorized environment.</p>
+          <div class="flex gap-1 mt-2">
+            <a href="/labs.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 1.5rem;">Start Testing</a>
+            <a href="#featured-lab" class="btn btn-outline" style="font-size: 1.1rem; padding: 0.8rem 1.5rem;">Explore Labs</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div style="color: var(--text-muted); margin-bottom: 1rem;">>_ INITIATING SECURE ENVIRONMENT...</div>
+          <div>[+] Target API: <span style="color: var(--accent-blue);">https://secureshop-cybersecurity-lab.onrender.com/api</span></div>
+          <div>[+] Auth Mechanism: <span style="color: var(--accent-orange);">JWT Bearer Token</span></div>
+          <div>[+] Database: <span style="color: var(--text-main);">SQLite (Parameterized)</span></div>
+          <div class="mt-1" style="color: var(--text-muted);">Awaiting payload injection...</div>
         </div>
       </div>
     </div>
 
-    <div class="container">
-      <div class="flex justify-between items-center mb-2">
-        <h2>Target Environment (Products API)</h2>
-        <div class="form-group flex gap-1" style="margin-bottom: 0;">
-          <input type="text" id="searchInput" placeholder="Inject search payload..." style="width: 250px;" />
-          <button onclick="searchProducts()" class="btn">Test Search</button>
+    <!-- HOW THE LAB WORKS -->
+    <div class="container mt-2 pt-2">
+      <h2 style="text-align: center; margin-bottom: 2rem;"><span class="logo-icon">></span> How the Platform Works</h2>
+      <div class="step-grid">
+        <div class="workflow-step">
+          <div class="step-number">01</div>
+          <h4>Choose a Lab</h4>
+        </div>
+        <div class="workflow-step">
+          <div class="step-number">02</div>
+          <h4>Read the Objective</h4>
+        </div>
+        <div class="workflow-step">
+          <div class="step-number">03</div>
+          <h4>Practice Testing</h4>
+        </div>
+        <div class="workflow-step">
+          <div class="step-number">04</div>
+          <h4>Complete Challenge</h4>
+        </div>
+        <div class="workflow-step">
+          <div class="step-number">05</div>
+          <h4>Track Progress</h4>
         </div>
       </div>
+    </div>
 
-      <div id="products-list" class="grid grid-cols-3 gap-1 mt-2"></div>
+    <!-- FEATURED LAB -->
+    <div id="featured-lab" class="container mt-2 pt-2">
+      <h2><span class="logo-icon">#</span> Start With Your First Lab</h2>
+      <div class="card mt-1" style="border-left: 4px solid var(--accent-green);">
+        <div class="flex justify-between items-center mb-1">
+          <h3>SecureShop Cybersecurity Lab</h3>
+          <span class="badge badge-beginner">Beginner → Intermediate</span>
+        </div>
+        <div class="terminal text-muted mb-1" style="font-size: 0.85rem;">
+          <span>Category: Web Application Security</span> | <span>Est. Time: 45m</span>
+        </div>
+        <p class="text-muted mb-2">Practice authentication, authorization, SQL injection testing, XSS protection, IDOR protection, JWT security, API security, CORS, input validation, HTTP analysis, and database security directly against this platform.</p>
+        <div class="progress-bar mb-1"><div class="progress-fill" style="width: 0%;"></div></div>
+        <a href="/lab-detail.html" class="btn btn-primary mt-1">Start Lab #001</a>
+      </div>
+    </div>
+
+    <!-- WHAT YOU CAN PRACTICE -->
+    <div class="container mt-2 pt-2">
+      <h2><span class="logo-icon">></span> What You Can Practice</h2>
+      <div class="grid grid-cols-3 gap-1 mt-1">
+        
+        <div class="card">
+          <div class="flex justify-between items-center mb-1">
+            <h4 style="margin:0;">SQL Injection</h4>
+            <span class="badge badge-advanced">Injection</span>
+          </div>
+          <p class="text-muted" style="font-size: 0.9rem;">Practice identifying whether application input is safely handled by parameterized database queries.</p>
+        </div>
+
+        <div class="card">
+          <div class="flex justify-between items-center mb-1">
+            <h4 style="margin:0;">Broken Auth</h4>
+            <span class="badge badge-intermediate">Identity</span>
+          </div>
+          <p class="text-muted" style="font-size: 0.9rem;">Test login portals, token generation, and JWT validation mechanisms for bypass flaws.</p>
+        </div>
+
+        <div class="card">
+          <div class="flex justify-between items-center mb-1">
+            <h4 style="margin:0;">IDOR / BOLA</h4>
+            <span class="badge badge-beginner">Access Control</span>
+          </div>
+          <p class="text-muted" style="font-size: 0.9rem;">Manipulate object references in HTTP requests to test horizontal and vertical privilege escalation.</p>
+        </div>
+
+        <div class="card">
+          <div class="flex justify-between items-center mb-1">
+            <h4 style="margin:0;">XSS</h4>
+            <span class="badge badge-intermediate">Browser Sec</span>
+          </div>
+          <p class="text-muted" style="font-size: 0.9rem;">Analyze how the DOM handles untrusted data to prevent script injection in user browsers.</p>
+        </div>
+
+        <div class="card">
+          <div class="flex justify-between items-center mb-1">
+            <h4 style="margin:0;">API Security</h4>
+            <span class="badge badge-advanced">API</span>
+          </div>
+          <p class="text-muted" style="font-size: 0.9rem;">Test REST API endpoints for information disclosure, mass assignment, and rate limiting.</p>
+        </div>
+
+        <div class="card">
+          <div class="flex justify-between items-center mb-1">
+            <h4 style="margin:0;">Security Headers</h4>
+            <span class="badge badge-beginner">Config</span>
+          </div>
+          <p class="text-muted" style="font-size: 0.9rem;">Inspect HTTP response headers like CORS, CSP, and HSTS for secure configurations.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TARGET ENVIRONMENT PREVIEW (Existing functionality preserved) -->
+    <div class="container mt-2 pt-2" style="border-top: 1px solid var(--border-subtle);">
+      <div class="flex justify-between items-center mb-2">
+        <div>
+          <h2>Target Environment Preview</h2>
+          <p class="text-muted" style="font-size: 0.9rem;">Live view of the Products API backend.</p>
+        </div>
+        <div class="form-group flex gap-1" style="margin-bottom: 0;">
+          <input type="text" id="searchInput" class="terminal" placeholder="Inject search payload..." style="width: 250px;" />
+          <button onclick="searchProducts()" class="btn btn-outline">Test Search</button>
+        </div>
+      </div>
+      <div id="products-list" class="grid grid-cols-3 gap-1 mt-1"></div>
+    </div>
+
+    <!-- COMING SOON ROADMAP -->
+    <div class="container mt-2 pt-2">
+      <h2 style="text-align: center;"><span class="logo-icon">#</span> What's Coming Next</h2>
+      <p style="text-align: center; max-width: 600px; margin: 0 auto 2rem;" class="text-muted">SecureShop is the first lab in an expanding open-source cybersecurity learning platform. Future releases will introduce dedicated environments.</p>
+      
+      <div class="grid grid-cols-4 gap-1">
+        <div class="card card-disabled text-center"><h4 style="margin:0;">API Security Lab</h4><span class="badge badge-info mt-1">Coming Soon</span></div>
+        <div class="card card-disabled text-center"><h4 style="margin:0;">XSS Playground</h4><span class="badge badge-info mt-1">Coming Soon</span></div>
+        <div class="card card-disabled text-center"><h4 style="margin:0;">IDOR Lab</h4><span class="badge badge-info mt-1">Coming Soon</span></div>
+        <div class="card card-disabled text-center"><h4 style="margin:0;">CTF Challenges</h4><span class="badge badge-info mt-1">Coming Soon</span></div>
+      </div>
+    </div>
+
+    <!-- OPEN SOURCE SECTION -->
+    <div class="container mt-2 pt-2" style="text-align: center;">
+      <h2>Built Open Source. Designed for Hands-On Learning.</h2>
+      <p class="text-muted mb-2" style="max-width: 600px; margin: 0 auto 2rem;">SecureShop is being developed as part of a larger open-source cybersecurity learning platform focused on making practical security education accessible through controlled, authorized environments.</p>
+      <div class="flex justify-center gap-1">
+        <a href="https://github.com/neerajcoder1/SecureShop-Cybersecurity-Lab" target="_blank" class="btn btn-outline">View on GitHub</a>
+        <a href="https://github.com/neerajcoder1/SecureShop-Cybersecurity-Lab" target="_blank" class="btn">Contribute</a>
+      </div>
     </div>
 
     <script>
@@ -51,12 +205,13 @@
           container.textContent = "";
 
           if (products.length === 0) {
-            container.appendChild(safeCreateElement("p", "No products returned. Query mitigated.", "text-muted"));
+            container.appendChild(safeCreateElement("p", "No products returned. Query mitigated.", "text-muted terminal"));
             return;
           }
 
           products.forEach((p) => {
             const card = safeCreateElement("div", null, "product-card");
+            card.style.background = "var(--bg-card)";
 
             const title = safeCreateElement("h3", p.name);
             title.style.color = "var(--text-heading)";
@@ -111,4 +266,3 @@
     </script>
   </body>
 </html>
-
