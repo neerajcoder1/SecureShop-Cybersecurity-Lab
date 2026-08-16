@@ -35,22 +35,39 @@
                 <p class="text-muted">SecureShop is intended for educational and authorized security testing.<br>Never test websites, APIs, accounts, or infrastructure that you do not own or have explicit permission to assess.</p>
             </div>
 
-            <h3 class="mb-1">How the Lab Works</h3>
-            <p class="text-muted mb-2">The frontend communicates with a live REST API backend via HTTP requests. Your goal is to inspect this traffic, understand the authentication logic, and observe how the backend security controls neutralize common attack vectors.</p>
+            <h3 class="mb-1">Web Terminal & Lab Methodology</h3>
+            <p class="text-muted mb-2">SecureShop integrates a live Web Terminal directly into your workspace. Instead of needing external tools installed locally, you can practice reconnaissance and exploit methodologies directly in your browser using simulated tools.</p>
 
-            <h3 class="mb-1">Recommended Tools</h3>
-            <ul class="text-muted mb-2">
-                <li><strong>Browser DevTools:</strong> Network tab and Console for immediate inspection.</li>
-                <li><strong>Interception Proxies:</strong> Burp Suite Community Edition or OWASP ZAP.</li>
-                <li><strong>Command Line:</strong> cURL or HTTPie.</li>
-            </ul>
+            <div class="card mb-2">
+                <h3 class="mb-1" style="color: var(--accent-blue);"><span class="logo-icon">></span> HTTP & API Inspection</h3>
+                <p class="text-muted mb-1"><strong>Theory:</strong> Modern web applications rely on APIs (Application Programming Interfaces) to fetch data. Attackers often inspect HTTP requests to find hidden endpoints, analyze response headers for version information, or manipulate parameters (like <code>?id=1</code>) to test for IDOR (Insecure Direct Object Reference) vulnerabilities.</p>
+                <div class="terminal mt-1 p-1" style="background: rgba(13,17,23,0.5); padding: 1rem; border-radius: 4px;">
+                    <div style="color: var(--text-heading); margin-bottom: 0.5rem;">Command: <code>curl</code></div>
+                    <div class="text-muted">Usage: <code>curl [URL]</code></div>
+                    <div class="text-muted">Description: Sends a GET request to the target URL and returns the raw HTTP response body. Useful for footprinting APIs.</div>
+                    <div style="color: var(--accent-green); margin-top: 0.5rem;">Example: <code>curl /products</code></div>
+                </div>
+            </div>
 
-            <h3 class="mb-1">First Steps</h3>
-            <div class="card terminal text-muted">
-                1. Navigate to the Home page and inspect the Product listing request.<br>
-                2. Intercept a search query and attempt a basic injection payload.<br>
-                3. Go to the Auth portal and provision a test identity.<br>
-                4. Inspect the JWT returned upon successful authentication.
+            <div class="card mb-2">
+                <h3 class="mb-1" style="color: var(--accent-red);"><span class="logo-icon">></span> SQL Injection (SQLi)</h3>
+                <p class="text-muted mb-1"><strong>Theory:</strong> SQL Injection occurs when untrusted user input is directly concatenated into a database query string. This allows an attacker to manipulate the query logic (e.g., bypassing login via <code>' OR 1=1--</code>). SecureShop defends against this by strictly using <em>Parameterized Queries</em>, meaning user input is treated only as data, never as executable code.</p>
+                <div class="terminal mt-1 p-1" style="background: rgba(13,17,23,0.5); padding: 1rem; border-radius: 4px;">
+                    <div style="color: var(--text-heading); margin-bottom: 0.5rem;">Command: <code>sqlmap</code></div>
+                    <div class="text-muted">Usage: <code>sqlmap -u [URL]</code></div>
+                    <div class="text-muted">Description: An automated SQL injection and database takeover tool. In this lab, the terminal simulates an automated barrage of time-based, boolean-based, and error-based payloads to test the robustness of the target endpoint.</div>
+                    <div style="color: var(--accent-green); margin-top: 0.5rem;">Example: <code>sqlmap -u /login</code></div>
+                </div>
+            </div>
+
+            <div class="card mb-2">
+                <h3 class="mb-1" style="color: var(--accent-green);"><span class="logo-icon">></span> Challenge Validation</h3>
+                <p class="text-muted mb-1"><strong>Theory:</strong> Security isn't just about breaking things; it's about verifying fixes. After completing your attack simulations, you must validate that the system's defenses (like JWT validation and parameterized queries) are functioning correctly and that no critical vulnerabilities remain.</p>
+                <div class="terminal mt-1 p-1" style="background: rgba(13,17,23,0.5); padding: 1rem; border-radius: 4px;">
+                    <div style="color: var(--text-heading); margin-bottom: 0.5rem;">Command: <code>submit_report</code></div>
+                    <div class="text-muted">Usage: <code>submit_report</code></div>
+                    <div class="text-muted">Description: Triggers the validation engine to assess your lab progress, update your live dashboard stats, and award you completion badges.</div>
+                </div>
             </div>
         </div>
     </div>
