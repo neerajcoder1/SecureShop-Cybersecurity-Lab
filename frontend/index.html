@@ -166,20 +166,7 @@
       </div>
     </div>
 
-    <!-- TARGET ENVIRONMENT PREVIEW (Existing functionality preserved) -->
-    <div class="container mt-2 pt-2" style="border-top: 1px solid var(--border-subtle);">
-      <div class="flex justify-between items-center mb-2">
-        <div>
-          <h2>Target Environment Preview</h2>
-          <p class="text-muted" style="font-size: 0.9rem;">Live view of the Products API backend.</p>
-        </div>
-        <div class="form-group flex gap-1" style="margin-bottom: 0; align-items: stretch;">
-          <input type="text" id="searchInput" class="input-3d" placeholder=">_ Inject search payload..." style="width: 300px; max-width: 100%;" />
-          <button onclick="searchProducts()" class="btn btn-terminal" style="white-space: nowrap;">[ EXECUTE_QUERY ]</button>
-        </div>
-      </div>
-      <div id="products-list" class="grid grid-cols-3 gap-1 mt-1"></div>
-    </div>
+
 
     <!-- COMING SOON ROADMAP -->
     <div class="container mt-2 pt-2">
@@ -205,102 +192,7 @@
     </div>
 
     <script>
-      async function loadProducts(query = "") {
-        const url = query
-          ? `${API_BASE}/products/search?q=${encodeURIComponent(query)}`
-          : `${API_BASE}/products`;
-        try {
-          const response = await fetch(url);
-          const products = await response.json();
-          const container = document.getElementById("products-list");
 
-          container.textContent = "";
-
-          if (products.length === 0) {
-            container.appendChild(safeCreateElement("p", "No products returned. Query mitigated.", "text-muted terminal"));
-            return;
-          }
-
-          products.forEach((p) => {
-            const card = safeCreateElement("div", null, "product-card");
-            card.style.background = "#0d1117";
-            card.style.border = "1px solid #30363d";
-            card.style.fontFamily = "var(--font-mono)";
-
-            const titleContainer = safeCreateElement("div", null, "flex justify-between items-center mb-1");
-            titleContainer.style.borderBottom = "1px solid #30363d";
-            titleContainer.style.paddingBottom = "0.5rem";
-            
-            const idSpan = safeCreateElement("span", `RECORD_ID: #${p.id}`);
-            idSpan.style.color = "var(--accent-blue)";
-            idSpan.style.fontSize = "0.8rem";
-            titleContainer.appendChild(idSpan);
-
-            const title = safeCreateElement("h4", p.name);
-            title.style.color = "#f0f6fc";
-            title.style.margin = "0";
-            titleContainer.appendChild(title);
-            
-            card.appendChild(titleContainer);
-            
-            const desc = safeCreateElement("p", `> ${p.description}`);
-            desc.style.fontSize = "0.85rem";
-            desc.style.color = "#8b949e";
-            desc.style.marginTop = "0.5rem";
-            desc.style.marginBottom = "1rem";
-            card.appendChild(desc);
-            
-            const meta = safeCreateElement("div", null, "flex justify-between mt-1 mb-1");
-            meta.style.fontSize = "0.85rem";
-            
-            const price = safeCreateElement("span", `[PRICE]: $${p.price.toFixed(2)}`);
-            price.style.color = "#c9d1d9";
-            meta.appendChild(price);
-            
-            const stock = safeCreateElement("span", `[STOCK]: ${p.stock}`);
-            stock.style.color = "#c9d1d9";
-            meta.appendChild(stock);
-            
-            card.appendChild(meta);
-
-            const buyBtn = safeCreateElement("button", ">_ POST /api/orders", "btn btn-terminal mt-1");
-            buyBtn.style.width = "100%";
-            buyBtn.style.padding = "0.6rem";
-            buyBtn.onclick = () => buyProduct(p.id);
-            card.appendChild(buyBtn);
-
-            container.appendChild(card);
-          });
-        } catch (error) {
-          console.error("Error loading products:", error);
-        }
-      }
-
-      async function searchProducts() {
-        const query = document.getElementById("searchInput").value;
-        loadProducts(query);
-      }
-
-      async function buyProduct(id) {
-        if (!getToken()) {
-          window.location.href = "/login.html";
-          return;
-        }
-        try {
-          const res = await fetchWithAuth(`${API_BASE}/orders`, {
-            method: "POST",
-            body: JSON.stringify({ product_id: id, quantity: 1 }),
-          });
-          if (res.ok) {
-            showToast("[+] Interaction successful.\nCheck your profile to inspect the IDOR/order object.", "success");
-          } else {
-            const data = await res.json();
-            showToast(`[-] Error: ${data.detail || "Interaction rejected by security controls."}`, "error");
-          }
-        } catch (e) {
-          showToast("[-] Error executing API request", "error");
-        }
-      }
 
       function initTypingAnimation() {
         const titleEl = document.getElementById("hero-title");
@@ -352,7 +244,6 @@
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        loadProducts();
         initTypingAnimation();
       });
     </script>
