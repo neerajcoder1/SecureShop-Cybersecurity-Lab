@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -201,7 +201,7 @@ def login(form_data: models.UserLogin):
     "/api/products",
     response_model=List[models.ProductResponse]
 )
-def get_products(response: fastapi.Response):
+def get_products(response: Response):
     # CTF FLAG: Information Disclosure in Headers
     response.headers["X-Flag"] = "flag{headers_leak_info}"
     response.headers["X-Admin-Portal"] = "/admin_hidden_login"
