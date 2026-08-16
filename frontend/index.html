@@ -292,13 +292,13 @@
             body: JSON.stringify({ product_id: id, quantity: 1 }),
           });
           if (res.ok) {
-            alert("Interaction successful. Check your profile to inspect the IDOR/order object.");
+            showToast("[+] Interaction successful.\nCheck your profile to inspect the IDOR/order object.", "success");
           } else {
             const data = await res.json();
-            alert(data.detail || "Interaction rejected by security controls.");
+            showToast(`[-] Error: ${data.detail || "Interaction rejected by security controls."}`, "error");
           }
         } catch (e) {
-          alert("Error placing order");
+          showToast("[-] Error executing API request", "error");
         }
       }
 

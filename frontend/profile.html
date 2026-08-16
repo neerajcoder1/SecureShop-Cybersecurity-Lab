@@ -170,13 +170,13 @@
                 const res = await fetchWithAuth(`${API_BASE}/orders/${id}`);
                 if (res.ok) {
                     const data = await res.json();
-                    alert(`SUCCESS: Fetched order details for ID ${data.id}.\n\nTry intercepting this request in Burp Suite and changing the ID to an order that doesn't belong to you to test for Broken Access Control.`);
+                    showToast(`[+] SUCCESS: Fetched order details for ID ${data.id}.\n\nTry intercepting this request in Burp Suite and changing the ID to an order that doesn't belong to you to test for Broken Access Control.`, "success");
                 } else {
                     const data = await res.json();
-                    alert(`ACCESS DENIED: ${data.detail}.\n\nIDOR Protection is active and prevented unauthorized access.`);
+                    showToast(`[-] ACCESS DENIED: ${data.detail}.\n\nIDOR Protection is active and prevented unauthorized access.`, "error");
                 }
             } catch (e) {
-                alert('Network error during API call.');
+                showToast('[-] Network error during API call.', 'error');
             }
         }
 

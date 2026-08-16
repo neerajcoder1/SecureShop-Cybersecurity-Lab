@@ -127,3 +127,26 @@ document.addEventListener("DOMContentLoaded", () => {
   updateNav();
   injectFooter();
 });
+
+// Toast Notification System
+function showToast(message, type = 'success') {
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  
+  const formattedMsg = message.replace(/\n/g, '<br>');
+  toast.innerHTML = formattedMsg;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('fade-out');
+    toast.addEventListener('animationend', () => toast.remove());
+  }, 4000);
+}
