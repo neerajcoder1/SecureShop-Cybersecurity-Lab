@@ -223,7 +223,7 @@ Run 'submit_report' to validate the challenge.
                 const token = getToken();
                 if (token) headers['Authorization'] = `Bearer ${token}`;
 
-                const res = await fetch(API_BASE + '/api/challenges/submit', {
+                const res = await fetch(`${API_BASE}/challenges/submit`, {
                     method: 'POST',
                     headers: headers,
                     body: JSON.stringify({ 
@@ -290,7 +290,15 @@ Run 'submit_report' to validate the challenge.
                     const token = getToken();
                     if (token) headers['Authorization'] = `Bearer ${token}`;
 
-                    const res = await fetch(url.startsWith('http') ? url : API_BASE + url, { headers });
+                    let fetchUrl = url;
+                    if (!url.startsWith('http')) {
+                        // If they typed /api/products, strip the /api if API_BASE already has it, 
+                        // or just use window.location.origin + url
+                        fetchUrl = url.startsWith('/api') 
+                            ? API_BASE + url.substring(4) 
+                            : API_BASE + (url.startsWith('/') ? url : '/' + url);
+                    }
+                    const res = await fetch(fetchUrl, { headers });
                     
                     printTerm(`HTTP/1.1 ${res.status} ${res.statusText}`, 'term-success');
                     for (let [key, value] of res.headers.entries()) {
