@@ -227,6 +227,11 @@ button:hover, .btn:hover {
   background: var(--accent-blue);
   color: white;
 }
+.btn-hover-green:hover {
+  background-color: var(--accent-green) !important;
+  border-color: var(--accent-green) !important;
+  color: #ffffff !important;
+}
 
 /* Badges */
 .badge {
