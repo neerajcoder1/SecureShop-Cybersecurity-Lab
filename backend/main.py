@@ -276,6 +276,22 @@ def get_user_orders(
     return orders
 
 
+@app.delete(
+    "/api/orders",
+    status_code=status.HTTP_200_OK
+)
+def clear_user_orders(
+    current_user: dict = Depends(get_current_user)
+):
+
+    database.execute_write_query(
+        "DELETE FROM orders WHERE user_id = ?",
+        (current_user["id"],)
+    )
+
+    return {"message": "Order history cleared"}
+
+
 @app.get(
     "/api/orders/{order_id}",
     response_model=models.OrderResponse

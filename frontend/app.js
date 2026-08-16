@@ -150,3 +150,19 @@ function showToast(message, type = 'success') {
     toast.addEventListener('animationend', () => toast.remove());
   }, 4000);
 }
+
+// Clear History
+async function clearHistory() {
+  if (!confirm("Are you sure you want to clear your entire operations history?")) return;
+  try {
+    const res = await fetchWithAuth(`${API_BASE}/orders`, { method: "DELETE" });
+    if (res && res.ok) {
+      showToast("[+] History wiped successfully.", "success");
+      setTimeout(() => window.location.reload(), 1000);
+    } else {
+      showToast("[-] Failed to clear history.", "error");
+    }
+  } catch (e) {
+    showToast("[-] Network error while clearing history.", "error");
+  }
+}
