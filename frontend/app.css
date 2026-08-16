@@ -216,6 +216,7 @@ button:hover, .btn:hover {
 }
 .btn-primary:hover {
   background-color: var(--accent-green-hover);
+  color: white;
 }
 .btn-outline {
   background: transparent;
