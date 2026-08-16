@@ -416,3 +416,45 @@ footer {
   nav#main-nav.active { display: flex; }
   .footer-grid { grid-template-columns: 1fr; }
 }
+
+/* Web Terminal UI */
+.web-terminal {
+  background-color: var(--bg-dark);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: #c9d1d9;
+  height: 350px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.term-output {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 0.5rem;
+  white-space: pre-wrap;
+}
+.term-input-line {
+  display: flex;
+  align-items: center;
+}
+.term-prompt {
+  color: var(--accent-green);
+  margin-right: 0.5rem;
+  font-weight: 600;
+}
+.term-input {
+  background: transparent;
+  border: none;
+  color: #f0f6fc;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  flex-grow: 1;
+  outline: none;
+}
+.term-cmd { color: var(--accent-blue); }
+.term-err { color: var(--accent-red); }
+.term-success { color: var(--accent-green); }
