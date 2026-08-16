@@ -288,11 +288,16 @@
             let line = lines[lineIdx];
             
             if (charIdx < line.length) {
-                if (lineIdx === 2 && charIdx === 0) currentHTML += '<span style="color: var(--accent-blue);">';
+                if (charIdx === 0) {
+                    if (lineIdx === 1) currentHTML += '<span style="color: var(--accent-green);">';
+                    if (lineIdx === 2) currentHTML += '<span style="color: var(--accent-blue);">';
+                }
                 
                 currentHTML += line.charAt(charIdx);
                 
-                if (lineIdx === 2 && charIdx === line.length - 1) currentHTML += '</span>';
+                if (charIdx === line.length - 1) {
+                    if (lineIdx === 1 || lineIdx === 2) currentHTML += '</span>';
+                }
                 
                 charIdx++;
                 titleEl.innerHTML = currentHTML + '<span style="color: var(--accent-green); animation: blink 1s step-end infinite; font-weight: 400;">_</span>';
