@@ -174,8 +174,8 @@
           <p class="text-muted" style="font-size: 0.9rem;">Live view of the Products API backend.</p>
         </div>
         <div class="form-group flex gap-1" style="margin-bottom: 0; align-items: stretch;">
-          <input type="text" id="searchInput" placeholder=">_ Inject search payload..." style="width: 300px; background-color: #0d1117; color: var(--accent-green); font-family: var(--font-mono); border: 1px solid #30363d; outline: none; padding: 0.5rem 1rem; border-radius: 4px;" />
-          <button onclick="searchProducts()" class="btn btn-terminal">[ EXECUTE_QUERY ]</button>
+          <input type="text" id="searchInput" class="input-3d" placeholder=">_ Inject search payload..." style="width: 300px; max-width: 100%;" />
+          <button onclick="searchProducts()" class="btn btn-terminal" style="white-space: nowrap;">[ EXECUTE_QUERY ]</button>
         </div>
       </div>
       <div id="products-list" class="grid grid-cols-3 gap-1 mt-1"></div>
