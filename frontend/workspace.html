@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureShop Lab - Workspace</title>
+    <link rel="stylesheet" href="app.css">
+    <script src="app.js"></script>
+</head>
+<body>
+    <header>
+      <div class="logo">
+        <span class="logo-icon">[]</span> SecureShop Cybersecurity Lab
+      </div>
+      <nav id="main-nav"></nav>
+    </header>
+
+    <div class="container">
+        
+        <div class="card mb-2" style="border-left: 4px solid var(--accent-orange); background: rgba(210, 153, 34, 0.05);">
+            <h3 class="mb-1" style="color: var(--accent-orange);">AUTHORIZED TESTING ONLY</h3>
+            <p class="text-muted">SecureShop is intended for educational and authorized security testing.<br>Never test websites, APIs, accounts, or infrastructure that you do not own or have explicit permission to assess.</p>
+        </div>
+
+        <div class="layout-sidebar">
+            
+            <div class="flex-col gap-1">
+                <div class="card">
+                    <h3 class="mb-1">Environment</h3>
+                    <div class="terminal text-muted" style="font-size: 0.85rem;">
+                        <p>TARGET URL: <a href="/index.html">/index.html</a></p>
+                        <p>API BASE:   <span id="api-display"></span></p>
+                        <p>AUTH:       <span id="auth-status" class="status status-red">Unauthenticated</span></p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="mb-1">Security Controls</h3>
+                    <div class="terminal text-muted" style="font-size: 0.85rem; line-height: 2;">
+                        <div class="flex justify-between"><span>Authentication</span> <span class="status status-green">Protected</span></div>
+                        <div class="flex justify-between"><span>Password Storage</span> <span class="status status-green">Hashed</span></div>
+                        <div class="flex justify-between"><span>SQL Queries</span> <span class="status status-green">Parameterized</span></div>
+                        <div class="flex justify-between"><span>JWT Auth</span> <span class="status status-green">Enabled</span></div>
+                        <div class="flex justify-between"><span>CORS</span> <span class="status status-green">Configured</span></div>
+                        <div class="flex justify-between"><span>XSS Protection</span> <span class="status status-green">Enabled</span></div>
+                        <div class="flex justify-between"><span>IDOR Protection</span> <span class="status status-green">Enabled</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <h3 class="mb-1">Testing Checklist</h3>
+                    <p class="text-muted mb-2">Follow these objectives to thoroughly audit the application mechanisms.</p>
+                    
+                    <div class="flex-col gap-1 text-muted">
+                        <label class="flex items-center gap-1"><input type="checkbox"> Register a test account</label>
+                        <label class="flex items-center gap-1"><input type="checkbox"> Authenticate via the Login panel</label>
+                        <label class="flex items-center gap-1"><input type="checkbox"> Inspect HTTP requests in Burp Suite</label>
+                        <label class="flex items-center gap-1"><input type="checkbox"> Test authentication bypass methods</label>
+                        <label class="flex items-center gap-1"><input type="checkbox"> Test authorization & IDOR protection</label>
+                        <label class="flex items-center gap-1"><input type="checkbox"> Test input validation & SQL injection handling</label>
+                        <label class="flex items-center gap-1"><input type="checkbox"> Test DOM-based XSS handling in frontend</label>
+                        <label class="flex items-center gap-1"><input type="checkbox"> Inspect JWT structure and signature</label>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('api-display').textContent = API_BASE;
+            if (getToken()) {
+                const authEl = document.getElementById('auth-status');
+                authEl.className = 'status status-green';
+                authEl.textContent = 'Authenticated (JWT)';
+            }
+        });
+    </script>
+</body>
+</html>

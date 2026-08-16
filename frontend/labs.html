@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureShop Lab - Training Modules</title>
+    <link rel="stylesheet" href="app.css">
+    <script src="app.js"></script>
+</head>
+<body>
+    <header>
+      <div class="logo">
+        <span class="logo-icon">[]</span> SecureShop Cybersecurity Lab
+      </div>
+      <nav id="main-nav"></nav>
+    </header>
+
+    <div class="container layout-sidebar">
+        <div class="sidebar-nav card">
+            <h3 class="mb-1">Categories</h3>
+            <a href="#" class="active">All Labs</a>
+            <a href="#">Web Security</a>
+            <a href="#">Authentication</a>
+            <a href="#">API Security</a>
+            <a href="#">Authorization</a>
+            <a href="#">Injection</a>
+        </div>
+
+        <div>
+            <div class="flex justify-between items-center mb-2">
+                <h2><span class="logo-icon">></span> Available Security Labs</h2>
+                <div class="form-group" style="margin: 0; width: 250px;">
+                    <input type="text" placeholder="Search labs..." class="terminal">
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-1">
+                
+                <div class="card">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="badge badge-beginner">Beginner</span>
+                        <span class="status status-green">Online</span>
+                    </div>
+                    <h3 class="mb-1">SecureShop Web Security Lab</h3>
+                    <p class="text-muted mb-1" style="font-size: 0.9rem;">Practice authentication, authorization, injection testing, and API security controls against a realistic e-commerce application.</p>
+                    <div class="flex justify-between items-center mb-1" style="font-size: 0.85rem;">
+                        <span class="terminal text-muted">Category: Web Sec</span>
+                        <span class="terminal text-muted">Time: 45m</span>
+                    </div>
+                    <div class="progress-bar mb-1"><div class="progress-fill" style="width: 0%;"></div></div>
+                    <a href="/lab-detail.html" class="btn btn-outline" style="display: block; text-align: center;">View Details</a>
+                </div>
+
+                <div class="card">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="badge badge-intermediate">Intermediate</span>
+                        <span class="status status-yellow">Under Construction</span>
+                    </div>
+                    <h3 class="mb-1">Advanced SQL Injection</h3>
+                    <p class="text-muted mb-1" style="font-size: 0.9rem;">Test whether application input is safely handled by parameterized database queries in complex search operations.</p>
+                    <div class="flex justify-between items-center mb-1" style="font-size: 0.85rem;">
+                        <span class="terminal text-muted">Category: Injection</span>
+                        <span class="terminal text-muted">Time: 60m</span>
+                    </div>
+                    <div class="progress-bar mb-1"><div class="progress-fill" style="width: 0%;"></div></div>
+                    <a href="#" class="btn btn-outline" style="display: block; text-align: center; opacity: 0.5; pointer-events: none;">Coming Soon</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

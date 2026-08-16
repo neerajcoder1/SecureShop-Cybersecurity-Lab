@@ -21,15 +21,20 @@ function updateNav() {
   if (token) {
     nav.innerHTML = `
             <a href="/index.html">Home</a>
-            <a href="/profile.html">Profile & Orders</a>
-            <a href="/security.html">Security Docs</a>
-            <a href="#" onclick="logout()">Logout</a>
+            <a href="/labs.html">Labs</a>
+            <a href="/docs.html">Docs</a>
+            <a href="/dashboard.html">Dashboard</a>
+            <a href="/profile.html">Profile</a>
+            <a href="#" onclick="logout()" class="btn-nav">Logout</a>
         `;
   } else {
     nav.innerHTML = `
             <a href="/index.html">Home</a>
-            <a href="/security.html">Security Docs</a>
-            <a href="/login.html">Login</a>
+            <a href="/labs.html">Labs</a>
+            <a href="/security.html">Testing Guide</a>
+            <a href="/docs.html">Docs</a>
+            <a href="https://github.com/neerajcoder1/SecureShop-Cybersecurity-Lab" target="_blank">GitHub</a>
+            <a href="/login.html" class="btn-nav">Login / Register</a>
         `;
   }
 }

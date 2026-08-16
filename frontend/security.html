@@ -4,71 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SecureShop Lab - Security Controls</title>
-    <link rel="stylesheet" href="/app.css">
+    <link rel="stylesheet" href="app.css">
+    <script src="app.js"></script>
 </head>
 <body>
     <header>
-        <h1>SecureShop Lab</h1>
-        <nav id="main-nav"></nav>
+      <div class="logo">
+        <span class="logo-icon">[]</span> SecureShop Cybersecurity Lab
+      </div>
+      <nav id="main-nav"></nav>
     </header>
 
-    <div class="container">
-        <h2>Security Controls Documentation</h2>
-        <p>This lab demonstrates secure coding practices to prevent common web vulnerabilities.</p>
+    <div class="container layout-sidebar">
+        <div class="sidebar-nav card">
+            <h3 class="mb-1">Documentation</h3>
+            <a href="/security.html" class="active">Security Controls</a>
+            <a href="/docs.html">API Reference</a>
+            <a href="/labs.html">Available Labs</a>
+        </div>
 
-        <h3>1. SQL Injection Prevention</h3>
-        <p><strong>Vulnerable Pattern (DO NOT USE):</strong> String concatenation allows attackers to inject malicious SQL commands.</p>
-        <pre><code>
-# INTENTIONALLY VULNERABLE PATTERN
+        <div>
+            <h2><span class="logo-icon">></span> Security Controls Documentation</h2>
+            <p class="text-muted mb-2">This lab demonstrates secure coding practices to prevent common web vulnerabilities. Compare the vulnerable patterns against the secure implementations used in this environment.</p>
+
+            <div class="card mb-2">
+                <h3>1. SQL Injection Prevention</h3>
+                <p class="text-muted"><span class="badge badge-advanced">Vulnerable Pattern</span> String concatenation allows attackers to inject malicious SQL commands.</p>
+                <pre><code class="terminal"># INTENTIONALLY VULNERABLE PATTERN
 query = "SELECT * FROM products WHERE name LIKE '%" + q + "%'"
-cursor.execute(query)
-        </code></pre>
-        
-        <p><strong>Secure Implementation (Used in this Lab):</strong> Parameterized queries ensure input is treated strictly as data, not executable code.</p>
-        <pre><code>
-# SECURE PATTERN
+cursor.execute(query)</code></pre>
+                
+                <p class="text-muted mt-1"><span class="badge badge-beginner">Secure Implementation</span> Parameterized queries ensure input is treated strictly as data, not executable code.</p>
+                <pre><code class="terminal"># SECURE PATTERN
 query = "SELECT * FROM products WHERE name LIKE ?"
 search_term = f"%{q}%"
-cursor.execute(query, (search_term,))
-        </code></pre>
+cursor.execute(query, (search_term,))</code></pre>
+            </div>
 
-        <h3>2. IDOR (Insecure Direct Object Reference) Prevention</h3>
-        <p><strong>Vulnerable Pattern (DO NOT USE):</strong> Fetching a resource by ID without verifying ownership.</p>
-        <pre><code>
-# INTENTIONALLY VULNERABLE PATTERN
+            <div class="card mb-2">
+                <h3>2. IDOR (Insecure Direct Object Reference) Prevention</h3>
+                <p class="text-muted"><span class="badge badge-advanced">Vulnerable Pattern</span> Fetching a resource by ID without verifying ownership.</p>
+                <pre><code class="terminal"># INTENTIONALLY VULNERABLE PATTERN
 @app.get("/api/orders/{order_id}")
 def get_order(order_id: int):
     # Missing authorization check!
-    return db.query("SELECT * FROM orders WHERE id = ?", (order_id,))
-        </code></pre>
-        
-        <p><strong>Secure Implementation (Used in this Lab):</strong> Verifying the requested object belongs to the authenticated user.</p>
-        <pre><code>
-# SECURE PATTERN
+    return db.query("SELECT * FROM orders WHERE id = ?", (order_id,))</code></pre>
+                
+                <p class="text-muted mt-1"><span class="badge badge-beginner">Secure Implementation</span> Verifying the requested object belongs to the authenticated user.</p>
+                <pre><code class="terminal"># SECURE PATTERN
 @app.get("/api/orders/{order_id}")
 def get_order(order_id: int, current_user = Depends(get_current_user)):
     order = db.query("SELECT * FROM orders WHERE id = ?", (order_id,))
     if order["user_id"] != current_user["id"]:
         raise HTTPException(status_code=404) # 404 prevents enumeration
-    return order
-        </code></pre>
+    return order</code></pre>
+            </div>
 
-        <h3>3. XSS (Cross-Site Scripting) Prevention</h3>
-        <p><strong>Vulnerable Pattern (DO NOT USE):</strong> Directly injecting untrusted data into the DOM using innerHTML.</p>
-        <pre><code>
-// INTENTIONALLY VULNERABLE PATTERN
+            <div class="card mb-2">
+                <h3>3. XSS (Cross-Site Scripting) Prevention</h3>
+                <p class="text-muted"><span class="badge badge-advanced">Vulnerable Pattern</span> Directly injecting untrusted data into the DOM using innerHTML.</p>
+                <pre><code class="terminal">// INTENTIONALLY VULNERABLE PATTERN
 const reviewDiv = document.createElement('div');
-reviewDiv.innerHTML = userReview.comment; // Allows script execution
-        </code></pre>
-        
-        <p><strong>Secure Implementation (Used in this Lab):</strong> Using textContent to ensure data is safely encoded.</p>
-        <pre><code>
-// SECURE PATTERN
+reviewDiv.innerHTML = userReview.comment; // Allows script execution</code></pre>
+                
+                <p class="text-muted mt-1"><span class="badge badge-beginner">Secure Implementation</span> Using textContent to ensure data is safely encoded.</p>
+                <pre><code class="terminal">// SECURE PATTERN
 const reviewDiv = document.createElement('div');
-reviewDiv.textContent = userReview.comment; // Safely escapes HTML entities
-        </code></pre>
+reviewDiv.textContent = userReview.comment; // Safely escapes HTML entities</code></pre>
+            </div>
+        </div>
     </div>
-
-    <script src="/app.js"></script>
 </body>
 </html>

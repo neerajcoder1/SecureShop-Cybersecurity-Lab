@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureShop Lab - Details</title>
+    <link rel="stylesheet" href="app.css">
+    <script src="app.js"></script>
+</head>
+<body>
+    <header>
+      <div class="logo">
+        <span class="logo-icon">[]</span> SecureShop Cybersecurity Lab
+      </div>
+      <nav id="main-nav"></nav>
+    </header>
+
+    <div class="container" style="max-width: 800px;">
+        <div class="card mb-2">
+            <h2 class="mb-1">SecureShop Web Security Lab</h2>
+            <div class="flex gap-1 mb-1">
+                <span class="badge badge-beginner">Beginner → Intermediate</span>
+                <span class="badge badge-info">Web Application Security</span>
+            </div>
+            
+            <div class="terminal text-muted mb-2">
+                Estimated time: 45–90 minutes
+            </div>
+            
+            <div class="mb-2">
+                <h3>Overview</h3>
+                <p class="text-muted">This lab provides an isolated e-commerce environment to practice foundational web security concepts. The backend employs secure coding mechanisms designed to withstand and safely reject attack payloads.</p>
+            </div>
+            
+            <div class="mb-2">
+                <h3>Learning Objectives</h3>
+                <ul class="text-muted">
+                    <li>Understand parameterization and SQL Injection mitigation.</li>
+                    <li>Analyze JWT-based authentication mechanisms.</li>
+                    <li>Verify Access Control and IDOR (Insecure Direct Object Reference) defenses.</li>
+                    <li>Evaluate DOM-based XSS protections.</li>
+                </ul>
+            </div>
+            
+            <div class="mb-2">
+                <h3>Testing Methodology</h3>
+                <p class="text-muted">Use browser developer tools, cURL, or an interception proxy like Burp Suite to analyze the HTTP traffic. Compare the application's response behavior when providing valid versus anomalous input.</p>
+            </div>
+            
+            <a href="/workspace.html" class="btn btn-primary" style="display: block; text-align: center; font-size: 1.1rem; padding: 1rem;">Start Testing</a>
+        </div>
+    </div>
+</body>
+</html>

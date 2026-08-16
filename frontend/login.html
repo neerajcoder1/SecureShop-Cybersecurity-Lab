@@ -3,58 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecureShop Lab - Login/Register</title>
-    <link rel="stylesheet" href="/app.css">
+    <title>SecureShop Lab - Authentication</title>
+    <link rel="stylesheet" href="app.css">
+    <script src="app.js"></script>
 </head>
 <body>
     <header>
-        <h1>SecureShop Lab</h1>
-        <nav id="main-nav"></nav>
+      <div class="logo">
+        <span class="logo-icon">[]</span> SecureShop Cybersecurity Lab
+      </div>
+      <nav id="main-nav"></nav>
     </header>
 
-    <div class="container" style="display: flex; gap: 2rem;">
-        
-        <!-- Login Form -->
-        <div style="flex: 1;">
-            <h2>Login</h2>
-            <div id="login-error" class="error"></div>
-            <form id="login-form">
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="login-username" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="login-password" required>
-                </div>
-                <button type="submit">Login</button>
-            </form>
-        </div>
+    <div class="container" style="max-width: 800px;">
+        <div class="grid grid-cols-2 gap-2 mt-2">
+            
+            <!-- Login Form -->
+            <div class="card">
+                <h3><span class="logo-icon">></span> Authenticate</h3>
+                <p class="text-muted" style="font-size: 0.9rem;">Test authentication bypass and JWT mechanisms.</p>
+                
+                <div id="login-error" class="error"></div>
+                
+                <form id="login-form" class="mt-1">
+                    <div class="form-group">
+                        <label>Username / Payload</label>
+                        <input type="text" id="login-username" class="terminal" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" class="terminal" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Credentials</button>
+                </form>
+            </div>
 
-        <!-- Register Form -->
-        <div style="flex: 1;">
-            <h2>Register</h2>
-            <div id="register-msg"></div>
-            <form id="register-form">
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="reg-username" required pattern="^[a-zA-Z0-9_]+$" title="Alphanumeric and underscores only">
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="reg-email" required>
-                </div>
-                <div class="form-group">
-                    <label>Password (min 8 chars)</label>
-                    <input type="password" id="reg-password" required minlength="8">
-                </div>
-                <button type="submit">Register</button>
-            </form>
-        </div>
+            <!-- Register Form -->
+            <div class="card">
+                <h3><span class="logo-icon">></span> Provision Account</h3>
+                <p class="text-muted" style="font-size: 0.9rem;">Create a test identity for authorization testing.</p>
+                
+                <div id="register-msg"></div>
+                
+                <form id="register-form" class="mt-1">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="reg-username" class="terminal" required pattern="^[a-zA-Z0-9_]+$" title="Alphanumeric and underscores only">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="reg-email" class="terminal" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password (min 8 chars)</label>
+                        <input type="password" id="reg-password" class="terminal" required minlength="8">
+                    </div>
+                    <button type="submit" class="btn btn-outline" style="width: 100%;">Register Identity</button>
+                </form>
+            </div>
 
+        </div>
     </div>
 
-    <script src="/app.js"></script>
     <script>
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -76,13 +86,13 @@
                 if (res.ok) {
                     const data = await res.json();
                     setToken(data.access_token);
-                    window.location.href = '/index.html';
+                    window.location.href = '/dashboard.html';
                 } else {
                     const data = await res.json();
                     errDiv.textContent = data.detail || 'Login failed';
                 }
             } catch (err) {
-                errDiv.textContent = 'Network error';
+                errDiv.textContent = 'Network error during authentication test.';
             }
         });
 
@@ -106,17 +116,17 @@
                 });
                 
                 if (res.ok) {
-                    msgDiv.textContent = 'Registration successful! You can now login.';
-                    msgDiv.className = 'success';
+                    msgDiv.textContent = 'Account provisioned successfully. You can now authenticate.';
+                    msgDiv.className = 'success mt-1';
                     document.getElementById('register-form').reset();
                 } else {
                     const data = await res.json();
-                    msgDiv.textContent = data.detail || 'Registration failed';
-                    msgDiv.className = 'error';
+                    msgDiv.textContent = data.detail || 'Registration rejected by backend controls.';
+                    msgDiv.className = 'error mt-1';
                 }
             } catch (err) {
-                msgDiv.textContent = 'Network error';
-                msgDiv.className = 'error';
+                msgDiv.textContent = 'Network error during registration test.';
+                msgDiv.className = 'error mt-1';
             }
         });
     </script>

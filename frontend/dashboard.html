@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureShop Lab - Dashboard</title>
+    <link rel="stylesheet" href="app.css">
+    <script src="app.js"></script>
+</head>
+<body>
+    <header>
+      <div class="logo">
+        <span class="logo-icon">[]</span> SecureShop Cybersecurity Lab
+      </div>
+      <nav id="main-nav"></nav>
+    </header>
+
+    <div class="container layout-sidebar">
+        
+        <div class="sidebar-nav card">
+            <h3 class="mb-1">Account settings</h3>
+            <a href="/dashboard.html" class="active">Dashboard</a>
+            <a href="/profile.html">Profile & Orders</a>
+            <a href="#" onclick="logout()">Sign out</a>
+        </div>
+
+        <div>
+            <h2><span class="logo-icon">></span> Welcome back, Learner</h2>
+            <p class="text-muted mb-2">Track your learning progress and resume your active labs.</p>
+
+            <div class="grid grid-cols-3 gap-1 mb-2">
+                <div class="card text-center">
+                    <h1 style="font-size: 3rem; margin: 0; color: var(--accent-blue);">0</h1>
+                    <p class="text-muted">Labs Completed</p>
+                </div>
+                <div class="card text-center">
+                    <h1 style="font-size: 3rem; margin: 0; color: var(--accent-orange);">1</h1>
+                    <p class="text-muted">Labs In Progress</p>
+                </div>
+                <div class="card text-center">
+                    <h1 style="font-size: 3rem; margin: 0; color: var(--accent-green);">4</h1>
+                    <p class="text-muted">Areas Practiced</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+                <div class="card">
+                    <h3 class="mb-2">Security Skills</h3>
+                    
+                    <div class="mb-1">
+                        <div class="flex justify-between text-muted mb-1" style="font-size: 0.85rem; font-family: var(--font-mono);">
+                            <span>Web Security</span><span>80%</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 80%; background-color: var(--accent-blue);"></div></div>
+                    </div>
+                    
+                    <div class="mb-1">
+                        <div class="flex justify-between text-muted mb-1" style="font-size: 0.85rem; font-family: var(--font-mono);">
+                            <span>API Security</span><span>40%</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 40%; background-color: var(--accent-orange);"></div></div>
+                    </div>
+                    
+                    <div class="mb-1">
+                        <div class="flex justify-between text-muted mb-1" style="font-size: 0.85rem; font-family: var(--font-mono);">
+                            <span>Authentication</span><span>60%</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 60%; background-color: var(--accent-green);"></div></div>
+                    </div>
+                </div>
+
+                <div class="card flex-col gap-1">
+                    <h3>Recent Labs</h3>
+                    
+                    <div style="border-left: 2px solid var(--accent-blue); padding-left: 1rem;">
+                        <h4 style="margin:0;"><a href="/lab-detail.html">SecureShop Web Security Lab</a></h4>
+                        <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.2rem;">In Progress</p>
+                    </div>
+
+                    <h3 class="mt-1">Recommended Labs</h3>
+                    
+                    <div style="border-left: 2px solid var(--accent-orange); padding-left: 1rem;">
+                        <h4 style="margin:0; opacity: 0.5;">Advanced SQL Injection (Coming Soon)</h4>
+                        <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.2rem;">Intermediate</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!getToken()) {
+                window.location.href = '/login.html';
+                return;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureShop Lab - Documentation</title>
+    <link rel="stylesheet" href="app.css">
+    <script src="app.js"></script>
+</head>
+<body>
+    <header>
+      <div class="logo">
+        <span class="logo-icon">[]</span> SecureShop Cybersecurity Lab
+      </div>
+      <nav id="main-nav"></nav>
+    </header>
+
+    <div class="container layout-sidebar">
+        
+        <div class="sidebar-nav card">
+            <h3 class="mb-1">Documentation</h3>
+            <a href="/docs.html" class="active">Getting Started</a>
+            <a href="#">Testing Methodology</a>
+            <a href="#">API Reference</a>
+            <a href="/security.html">Security Controls</a>
+            <a href="#">Contributing</a>
+        </div>
+
+        <div>
+            <h2><span class="logo-icon">></span> Getting Started</h2>
+            <p class="text-muted mb-2">Welcome to SecureShop Lab. This platform provides an isolated, secure backend designed to teach defensive programming and cyber-hygiene.</p>
+
+            <div class="card mb-2" style="border-left: 4px solid var(--accent-orange); background: rgba(210, 153, 34, 0.05);">
+                <h3 class="mb-1" style="color: var(--accent-orange);">AUTHORIZED TESTING ONLY</h3>
+                <p class="text-muted">SecureShop is intended for educational and authorized security testing.<br>Never test websites, APIs, accounts, or infrastructure that you do not own or have explicit permission to assess.</p>
+            </div>
+
+            <h3 class="mb-1">How the Lab Works</h3>
+            <p class="text-muted mb-2">The frontend communicates with a live REST API backend via HTTP requests. Your goal is to inspect this traffic, understand the authentication logic, and observe how the backend security controls neutralize common attack vectors.</p>
+
+            <h3 class="mb-1">Recommended Tools</h3>
+            <ul class="text-muted mb-2">
+                <li><strong>Browser DevTools:</strong> Network tab and Console for immediate inspection.</li>
+                <li><strong>Interception Proxies:</strong> Burp Suite Community Edition or OWASP ZAP.</li>
+                <li><strong>Command Line:</strong> cURL or HTTPie.</li>
+            </ul>
+
+            <h3 class="mb-1">First Steps</h3>
+            <div class="card terminal text-muted">
+                1. Navigate to the Home page and inspect the Product listing request.<br>
+                2. Intercept a search query and attempt a basic injection payload.<br>
+                3. Go to the Auth portal and provision a test identity.<br>
+                4. Inspect the JWT returned upon successful authentication.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,30 +1,41 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SecureShop Lab - Home</title>
+    <title>SecureShop Lab - Practice Web Security</title>
     <link rel="stylesheet" href="app.css" />
     <script src="app.js"></script>
   </head>
   <body>
     <header>
-      <h1>SecureShop Lab</h1>
+      <div class="logo">
+        <span class="logo-icon">[]</span> SecureShop Cybersecurity Lab
+      </div>
       <nav id="main-nav"></nav>
     </header>
 
-    <div class="container">
-      <h2>Products</h2>
+    <div class="hero">
+      <div class="container">
+        <h1>Practice Web Security. Break Safely. Learn Securely.</h1>
+        <p>SecureShop is an open-source cybersecurity testing lab designed for authorized hands-on web application security practice.</p>
+        <div class="flex justify-center gap-1 mt-2">
+          <a href="/labs.html" class="btn btn-primary">Start Testing</a>
+          <a href="/security.html" class="btn btn-outline">Explore Security Controls</a>
+        </div>
+      </div>
+    </div>
 
-      <div
-        class="form-group"
-        style="display: flex; gap: 10px; margin-bottom: 2rem"
-      >
-        <input type="text" id="searchInput" placeholder="Search products..." />
-        <button onclick="searchProducts()">Search</button>
+    <div class="container">
+      <div class="flex justify-between items-center mb-2">
+        <h2>Target Environment (Products API)</h2>
+        <div class="form-group flex gap-1" style="margin-bottom: 0;">
+          <input type="text" id="searchInput" placeholder="Inject search payload..." style="width: 250px;" />
+          <button onclick="searchProducts()" class="btn">Test Search</button>
+        </div>
       </div>
 
-      <div id="products-list"></div>
+      <div id="products-list" class="grid grid-cols-3 gap-1 mt-2"></div>
     </div>
 
     <script>
@@ -37,26 +48,29 @@
           const products = await response.json();
           const container = document.getElementById("products-list");
 
-          // SECURE: Clear existing content safely
           container.textContent = "";
 
           if (products.length === 0) {
-            container.appendChild(safeCreateElement("p", "No products found."));
+            container.appendChild(safeCreateElement("p", "No products returned. Query mitigated.", "text-muted"));
             return;
           }
 
           products.forEach((p) => {
             const card = safeCreateElement("div", null, "product-card");
 
-            // SECURE: Using textContent internally via safeCreateElement prevents XSS if product names/descriptions were attacker-controlled
-            card.appendChild(safeCreateElement("h3", p.name));
-            card.appendChild(safeCreateElement("p", p.description));
-            card.appendChild(
-              safeCreateElement("p", `Price: $${p.price.toFixed(2)}`),
-            );
-            card.appendChild(safeCreateElement("p", `Stock: ${p.stock}`));
+            const title = safeCreateElement("h3", p.name);
+            title.style.color = "var(--text-heading)";
+            card.appendChild(title);
+            
+            card.appendChild(safeCreateElement("p", p.description, "text-muted"));
+            
+            const meta = safeCreateElement("div", null, "flex justify-between mt-1");
+            meta.appendChild(safeCreateElement("span", `Price: $${p.price.toFixed(2)}`, "terminal"));
+            meta.appendChild(safeCreateElement("span", `Stock: ${p.stock}`, "terminal"));
+            card.appendChild(meta);
 
-            const buyBtn = safeCreateElement("button", "Buy Now");
+            const buyBtn = safeCreateElement("button", "Buy / Interact", "btn btn-outline mt-1");
+            buyBtn.style.width = "100%";
             buyBtn.onclick = () => buyProduct(p.id);
             card.appendChild(buyBtn);
 
@@ -83,17 +97,16 @@
             body: JSON.stringify({ product_id: id, quantity: 1 }),
           });
           if (res.ok) {
-            alert("Order placed successfully!");
+            alert("Interaction successful. Check your profile to inspect the IDOR/order object.");
           } else {
             const data = await res.json();
-            alert(data.detail || "Failed to place order");
+            alert(data.detail || "Interaction rejected by security controls.");
           }
         } catch (e) {
           alert("Error placing order");
         }
       }
 
-      // Initial load
       document.addEventListener("DOMContentLoaded", () => loadProducts());
     </script>
   </body>

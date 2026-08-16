@@ -3,24 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecureShop Lab - Profile</title>
-    <link rel="stylesheet" href="/app.css">
+    <title>SecureShop Lab - User Profile</title>
+    <link rel="stylesheet" href="app.css">
+    <script src="app.js"></script>
 </head>
 <body>
     <header>
-        <h1>SecureShop Lab</h1>
-        <nav id="main-nav"></nav>
+      <div class="logo">
+        <span class="logo-icon">[]</span> SecureShop Cybersecurity Lab
+      </div>
+      <nav id="main-nav"></nav>
     </header>
 
-    <div class="container">
-        <h2>My Profile</h2>
-        <div id="profile-info"></div>
+    <div class="container layout-sidebar">
+        
+        <div class="sidebar-nav card">
+            <h3 class="mb-1">Account settings</h3>
+            <a href="/dashboard.html">Dashboard</a>
+            <a href="/profile.html" class="active">Profile & Orders</a>
+            <a href="#" onclick="logout()">Sign out</a>
+        </div>
 
-        <h2 style="margin-top: 2rem;">My Orders</h2>
-        <div id="orders-list"></div>
+        <div>
+            <h2><span class="logo-icon">#</span> Identity Information</h2>
+            <div id="profile-info" class="card mt-1 mb-2 terminal"></div>
+
+            <h2><span class="logo-icon">#</span> Order History & IDOR Testing</h2>
+            <p class="text-muted mb-1">Attempt to fetch other users' orders using Burp Suite or the browser tools.</p>
+            <div id="orders-list" class="grid gap-1 mt-1"></div>
+        </div>
     </div>
 
-    <script src="/app.js"></script>
     <script>
         async function loadProfile() {
             try {
@@ -28,8 +41,11 @@
                 if (res && res.ok) {
                     const user = await res.json();
                     const container = document.getElementById('profile-info');
-                    container.appendChild(safeCreateElement('p', `Username: ${user.username}`));
-                    container.appendChild(safeCreateElement('p', `Email: ${user.email}`));
+                    
+                    container.appendChild(safeCreateElement('div', `ID:       ${user.id}`));
+                    container.appendChild(safeCreateElement('div', `USERNAME: ${user.username}`));
+                    container.appendChild(safeCreateElement('div', `EMAIL:    ${user.email}`));
+                    container.appendChild(safeCreateElement('div', `ROLE:     ${user.role || 'user'}`));
                 }
             } catch (e) {
                 console.error("Profile load error", e);
@@ -44,18 +60,23 @@
                     const container = document.getElementById('orders-list');
                     
                     if (orders.length === 0) {
-                        container.appendChild(safeCreateElement('p', 'No orders yet.'));
+                        container.appendChild(safeCreateElement('p', 'No orders found in database.', 'text-muted'));
                         return;
                     }
 
                     orders.forEach(o => {
-                        const div = safeCreateElement('div', null, 'product-card');
-                        div.appendChild(safeCreateElement('p', `Order ID: ${o.id}`));
-                        div.appendChild(safeCreateElement('p', `Product ID: ${o.product_id}`));
-                        div.appendChild(safeCreateElement('p', `Quantity: ${o.quantity}`));
-                        div.appendChild(safeCreateElement('p', `Status: ${o.status}`));
+                        const div = safeCreateElement('div', null, 'card flex justify-between items-center');
                         
-                        const verifyBtn = safeCreateElement('button', 'Verify IDOR Protection (Try fetching)');
+                        const info = safeCreateElement('div');
+                        info.appendChild(safeCreateElement('div', `Order ID: ${o.id}`, 'terminal'));
+                        info.appendChild(safeCreateElement('div', `Product ID: ${o.product_id} | Qty: ${o.quantity}`, 'text-muted'));
+                        
+                        const badge = safeCreateElement('span', o.status, 'badge badge-info mt-1');
+                        info.appendChild(badge);
+                        
+                        div.appendChild(info);
+                        
+                        const verifyBtn = safeCreateElement('button', 'Test IDOR Protection', 'btn btn-outline');
                         verifyBtn.onclick = () => fetchOrderDetails(o.id);
                         div.appendChild(verifyBtn);
 
@@ -72,13 +93,13 @@
                 const res = await fetchWithAuth(`${API_BASE}/orders/${id}`);
                 if (res.ok) {
                     const data = await res.json();
-                    alert(`Success: Fetched order details for ID ${data.id}. Try changing the ID in Burp to test IDOR!`);
+                    alert(`SUCCESS: Fetched order details for ID ${data.id}.\n\nTry intercepting this request in Burp Suite and changing the ID to an order that doesn't belong to you to test for Broken Access Control.`);
                 } else {
                     const data = await res.json();
-                    alert(`Error: ${data.detail}. IDOR Protection is active.`);
+                    alert(`ACCESS DENIED: ${data.detail}.\n\nIDOR Protection is active and prevented unauthorized access.`);
                 }
             } catch (e) {
-                alert('Network error');
+                alert('Network error during API call.');
             }
         }
 
