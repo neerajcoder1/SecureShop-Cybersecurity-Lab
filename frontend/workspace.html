@@ -116,7 +116,6 @@ Run 'submit_report' to validate the challenge.
                     const allLabs = await labRes.json();
                     const currentLab = allLabs.find(l => l.id === currentLabId);
                     if (currentLab) {
-                        document.querySelector('.sidebar h3').textContent = currentLab.name;
                         document.title = `${currentLab.name} - SecureShop Lab`;
                     }
                 }
