@@ -25,7 +25,7 @@
         </div>
 
         <div>
-            <h2 id="welcome-msg"><span class="logo-icon">></span> Welcome back, Learner</h2>
+            <h2 id="welcome-msg">Welcome back, Learner</h2>
             <p class="text-muted mb-2">Track your learning progress and resume your active labs.</p>
 
             <div class="grid grid-cols-3 gap-1 mb-2">
@@ -118,7 +118,7 @@
             try {
                 const payload = JSON.parse(atob(token.split('.')[1]));
                 if (payload.sub) {
-                    document.getElementById('welcome-msg').innerHTML = `<span class="logo-icon">></span> Welcome back, <span style="color:var(--accent-blue);">${payload.sub}</span>`;
+                    document.getElementById('welcome-msg').innerHTML = `Welcome back, <span style="color:var(--accent-blue);">${payload.sub}</span>`;
                 }
             } catch (e) {
                 console.log("Could not decode token for username.");

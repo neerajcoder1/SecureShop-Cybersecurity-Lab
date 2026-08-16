@@ -30,7 +30,7 @@
             
             <!-- GETTING STARTED -->
             <div id="section-getting-started" class="doc-section">
-                <h2><span class="logo-icon">></span> Getting Started</h2>
+                <h2>Getting Started</h2>
                 <p class="text-muted mb-2">Welcome to SecureShop Lab. This platform provides an isolated, secure backend designed to teach defensive programming and cyber-hygiene.</p>
 
                 <div class="card mb-2" style="border-left: 4px solid var(--accent-orange); background: rgba(210, 153, 34, 0.05);">
@@ -42,7 +42,7 @@
                 <p class="text-muted mb-2">SecureShop integrates a live Web Terminal directly into your workspace. Instead of needing external tools installed locally, you can practice reconnaissance and exploit methodologies directly in your browser using simulated tools.</p>
 
                 <div class="card mb-2">
-                    <h3 class="mb-1" style="color: var(--accent-blue);"><span class="logo-icon">></span> HTTP & API Inspection</h3>
+                    <h3 class="mb-1" style="color: var(--accent-blue);">HTTP & API Inspection</h3>
                     <p class="text-muted mb-1"><strong>Theory:</strong> Modern web applications rely on APIs (Application Programming Interfaces) to fetch data. Attackers often inspect HTTP requests to find hidden endpoints, analyze response headers for version information, or manipulate parameters (like <code>?id=1</code>) to test for IDOR (Insecure Direct Object Reference) vulnerabilities.</p>
                     <div class="terminal mt-1" style="background: #000000; padding: 1rem; border-radius: 6px; border: 1px solid #30363d; color: #c9d1d9;">
                         <div style="color: #58a6ff; margin-bottom: 0.5rem; font-weight: 600;">Command: <code>curl</code></div>
@@ -53,7 +53,7 @@
                 </div>
 
                 <div class="card mb-2">
-                    <h3 class="mb-1" style="color: var(--accent-red);"><span class="logo-icon">></span> SQL Injection (SQLi)</h3>
+                    <h3 class="mb-1" style="color: var(--accent-red);">SQL Injection (SQLi)</h3>
                     <p class="text-muted mb-1"><strong>Theory:</strong> SQL Injection occurs when untrusted user input is directly concatenated into a database query string. This allows an attacker to manipulate the query logic (e.g., bypassing login via <code>' OR 1=1--</code>). SecureShop defends against this by strictly using <em>Parameterized Queries</em>, meaning user input is treated only as data, never as executable code.</p>
                     <div class="terminal mt-1" style="background: #000000; padding: 1rem; border-radius: 6px; border: 1px solid #30363d; color: #c9d1d9;">
                         <div style="color: #58a6ff; margin-bottom: 0.5rem; font-weight: 600;">Command: <code>sqlmap</code></div>
@@ -64,7 +64,7 @@
                 </div>
 
                 <div class="card mb-2">
-                    <h3 class="mb-1" style="color: var(--accent-green);"><span class="logo-icon">></span> Challenge Validation</h3>
+                    <h3 class="mb-1" style="color: var(--accent-green);">Challenge Validation</h3>
                     <p class="text-muted mb-1"><strong>Theory:</strong> Security isn't just about breaking things; it's about verifying fixes. After completing your attack simulations, you must validate that the system's defenses (like JWT validation and parameterized queries) are functioning correctly and that no critical vulnerabilities remain.</p>
                     <div class="terminal mt-1" style="background: #000000; padding: 1rem; border-radius: 6px; border: 1px solid #30363d; color: #c9d1d9;">
                         <div style="color: #58a6ff; margin-bottom: 0.5rem; font-weight: 600;">Command: <code>submit_report</code></div>
@@ -76,7 +76,7 @@
 
             <!-- SECURITY CONTROLS -->
             <div id="section-security" class="doc-section" style="display: none;">
-                <h2><span class="logo-icon">></span> Security Controls Documentation</h2>
+                <h2>Security Controls Documentation</h2>
                 <p class="text-muted mb-2">This lab demonstrates secure coding practices to prevent common web vulnerabilities. Compare the vulnerable patterns against the secure implementations used in this environment.</p>
 
                 <div class="card mb-2">
