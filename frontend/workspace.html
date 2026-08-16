@@ -175,6 +175,9 @@ Run 'submit_report' to validate the challenge.
         }
 
         function validateChallenge() {
+            // Save state for dashboard tracking
+            localStorage.setItem('lab1_completed', 'true');
+
             // Update Status Badge
             const statusBadge = document.getElementById('challenge-status');
             statusBadge.className = 'badge badge-beginner';
