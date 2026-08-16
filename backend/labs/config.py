@@ -1,0 +1,158 @@
+LABS = [
+    {
+        "id": "secureshop",
+        "name": "SecureShop Lab",
+        "description": "Practice authentication, authorization, injection testing, and API security controls against a realistic e-commerce application.",
+        "category": "Web Security",
+        "difficulty": "Beginner",
+        "xp_available": 150,
+        "challenges_count": 3
+    },
+    {
+        "id": "sqli",
+        "name": "Advanced SQL Injection",
+        "description": "Test whether application input is safely handled by parameterized database queries in complex search operations.",
+        "category": "Injection",
+        "difficulty": "Intermediate",
+        "xp_available": 500,
+        "challenges_count": 5
+    },
+    {
+        "id": "xss",
+        "name": "Cross-Site Scripting Lab",
+        "description": "Exploit input/output handling flaws to execute arbitrary JavaScript in the context of the application.",
+        "category": "Web Security",
+        "difficulty": "Intermediate",
+        "xp_available": 450,
+        "challenges_count": 4
+    }
+]
+
+CHALLENGES = {
+    "secureshop": [
+        {
+            "id": 1,
+            "title": "Information Disclosure",
+            "description": "The application might be leaking sensitive administrative information in its HTTP headers. Inspect the responses from the API.",
+            "hint": "Check the HTTP response headers when you fetch the product list.",
+            "difficulty": "Beginner",
+            "xp": 50,
+            "flag": "flag{headers_leak_info}",
+            "badge": "🏆 InfoSec Scout"
+        },
+        {
+            "id": 2,
+            "title": "IDOR / Broken Access Control",
+            "description": "A user's order history should be private. Try to access another user's order (specifically order ID 1).",
+            "hint": "Create an order to see how the API fetches them, then manipulate the order_id in the URL to view order #1.",
+            "difficulty": "Intermediate",
+            "xp": 50,
+            "flag": "flag{idor_access_granted}",
+            "badge": "🏆 Access Breaker"
+        },
+        {
+            "id": 3,
+            "title": "SQL Injection",
+            "description": "An older, deprecated search endpoint was left in the code. Find it and bypass the search logic.",
+            "hint": "The endpoint is /api/products/search/vulnerable. Try a basic boolean-based payload like ' OR 1=1 --",
+            "difficulty": "Advanced",
+            "xp": 50,
+            "flag": "flag{sqli_union_master}",
+            "badge": "🏆 Injection Master"
+        }
+    ],
+    "sqli": [
+        {
+            "id": 1,
+            "title": "Basic SQL Injection",
+            "description": "Identify a vulnerable parameter in the search functionality and trigger a generic database error.",
+            "hint": "The endpoint is /api/labs/sqli/search?q=. Try inserting a single quote.",
+            "difficulty": "Beginner",
+            "xp": 50,
+            "flag": "flag{sqli_basic_error}",
+            "badge": "🏆 SQL Explorer"
+        },
+        {
+            "id": 2,
+            "title": "Authentication Bypass",
+            "description": "Bypass the login prompt of the legacy admin portal using a tautology.",
+            "hint": "The endpoint is /api/labs/sqli/login. Provide a username that always evaluates to true.",
+            "difficulty": "Beginner",
+            "xp": 100,
+            "flag": "flag{sqli_auth_bypass}",
+            "badge": "🏆 Gate Crasher"
+        },
+        {
+            "id": 3,
+            "title": "UNION-based Injection",
+            "description": "Extract the database version using a UNION SELECT statement.",
+            "hint": "Match the number of columns returned by the original query in /api/labs/sqli/search.",
+            "difficulty": "Intermediate",
+            "xp": 100,
+            "flag": "flag{sqli_union_version}",
+            "badge": "🏆 Union Worker"
+        },
+        {
+            "id": 4,
+            "title": "Data Extraction",
+            "description": "Find the hidden 'super_secret' product in the database using UNION.",
+            "hint": "Try appending UNION SELECT id, name, description, price, stock FROM products WHERE name='super_secret'",
+            "difficulty": "Intermediate",
+            "xp": 100,
+            "flag": "flag{sqli_data_extraction}",
+            "badge": "🏆 Data Miner"
+        },
+        {
+            "id": 5,
+            "title": "Blind SQL Injection Concept",
+            "description": "Inject a payload that would allow inference of data based on response content.",
+            "hint": "Try a boolean payload that checks if 1=1 and 1=2 yield different responses.",
+            "difficulty": "Advanced",
+            "xp": 150,
+            "flag": "flag{sqli_blind_concept}",
+            "badge": "🏆 Blind Seer"
+        }
+    ],
+    "xss": [
+        {
+            "id": 1,
+            "title": "Reflected XSS",
+            "description": "Find a parameter that reflects user input directly into the HTML response.",
+            "hint": "Check the /api/labs/xss/search endpoint.",
+            "difficulty": "Beginner",
+            "xp": 50,
+            "flag": "flag{xss_reflected_basic}",
+            "badge": "🏆 XSS Apprentice"
+        },
+        {
+            "id": 2,
+            "title": "Stored XSS",
+            "description": "Inject a persistent payload into a vulnerable guestbook or comment section.",
+            "hint": "Use /api/labs/xss/comment to POST a malicious comment.",
+            "difficulty": "Intermediate",
+            "xp": 100,
+            "flag": "flag{xss_stored_persistent}",
+            "badge": "🏆 Persistent Threat"
+        },
+        {
+            "id": 3,
+            "title": "DOM-based XSS",
+            "description": "Manipulate the URL fragment to execute JavaScript in the browser DOM.",
+            "hint": "Try adding #<script>alert(1)</script> to a vulnerable page simulator.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{xss_dom_manipulation}",
+            "badge": "🏆 DOM Dominator"
+        },
+        {
+            "id": 4,
+            "title": "Context-aware XSS",
+            "description": "Bypass simple filters by injecting JavaScript directly into an HTML attribute context.",
+            "hint": "The endpoint /api/labs/xss/profile reflects your input inside an <input value='...'> tag.",
+            "difficulty": "Advanced",
+            "xp": 150,
+            "flag": "flag{xss_context_attribute}",
+            "badge": "🏆 Context Master"
+        }
+    ]
+}

@@ -50,13 +50,28 @@ class Challenge(BaseModel):
     description: str
     hint: str
     difficulty: str
+    xp: int = 50
     completed: bool = False
 
+class LabConfig(BaseModel):
+    id: str
+    name: str
+    description: str
+    category: str
+    difficulty: str
+    xp_available: int
+    challenges_count: int
+    completed_challenges: int = 0
+    progress_percentage: int = 0
+    status: str = "Online"
+
 class ChallengeSubmit(BaseModel):
+    lab_id: str
     challenge_id: int
     flag: str
 
 class ChallengeResponse(BaseModel):
     success: bool
     message: str
+    xp_awarded: int = 0
     badge_awarded: Optional[str] = None

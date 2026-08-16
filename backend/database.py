@@ -76,17 +76,47 @@ def init_db():
         )
     ''')
 
-    # User Challenges Table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS user_challenges (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            challenge_id INTEGER NOT NULL,
-            completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY(user_id) REFERENCES users(id),
-            UNIQUE(user_id, challenge_id)
-        )
-    ''')
+    # Phase 3: User Challenges Table Migration
+    # Check if lab_id exists in user_challenges to perform safe migration
+    cursor.execute("PRAGMA table_info(user_challenges)")
+    columns = [col['name'] for col in cursor.fetchall()]
+    
+    if 'lab_id' not in columns and len(columns) > 0:
+        logger.info("Migrating user_challenges to Phase 3 schema...")
+        cursor.execute("ALTER TABLE user_challenges RENAME TO user_challenges_old")
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS user_challenges (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                lab_id TEXT NOT NULL,
+                challenge_id INTEGER NOT NULL,
+                completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                xp_awarded INTEGER DEFAULT 0,
+                FOREIGN KEY(user_id) REFERENCES users(id),
+                UNIQUE(user_id, lab_id, challenge_id)
+            )
+        ''')
+        
+        cursor.execute('''
+            INSERT INTO user_challenges (id, user_id, lab_id, challenge_id, completed_at, xp_awarded)
+            SELECT id, user_id, 'secureshop', challenge_id, completed_at, 50 FROM user_challenges_old
+        ''')
+        cursor.execute("DROP TABLE user_challenges_old")
+    else:
+        # Create standard table if it doesn't exist
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS user_challenges (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                lab_id TEXT NOT NULL,
+                challenge_id INTEGER NOT NULL,
+                completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                xp_awarded INTEGER DEFAULT 0,
+                FOREIGN KEY(user_id) REFERENCES users(id),
+                UNIQUE(user_id, lab_id, challenge_id)
+            )
+        ''')
 
     # Insert dummy products if none exist
     cursor.execute("SELECT COUNT(*) as count FROM products")

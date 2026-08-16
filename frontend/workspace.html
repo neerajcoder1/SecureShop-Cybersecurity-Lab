@@ -90,6 +90,10 @@ Run 'submit_report' to validate the challenge.
     <script>
         let allChallenges = [];
         let currentChallengeId = null;
+        
+        // Phase 3: Dynamic Lab Routing
+        const params = new URLSearchParams(window.location.search);
+        const currentLabId = params.get("lab") || "secureshop"; // Default
 
         function printTerm(text, className = '') {
             const out = document.getElementById('term-out');
@@ -106,8 +110,26 @@ Run 'submit_report' to validate the challenge.
                 const token = getToken();
                 if (token) headers['Authorization'] = `Bearer ${token}`;
                 
-                const res = await fetch(API_BASE + '/api/challenges', { headers });
-                if (!res.ok) throw new Error("Failed to load challenges");
+                // Fetch lab details to update the header
+                const labRes = await fetch(`${API_BASE}/labs`, { headers });
+                if (labRes.ok) {
+                    const allLabs = await labRes.json();
+                    const currentLab = allLabs.find(l => l.id === currentLabId);
+                    if (currentLab) {
+                        document.querySelector('.sidebar h3').textContent = currentLab.name;
+                        document.title = `${currentLab.name} - SecureShop Lab`;
+                    }
+                }
+                
+                // Fetch challenges for this specific lab
+                const res = await fetch(`${API_BASE}/challenges?lab_id=${currentLabId}`, { headers });
+                if (!res.ok) {
+                    if (res.status === 404) {
+                        window.location.href = "/labs.html";
+                        return;
+                    }
+                    throw new Error("Failed to load challenges");
+                }
                 
                 allChallenges = await res.json();
                 renderSidebar();
@@ -117,6 +139,7 @@ Run 'submit_report' to validate the challenge.
                 document.getElementById('challenge-list').innerHTML = `<div class="text-muted" style="padding: 1rem;">Error loading challenges. Is backend running?</div>`;
             }
         }
+
 
         function renderSidebar() {
             const listEl = document.getElementById('challenge-list');
@@ -166,6 +189,7 @@ Run 'submit_report' to validate the challenge.
                     <div id="report-box" class="mt-1" style="display: ${c.completed ? 'block' : 'none'}; padding: 1.5rem; border: 1px solid var(--accent-green); border-radius: 6px; background: rgba(35, 134, 54, 0.05);">
                         <h3 style="color: var(--accent-green); margin-bottom: 0.5rem;">🎉 Challenge Completed!</h3>
                         <p class="text-muted mb-0" style="font-size: 0.9rem;">You have successfully validated this vulnerability.</p>
+                        <p class="text-muted mt-1" style="font-size: 0.85rem;"><strong>Reward:</strong> ${c.xp} XP</p>
                     </div>
                 </div>
             `;
@@ -203,7 +227,11 @@ Run 'submit_report' to validate the challenge.
                 const res = await fetch(API_BASE + '/api/challenges/submit', {
                     method: 'POST',
                     headers: headers,
-                    body: JSON.stringify({ challenge_id: currentChallengeId, flag: flagStr })
+                    body: JSON.stringify({ 
+                        lab_id: currentLabId, 
+                        challenge_id: currentChallengeId, 
+                        flag: flagStr 
+                    })
                 });
                 
                 const data = await res.json();

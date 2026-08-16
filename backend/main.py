@@ -7,6 +7,7 @@ from typing import List
 import os
 
 from . import database, models, auth
+from .labs.config import LABS, CHALLENGES
 
 app = FastAPI(
     title="SecureShop Lab API",
@@ -16,36 +17,6 @@ app = FastAPI(
 # Mount frontend files
 frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
 app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
-
-# =========================
-# CTF CHALLENGES CONFIG
-# =========================
-CHALLENGES = [
-    {
-        "id": 1,
-        "title": "Information Disclosure",
-        "description": "The application might be leaking sensitive administrative information in its HTTP headers. Inspect the responses from the API.",
-        "hint": "Check the HTTP response headers when you fetch the product list.",
-        "difficulty": "Beginner",
-        "flag": "flag{headers_leak_info}"
-    },
-    {
-        "id": 2,
-        "title": "IDOR / Broken Access Control",
-        "description": "A user's order history should be private. Try to access another user's order (specifically order ID 1).",
-        "hint": "Create an order to see how the API fetches them, then manipulate the order_id in the URL to view order #1.",
-        "difficulty": "Intermediate",
-        "flag": "flag{idor_access_granted}"
-    },
-    {
-        "id": 3,
-        "title": "SQL Injection",
-        "description": "An older, deprecated search endpoint was left in the code. Find it and bypass the search logic.",
-        "hint": "The endpoint is /api/products/search/vulnerable. Try a basic boolean-based payload like ' OR 1=1 --",
-        "difficulty": "Advanced",
-        "flag": "flag{sqli_union_master}"
-    }
-]
 
 
 # =========================
@@ -444,16 +415,47 @@ def get_product_reviews(product_id: int):
     return reviews
 
 # =========================
-# CTF CHALLENGE ENDPOINTS
+# PLATFORM CTF ENDPOINTS
 # =========================
 
 oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/api/login", auto_error=False)
 
+@app.get("/api/labs", response_model=List[models.LabConfig])
+def get_labs(token: str = Depends(oauth2_scheme_optional)):
+    user_id = None
+    try:
+        user = get_current_user(token)
+        user_id = user["id"]
+    except:
+        pass
+
+    result = []
+    for l in LABS:
+        lab_data = l.copy()
+        lab_data["completed_challenges"] = 0
+        lab_data["progress_percentage"] = 0
+        
+        if user_id:
+            completed = database.execute_read_query(
+                "SELECT challenge_id FROM user_challenges WHERE user_id = ? AND lab_id = ?",
+                (user_id, l["id"])
+            )
+            lab_data["completed_challenges"] = len(completed)
+            if l["challenges_count"] > 0:
+                lab_data["progress_percentage"] = int((len(completed) / l["challenges_count"]) * 100)
+                
+        result.append(lab_data)
+        
+    return result
+
 @app.get("/api/challenges", response_model=List[models.Challenge])
 def get_challenges(
+    lab_id: str,
     token: str = Depends(oauth2_scheme_optional)
 ):
-    # Optional auth for progress tracking. We'll try to decode without failing.
+    if lab_id not in CHALLENGES:
+        raise HTTPException(status_code=404, detail="Lab not found")
+
     user_id = None
     try:
         user = get_current_user(token)
@@ -464,15 +466,16 @@ def get_challenges(
     completed_ids = []
     if user_id:
         completed = database.execute_read_query(
-            "SELECT challenge_id FROM user_challenges WHERE user_id = ?",
-            (user_id,)
+            "SELECT challenge_id FROM user_challenges WHERE user_id = ? AND lab_id = ?",
+            (user_id, lab_id)
         )
         completed_ids = [c["challenge_id"] for c in completed]
 
     result = []
-    for c in CHALLENGES:
+    for c in CHALLENGES[lab_id]:
         challenge = c.copy()
-        challenge.pop("flag", None)  # Never send the real flag to the frontend
+        challenge.pop("flag", None)
+        challenge.pop("badge", None)
         challenge["completed"] = challenge["id"] in completed_ids
         result.append(challenge)
         
@@ -483,8 +486,10 @@ def submit_flag(
     submit: models.ChallengeSubmit,
     current_user: dict = Depends(get_current_user)
 ):
-    # Find challenge
-    challenge = next((c for c in CHALLENGES if c["id"] == submit.challenge_id), None)
+    if submit.lab_id not in CHALLENGES:
+        raise HTTPException(status_code=404, detail="Lab not found")
+        
+    challenge = next((c for c in CHALLENGES[submit.lab_id] if c["id"] == submit.challenge_id), None)
     
     if not challenge:
         raise HTTPException(status_code=404, detail="Challenge not found")
@@ -493,25 +498,105 @@ def submit_flag(
         # Record completion
         try:
             database.execute_write_query(
-                "INSERT INTO user_challenges (user_id, challenge_id) VALUES (?, ?)",
-                (current_user["id"], challenge["id"])
+                "INSERT INTO user_challenges (user_id, lab_id, challenge_id, xp_awarded) VALUES (?, ?, ?, ?)",
+                (current_user["id"], submit.lab_id, challenge["id"], challenge["xp"])
             )
-        except:
-            pass # Already completed (UNIQUE constraint)
-            
-        badge = ""
-        if challenge["id"] == 1: badge = "🏆 InfoSec Scout"
-        elif challenge["id"] == 2: badge = "🏆 Access Breaker"
-        elif challenge["id"] == 3: badge = "🏆 Injection Master"
-            
-        return {
-            "success": True,
-            "message": "Flag accepted! Challenge completed.",
-            "badge_awarded": badge
-        }
+            return {
+                "success": True,
+                "message": f"Flag accepted! Challenge completed. +{challenge['xp']} XP",
+                "xp_awarded": challenge["xp"],
+                "badge_awarded": challenge.get("badge")
+            }
+        except Exception as e:
+            # UNIQUE constraint failed = Already completed
+            return {
+                "success": True,
+                "message": "Flag accepted! (You have already completed this challenge)",
+                "xp_awarded": 0,
+                "badge_awarded": None
+            }
     else:
         return {
             "success": False,
             "message": "Incorrect flag.",
+            "xp_awarded": 0,
             "badge_awarded": None
         }
+
+# =========================
+# VULNERABLE LAB TARGETS 
+# =========================
+
+# --- SQL INJECTION LAB ---
+@app.get("/api/labs/sqli/search")
+def sqli_lab_search(q: str = ""):
+    """INTENTIONALLY VULNERABLE ENDPOINT"""
+    conn = database.get_db_connection()
+    cursor = conn.cursor()
+    # Vulnerable to UNION injection
+    query = f"SELECT id, name, description FROM products WHERE name LIKE '%{q}%'"
+    try:
+        cursor.execute(query)
+        rows = [dict(row) for row in cursor.fetchall()]
+        
+        # Check flags based on successful exploit
+        if q == "'": 
+            return {"error": "SQL syntax error", "flag": "flag{sqli_basic_error}"}
+            
+        # Give UNION flag if they successfully injected UNION and returned 5 columns instead of 3
+        if "' UNION" in q.upper():
+            return {"results": rows, "flag": "flag{sqli_union_version}"}
+            
+        return {"results": rows}
+    except Exception as e:
+        return {"error": str(e), "hint": "Check your syntax near the quote."}
+    finally:
+        conn.close()
+
+@app.post("/api/labs/sqli/login")
+def sqli_lab_login(username: str):
+    """INTENTIONALLY VULNERABLE ENDPOINT"""
+    conn = database.get_db_connection()
+    cursor = conn.cursor()
+    query = f"SELECT * FROM users WHERE username = '{username}' AND password = 'password123'"
+    try:
+        cursor.execute(query)
+        user = cursor.fetchone()
+        if user:
+            return {"success": True, "flag": "flag{sqli_auth_bypass}"}
+        return {"success": False}
+    except Exception:
+        return {"success": False}
+    finally:
+        conn.close()
+
+# --- XSS LAB ---
+@app.get("/api/labs/xss/search")
+def xss_lab_search(response: Response, q: str = ""):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Reflected XSS"""
+    # The flag is awarded simply if they inject a script tag, simulating reflection.
+    # We return the flag in headers if they successfully pass a <script> payload.
+    if "<script>" in q.lower():
+        response.headers["X-Flag-XSS-1"] = "flag{xss_reflected_basic}"
+    return {"message": f"Search results for: {q}"}
+
+# Memory store for stored XSS simulation
+xss_comments = []
+
+@app.post("/api/labs/xss/comment")
+def xss_lab_comment(comment: str):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Stored XSS"""
+    xss_comments.append(comment)
+    flag = None
+    if "<script>" in comment.lower() or "javascript:" in comment.lower():
+        flag = "flag{xss_stored_persistent}"
+    return {"success": True, "comments_count": len(xss_comments), "flag": flag}
+
+@app.get("/api/labs/xss/profile")
+def xss_lab_profile(name: str = ""):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Context-aware XSS"""
+    html = f'<input type="text" name="profile_name" value="{name}">'
+    flag = None
+    if '"><script>' in name.lower() or '" autofocus onfocus="' in name.lower():
+        flag = "flag{xss_context_attribute}"
+    return {"html": html, "flag": flag}
