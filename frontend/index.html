@@ -37,7 +37,10 @@
     <div class="hero" style="padding-top: 6rem; padding-bottom: 6rem; border-bottom: 1px solid var(--border-subtle);">
       <div class="container grid grid-cols-2 gap-2 items-center">
         <div style="text-align: left;">
-          <h1 style="font-size: 3.5rem; line-height: 1.1;">Practice Web Security.<br>Break Safely.<br><span style="color: var(--accent-blue);">Learn Securely.</span></h1>
+          <style>
+            @keyframes blink { 50% { border-color: transparent; } }
+          </style>
+          <h1 id="hero-title" style="font-size: 3.5rem; line-height: 1.1; min-height: 3.5em; margin-bottom: 0;"></h1>
           <p style="margin: 1.5rem 0; font-size: 1.2rem; max-width: 90%;">SecureShop is an open-source cybersecurity laboratory designed for hands-on web application security practice in an authorized environment.</p>
           <div class="flex gap-1 mt-2">
             <a href="/labs.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 1.5rem;">Start Testing</a>
@@ -262,7 +265,54 @@
         }
       }
 
-      document.addEventListener("DOMContentLoaded", () => loadProducts());
+      function initTypingAnimation() {
+        const titleEl = document.getElementById("hero-title");
+        if (!titleEl) return;
+        
+        const lines = [
+            "Practice Web Security.",
+            "Break Safely.",
+            "Learn Securely."
+        ];
+        
+        let lineIdx = 0;
+        let charIdx = 0;
+        let currentHTML = "";
+
+        function typeChar() {
+            if (lineIdx >= lines.length) {
+                titleEl.innerHTML = currentHTML + '<span style="border-right: 0.1em solid var(--accent-green); animation: blink 1s step-end infinite;">&nbsp;</span>';
+                return;
+            }
+            
+            let line = lines[lineIdx];
+            
+            if (charIdx < line.length) {
+                if (lineIdx === 2 && charIdx === 0) currentHTML += '<span style="color: var(--accent-blue);">';
+                
+                currentHTML += line.charAt(charIdx);
+                
+                if (lineIdx === 2 && charIdx === line.length - 1) currentHTML += '</span>';
+                
+                charIdx++;
+                titleEl.innerHTML = currentHTML + '<span style="border-right: 0.1em solid var(--accent-green); animation: blink 1s step-end infinite;">&nbsp;</span>';
+                
+                setTimeout(typeChar, 30 + Math.random() * 40);
+            } else {
+                currentHTML += "<br>";
+                lineIdx++;
+                charIdx = 0;
+                setTimeout(typeChar, 250);
+            }
+        }
+        
+        setTimeout(typeChar, 200);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadProducts();
+        initTypingAnimation();
+      });
     </script>
   </body>
 </html>
