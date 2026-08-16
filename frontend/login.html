@@ -15,50 +15,186 @@
       <nav id="main-nav"></nav>
     </header>
 
-    <div class="container" style="max-width: 800px;">
-        <div class="grid grid-cols-2 gap-2 mt-2">
+    <style>
+        .auth-container {
+            max-width: 900px;
+            margin: 4rem auto;
+            align-items: flex-start;
+        }
+        .auth-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: var(--accent-blue);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+        .auth-card.reg-card::before {
+            background: var(--accent-green);
+        }
+        .auth-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--text-muted);
+        }
+        .auth-card:hover::before {
+            transform: scaleX(1);
+        }
+        .auth-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+        }
+        .auth-icon {
+            background: rgba(88, 166, 255, 0.1);
+            color: var(--accent-blue);
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .reg-icon {
+            background: rgba(35, 134, 54, 0.1);
+            color: var(--accent-green);
+        }
+        .input-group {
+            position: relative;
+            margin-bottom: 1.2rem;
+        }
+        .input-group svg {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .input-group input.terminal {
+            padding-left: 2.8rem;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.3s ease;
+            background: rgba(13, 17, 23, 0.5);
+            font-size: 0.95rem;
+            border-radius: 6px;
+        }
+        .input-group input.terminal:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+            background: var(--bg-dark);
+        }
+        .reg-card .input-group input.terminal:focus {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(35, 134, 54, 0.15);
+        }
+        .input-group:focus-within svg {
+            color: var(--accent-blue);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .reg-card .input-group:focus-within svg {
+            color: var(--accent-green);
+        }
+        .auth-btn {
+            padding: 0.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            width: 100%;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        .btn-auth-primary {
+            background: var(--accent-blue);
+            color: #000;
+            border: none;
+        }
+        .btn-auth-primary:hover {
+            background: #79c0ff;
+            box-shadow: 0 0 15px rgba(88, 166, 255, 0.4);
+            transform: translateY(-1px);
+        }
+        .btn-auth-success {
+            background: transparent;
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+        .btn-auth-success:hover {
+            background: rgba(35, 134, 54, 0.1);
+            box-shadow: 0 0 15px rgba(35, 134, 54, 0.2);
+        }
+    </style>
+
+    <div class="container auth-container">
+        <div class="grid grid-cols-2 gap-2">
             
             <!-- Login Form -->
-            <div class="card">
-                <h3><span class="logo-icon">></span> Authenticate</h3>
-                <p class="text-muted" style="font-size: 0.9rem;">Test authentication bypass and JWT mechanisms.</p>
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="auth-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                    </div>
+                    <div>
+                        <h2 style="margin:0; font-size:1.4rem;">Authenticate</h2>
+                        <span class="text-muted" style="font-size: 0.85rem;">Test bypass & JWT mechanisms</span>
+                    </div>
+                </div>
                 
                 <div id="login-error" class="error"></div>
                 
-                <form id="login-form" class="mt-1">
-                    <div class="form-group">
-                        <label>Username / Payload</label>
-                        <input type="text" id="login-username" class="terminal" required>
+                <form id="login-form">
+                    <div class="input-group">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <input type="text" id="login-username" class="terminal" placeholder="Username / Payload" required>
                     </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" id="login-password" class="terminal" required>
+                    <div class="input-group">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <input type="password" id="login-password" class="terminal" placeholder="Password" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Credentials</button>
+                    <button type="submit" class="auth-btn btn-auth-primary">Submit Credentials</button>
                 </form>
             </div>
 
             <!-- Register Form -->
-            <div class="card">
-                <h3><span class="logo-icon">></span> Provision Account</h3>
-                <p class="text-muted" style="font-size: 0.9rem;">Create a test identity for authorization testing.</p>
+            <div class="auth-card reg-card">
+                <div class="auth-header">
+                    <div class="auth-icon reg-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+                    </div>
+                    <div>
+                        <h2 style="margin:0; font-size:1.4rem;">Provision Account</h2>
+                        <span class="text-muted" style="font-size: 0.85rem;">Create a test identity for authorization</span>
+                    </div>
+                </div>
                 
                 <div id="register-msg"></div>
                 
-                <form id="register-form" class="mt-1">
-                    <div class="form-group">
-                        <label>Username</label>
-                        <input type="text" id="reg-username" class="terminal" required pattern="^[a-zA-Z0-9_]+$" title="Alphanumeric and underscores only">
+                <form id="register-form">
+                    <div class="input-group">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <input type="text" id="reg-username" class="terminal" placeholder="Username" required pattern="^[a-zA-Z0-9_]+$" title="Alphanumeric and underscores only">
                     </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="reg-email" class="terminal" required>
+                    <div class="input-group">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        <input type="email" id="reg-email" class="terminal" placeholder="Email" required>
                     </div>
-                    <div class="form-group">
-                        <label>Password (min 8 chars)</label>
-                        <input type="password" id="reg-password" class="terminal" required minlength="8">
+                    <div class="input-group">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <input type="password" id="reg-password" class="terminal" placeholder="Password (min 8 chars)" required minlength="8">
                     </div>
-                    <button type="submit" class="btn btn-outline" style="width: 100%;">Register Identity</button>
+                    <button type="submit" class="auth-btn btn-auth-success">Register Identity</button>
                 </form>
             </div>
 
