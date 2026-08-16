@@ -151,18 +151,55 @@ function showToast(message, type = 'success') {
   }, 4000);
 }
 
+// Custom Confirm Modal
+function showConfirm(title, message, onConfirm) {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  
+  const box = document.createElement('div');
+  box.className = 'modal-box';
+  
+  box.innerHTML = `
+    <h3 class="modal-title">${title}</h3>
+    <p class="modal-body">${message}</p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" id="modal-cancel">Cancel</button>
+      <button class="btn-danger" id="modal-confirm">Confirm</button>
+    </div>
+  `;
+  
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  
+  document.getElementById('modal-cancel').onclick = () => {
+    overlay.classList.add('fade-out');
+    setTimeout(() => overlay.remove(), 200);
+  };
+  
+  document.getElementById('modal-confirm').onclick = () => {
+    overlay.classList.add('fade-out');
+    setTimeout(() => overlay.remove(), 200);
+    onConfirm();
+  };
+}
+
 // Clear History
-async function clearHistory() {
-  if (!confirm("Are you sure you want to clear your entire operations history?")) return;
-  try {
-    const res = await fetchWithAuth(`${API_BASE}/orders`, { method: "DELETE" });
-    if (res && res.ok) {
-      showToast("[+] History wiped successfully.", "success");
-      setTimeout(() => window.location.reload(), 1000);
-    } else {
-      showToast("[-] Failed to clear history.", "error");
+function clearHistory() {
+  showConfirm(
+    "Wipe Operations Log?", 
+    "Are you sure you want to clear your entire operations history? This action cannot be undone.",
+    async () => {
+      try {
+        const res = await fetchWithAuth(`${API_BASE}/orders`, { method: "DELETE" });
+        if (res && res.ok) {
+          showToast("[+] History wiped successfully.", "success");
+          setTimeout(() => window.location.reload(), 1000);
+        } else {
+          showToast(`[-] Failed to clear history. Status: ${res ? res.status : 'Unknown'}`, "error");
+        }
+      } catch (e) {
+        showToast("[-] Network error while clearing history.", "error");
+      }
     }
-  } catch (e) {
-    showToast("[-] Network error while clearing history.", "error");
-  }
+  );
 }
