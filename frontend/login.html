@@ -230,7 +230,7 @@
                     window.location.href = '/dashboard.html';
                 } else {
                     const data = await res.json();
-                    errDiv.textContent = data.detail || 'Login failed';
+                    errDiv.textContent = typeof data.detail === 'object' ? JSON.stringify(data.detail) : (data.detail || 'Login failed');
                 }
             } catch (err) {
                 errDiv.textContent = 'Network error during authentication test.';
@@ -262,7 +262,7 @@
                     document.getElementById('register-form').reset();
                 } else {
                     const data = await res.json();
-                    msgDiv.textContent = data.detail || 'Registration rejected by backend controls.';
+                    msgDiv.textContent = typeof data.detail === 'object' ? JSON.stringify(data.detail) : (data.detail || 'Registration rejected by backend controls.');
                     msgDiv.className = 'error mt-1';
                 }
             } catch (err) {
