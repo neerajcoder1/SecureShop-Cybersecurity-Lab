@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SecureShop Lab - Video Tutorials</title>
+    <link rel="stylesheet" href="app.css" />
+    <script src="app.js"></script>
+    <style>
+      .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        height: 0;
+        overflow: hidden;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        background: #000;
+        border: 1px solid var(--border-subtle);
+      }
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .filter-bar {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+      .filter-btn.active {
+        background-color: var(--accent-blue);
+        color: white;
+        border-color: var(--accent-blue);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon" style="margin-right: 8px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="8 10 11 13 8 16"></polyline><line x1="13" y1="16" x2="16" y2="16"></line></svg> SecureShop Cybersecurity Lab
+      </div>
+      <nav id="main-nav"></nav>
+    </header>
+
+    <div class="container mt-2 pt-2">
+        <div class="flex justify-between items-center mb-2">
+            <div>
+                <h2>Video Tutorials & Theory</h2>
+                <p class="text-muted" style="font-size: 0.9rem;">Free, high-quality community resources to help you understand web vulnerabilities.</p>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar">
+            <button class="btn btn-outline filter-btn active" data-filter="all">All Topics</button>
+            <button class="btn btn-outline filter-btn" data-filter="sqli">SQL Injection</button>
+            <button class="btn btn-outline filter-btn" data-filter="auth">Authentication & JWT</button>
+            <button class="btn btn-outline filter-btn" data-filter="xss">XSS</button>
+            <button class="btn btn-outline filter-btn" data-filter="idor">IDOR / Access Control</button>
+        </div>
+
+        <!-- Video Grid -->
+        <div class="grid grid-cols-2 gap-2" id="video-grid">
+            
+            <!-- Video 1 -->
+            <div class="card video-card" data-category="sqli">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/ciNHn38leyk" title="SQL Injection Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="flex justify-between items-center mb-1">
+                    <h3 style="margin: 0;">SQL Injection Fundamentals</h3>
+                    <span class="badge badge-advanced">SQLi</span>
+                </div>
+                <p class="text-muted" style="font-size: 0.85rem;">Learn how untrusted data can manipulate backend database queries, leading to data exfiltration and authentication bypass.</p>
+            </div>
+
+            <!-- Video 2 -->
+            <div class="card video-card" data-category="auth">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/7Q17ubqLfaM" title="JWT Security Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="flex justify-between items-center mb-1">
+                    <h3 style="margin: 0;">Attacking JSON Web Tokens</h3>
+                    <span class="badge badge-intermediate">JWT</span>
+                </div>
+                <p class="text-muted" style="font-size: 0.85rem;">Understand how JWTs are structured, signed, and the common implementation flaws that lead to privilege escalation.</p>
+            </div>
+
+            <!-- Video 3 -->
+            <div class="card video-card" data-category="xss">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/EoaDgUgCEvw" title="XSS Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="flex justify-between items-center mb-1">
+                    <h3 style="margin: 0;">Cross-Site Scripting (XSS)</h3>
+                    <span class="badge badge-intermediate">XSS</span>
+                </div>
+                <p class="text-muted" style="font-size: 0.85rem;">Explore how malicious JavaScript is injected into web pages and executed in the victim's browser context.</p>
+            </div>
+
+            <!-- Video 4 -->
+            <div class="card video-card" data-category="idor">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/DOWbuJb0FzI" title="IDOR Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="flex justify-between items-center mb-1">
+                    <h3 style="margin: 0;">Insecure Direct Object Reference</h3>
+                    <span class="badge badge-beginner">IDOR</span>
+                </div>
+                <p class="text-muted" style="font-size: 0.85rem;">A breakdown of Broken Access Control where users can manipulate parameters (like user IDs) to access unauthorized data.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+          const filterBtns = document.querySelectorAll('.filter-btn');
+          const videoCards = document.querySelectorAll('.video-card');
+
+          filterBtns.forEach(btn => {
+              btn.addEventListener('click', () => {
+                  // Remove active class from all buttons
+                  filterBtns.forEach(b => b.classList.remove('active'));
+                  // Add active class to clicked button
+                  btn.classList.add('active');
+
+                  const filterValue = btn.getAttribute('data-filter');
+
+                  // Filter the videos
+                  videoCards.forEach(card => {
+                      if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
+                          card.style.display = 'block';
+                      } else {
+                          card.style.display = 'none';
+                      }
+                  });
+              });
+          });
+      });
+    </script>
+  </body>
+</html>
