@@ -247,7 +247,9 @@ Run 'submit_report' to validate the challenge.
                     selectChallenge(currentChallengeId);
                     updateProgress();
                 } else {
-                    printTerm(`[-] ${data.message || 'Validation failed.'}`, 'term-err');
+                    let errMsg = data.message || data.detail || 'Validation failed.';
+                    if (typeof errMsg === 'object') errMsg = JSON.stringify(errMsg);
+                    printTerm(`[-] ${errMsg}`, 'term-err');
                 }
             } catch(e) {
                 printTerm(`[-] Network error occurred while validating flag.`, 'term-err');
