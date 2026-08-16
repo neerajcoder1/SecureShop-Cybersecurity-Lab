@@ -59,45 +59,54 @@
 
     <!-- HOW THE LAB WORKS -->
     <div class="container mt-2 pt-2">
-      <h2 style="text-align: center; margin-bottom: 2rem;">How the Platform Works</h2>
-      <div class="step-grid">
-        <div class="workflow-step">
-          <div class="step-number">01</div>
-          <h4>Choose a Lab</h4>
+      <h2 style="text-align: center; margin-bottom: 2rem;">Platform Initialization Sequence</h2>
+      <div class="pipeline-grid">
+        <div class="pipeline-node">
+          <div class="pipeline-step">[STEP 01]</div>
+          <h4 class="pipeline-title">Select Target</h4>
         </div>
-        <div class="workflow-step">
-          <div class="step-number">02</div>
-          <h4>Read the Objective</h4>
+        <div class="pipeline-node">
+          <div class="pipeline-step">[STEP 02]</div>
+          <h4 class="pipeline-title">Review Intel</h4>
         </div>
-        <div class="workflow-step">
-          <div class="step-number">03</div>
-          <h4>Practice Testing</h4>
+        <div class="pipeline-node">
+          <div class="pipeline-step">[STEP 03]</div>
+          <h4 class="pipeline-title">Execute Vectors</h4>
         </div>
-        <div class="workflow-step">
-          <div class="step-number">04</div>
-          <h4>Complete Challenge</h4>
+        <div class="pipeline-node">
+          <div class="pipeline-step">[STEP 04]</div>
+          <h4 class="pipeline-title">Compromise</h4>
         </div>
-        <div class="workflow-step">
-          <div class="step-number">05</div>
-          <h4>Track Progress</h4>
+        <div class="pipeline-node">
+          <div class="pipeline-step">[STEP 05]</div>
+          <h4 class="pipeline-title">Report Findings</h4>
         </div>
       </div>
     </div>
 
     <!-- FEATURED LAB -->
     <div id="featured-lab" class="container mt-2 pt-2">
-      <h2>Start With Your First Lab</h2>
-      <div class="card mt-1" style="border-left: 4px solid var(--accent-green);">
-        <div class="flex justify-between items-center mb-1">
-          <h3>SecureShop Cybersecurity Lab</h3>
-          <span class="badge badge-beginner">Beginner → Intermediate</span>
+      <h2>Deploy Environment</h2>
+      <div class="target-console mt-1">
+        <div class="target-header">
+          <span>TARGET: SECURESHOP_CORE</span>
+          <span style="display: flex; align-items: center; gap: 0.5rem; color: var(--accent-green);">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--accent-green); box-shadow: 0 0 5px var(--accent-green); animation: blink 2s infinite;"></div>
+            STATUS: ONLINE
+          </span>
         </div>
-        <div class="terminal text-muted mb-1" style="font-size: 0.85rem;">
-          <span>Category: Web Application Security</span> | <span>Est. Time: 45m</span>
+        <div class="target-body">
+          <div class="flex justify-between items-center mb-1">
+            <h3 style="margin: 0;">SecureShop Web Application Lab</h3>
+            <span class="badge badge-beginner">Difficulty: Beginner → Intermediate</span>
+          </div>
+          <div class="terminal text-muted mb-1" style="font-size: 0.85rem;">
+            <span>Architecture: Node/Python</span> | <span>Category: Web Security</span> | <span>Est. Time: 45m</span>
+          </div>
+          <p class="text-muted mb-2">Practice authentication bypass, authorization testing, SQL injection mapping, XSS payload execution, IDOR enumeration, JWT manipulation, and API security testing directly against this active platform.</p>
+          <div class="tech-progress-bar mb-1"><div class="tech-progress-fill"></div></div>
+          <a href="/labs.html" class="btn btn-outline mt-1 btn-hover-green" style="font-family: var(--font-mono);">>_ INITIALIZE_TARGET</a>
         </div>
-        <p class="text-muted mb-2">Practice authentication, authorization, SQL injection testing, XSS protection, IDOR protection, JWT security, API security, CORS, input validation, HTTP analysis, and database security directly against this platform.</p>
-        <div class="progress-bar mb-1"><div class="progress-fill" style="width: 0%;"></div></div>
-        <a href="/lab-detail.html" class="btn btn-primary mt-1">Start Lab #001</a>
       </div>
     </div>
 
