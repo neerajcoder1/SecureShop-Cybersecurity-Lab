@@ -323,12 +323,7 @@ button:hover, .btn:hover {
   text-decoration: none;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .layout-sidebar { grid-template-columns: 1fr; }
-  .grid-cols-2, .grid-cols-3, .grid-cols-4 { grid-template-columns: 1fr; }
-  nav#main-nav { display: none; /* simple mobile fallback: could be expanded */ }
-}
+/* Responsive layout removed here and consolidated below */
 /* Platform Specific UI */
 
 /* Footer */
@@ -480,6 +475,24 @@ footer {
 }
 
 @media (max-width: 768px) {
+  /* Layout Grids */
+  .layout-sidebar { grid-template-columns: 1fr; }
+  .grid-cols-2, .grid-cols-3, .grid-cols-4 { grid-template-columns: 1fr; }
+  
+  /* Flex overrides for mobile headers and buttons */
+  .flex.justify-between { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .form-group.flex { flex-direction: column; align-items: stretch; }
+  .form-group.flex input, .form-group.flex button { width: 100% !important; margin-bottom: 0.5rem; }
+  
+  /* Hero overrides */
+  .hero { padding: 3rem 0; }
+  .hero h1 { font-size: 2.2rem !important; }
+  .hero .flex.gap-1 { flex-direction: column; }
+  .hero .btn { width: 100%; text-align: center; box-sizing: border-box; }
+  
+  /* Target Console override */
+  .target-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  
   .mobile-toggle { display: block; }
   nav#main-nav {
     display: none;
@@ -492,9 +505,16 @@ footer {
     border-bottom: 1px solid var(--border-subtle);
     padding: 1rem;
     box-sizing: border-box;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.8);
+    z-index: 1000;
   }
   nav#main-nav.active { display: flex; }
+  nav#main-nav a { padding: 0.7rem 0; border-bottom: 1px solid var(--border-subtle); }
+  nav#main-nav a:last-child { border-bottom: none; }
+  .btn-nav { text-align: center; margin-top: 0.5rem; }
+  
   .footer-grid { grid-template-columns: 1fr; }
+  .footer-links { flex-direction: column; gap: 0.8rem; }
 }
 
 /* Web Terminal UI */
