@@ -246,10 +246,20 @@ def read_users_me(
     current_user: dict = Depends(get_current_user)
 ):
 
+    stats = database.execute_read_query(
+        "SELECT SUM(xp_awarded) as total_xp, COUNT(id) as total_completed FROM user_challenges WHERE user_id = ?",
+        (current_user["id"],)
+    )
+    
+    total_xp = stats[0]["total_xp"] if stats and stats[0]["total_xp"] else 0
+    total_completed = stats[0]["total_completed"] if stats and stats[0]["total_completed"] else 0
+
     return {
         "id": current_user["id"],
         "username": current_user["username"],
-        "email": current_user["email"]
+        "email": current_user["email"],
+        "total_xp": total_xp,
+        "completed_challenges": total_completed
     }
 
 

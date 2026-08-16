@@ -83,7 +83,9 @@
                             <span class="terminal text-muted">XP Available: ${lab.xp_available}</span>
                             <span class="terminal text-muted">Progress: ${progress}%</span>
                         </div>
-                        <div class="progress-bar mb-1"><div class="progress-fill" style="width: ${progress}%;"></div></div>
+                        <div class="progress-bar" style="margin-bottom: 1rem;">
+                            <div class="progress-fill" style="width: ${progress}%; ${progress === 100 ? 'background-color: var(--accent-green); box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);' : ''}"></div>
+                        </div>
                         ${actionBtn}
                     </div>
                     `;

@@ -30,12 +30,12 @@
 
             <div class="grid grid-cols-3 gap-1 mb-2">
                 <div class="card text-center">
-                    <h1 id="stat-orders" style="font-size: 3rem; margin: 0; color: var(--accent-blue); transition: color 0.5s;">0</h1>
-                    <p class="text-muted">Operations Executed</p>
+                    <h1 id="stat-challenges" style="font-size: 3rem; margin: 0; color: var(--accent-blue); transition: color 0.5s;">0</h1>
+                    <p class="text-muted">Challenges Completed</p>
                 </div>
                 <div class="card text-center">
-                    <h1 id="stat-items" style="font-size: 3rem; margin: 0; color: var(--accent-orange); transition: color 0.5s;">0</h1>
-                    <p class="text-muted">Total Payloads (Qty)</p>
+                    <h1 id="stat-xp" style="font-size: 3rem; margin: 0; color: var(--accent-orange); transition: color 0.5s;">0</h1>
+                    <p class="text-muted">Total XP Earned</p>
                 </div>
                 <div class="card text-center">
                     <h1 id="stat-clearance" style="font-size: 3rem; margin: 0; color: var(--accent-green); text-transform: uppercase;">USER</h1>
@@ -100,16 +100,14 @@
                 if (userRes && userRes.ok) {
                     const user = await userRes.json();
                     document.getElementById('stat-clearance').textContent = user.role || 'USER';
+                    
+                    animateValue('stat-challenges', 0, user.completed_challenges || 0, 1000);
+                    animateValue('stat-xp', 0, user.total_xp || 0, 1000);
                 }
 
                 const ordersRes = await fetchWithAuth(`${API_BASE}/orders`);
                 if (ordersRes && ordersRes.ok) {
                     const orders = await ordersRes.json();
-                    
-                    animateValue('stat-orders', 0, orders.length, 1000);
-                    
-                    const totalQty = orders.reduce((sum, o) => sum + o.quantity, 0);
-                    animateValue('stat-items', 0, totalQty, 1000);
 
                     const opsList = document.getElementById('recent-operations-list');
                     if (orders.length === 0) {
