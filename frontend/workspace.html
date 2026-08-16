@@ -98,27 +98,9 @@ Run 'submit_report' to validate the challenge.
                         <input type="text" class="term-input" id="term-in" autocomplete="off" spellcheck="false" autofocus>
                     </div>
                 </div>
-
-                <div class="card">
-                    <h3 class="mb-1">Testing Checklist</h3>
-                    <p class="text-muted mb-2">Follow these objectives to thoroughly audit the application mechanisms.</p>
-                    
-                    <div class="flex-col gap-1 text-muted">
-                        <label class="flex items-center gap-1"><input type="checkbox"> Register a test account</label>
-                        <label class="flex items-center gap-1"><input type="checkbox"> Authenticate via the Login panel</label>
-                        <label class="flex items-center gap-1"><input type="checkbox"> Inspect HTTP requests in Burp Suite</label>
-                        <label class="flex items-center gap-1"><input type="checkbox"> Test authentication bypass methods</label>
-                        <label class="flex items-center gap-1"><input type="checkbox"> Test authorization & IDOR protection</label>
-                        <label class="flex items-center gap-1"><input type="checkbox"> Test input validation & SQL injection handling</label>
-                        <label class="flex items-center gap-1"><input type="checkbox"> Test DOM-based XSS handling in frontend</label>
-                        <label class="flex items-center gap-1"><input type="checkbox"> Inspect JWT structure and signature</label>
-                    </div>
-                </div>
             </div>
-
         </div>
     </div>
-
     <script>
         function printTerm(text, className = '') {
             const out = document.getElementById('term-out');
