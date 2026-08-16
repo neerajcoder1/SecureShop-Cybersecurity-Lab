@@ -30,58 +30,25 @@
 
             <div class="grid grid-cols-3 gap-1 mb-2">
                 <div class="card text-center">
-                    <h1 id="stat-completed" style="font-size: 3rem; margin: 0; color: var(--accent-blue); transition: color 0.5s;">0</h1>
-                    <p class="text-muted">Labs Completed</p>
+                    <h1 id="stat-orders" style="font-size: 3rem; margin: 0; color: var(--accent-blue); transition: color 0.5s;">0</h1>
+                    <p class="text-muted">Operations Executed</p>
                 </div>
                 <div class="card text-center">
-                    <h1 id="stat-progress" style="font-size: 3rem; margin: 0; color: var(--accent-orange); transition: color 0.5s;">1</h1>
-                    <p class="text-muted">Labs In Progress</p>
+                    <h1 id="stat-items" style="font-size: 3rem; margin: 0; color: var(--accent-orange); transition: color 0.5s;">0</h1>
+                    <p class="text-muted">Total Payloads (Qty)</p>
                 </div>
                 <div class="card text-center">
-                    <h1 id="stat-areas" style="font-size: 3rem; margin: 0; color: var(--accent-green);">4</h1>
-                    <p class="text-muted">Areas Practiced</p>
+                    <h1 id="stat-clearance" style="font-size: 3rem; margin: 0; color: var(--accent-green); text-transform: uppercase;">USER</h1>
+                    <p class="text-muted">Clearance Level</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-2">
-                <div class="card">
-                    <h3 class="mb-2">Security Skills</h3>
-                    
-                    <div class="mb-1">
-                        <div class="flex justify-between text-muted mb-1" style="font-size: 0.85rem; font-family: var(--font-mono);">
-                            <span>Web Security</span><span id="skill-web-text">0%</span>
-                        </div>
-                        <div class="progress-bar"><div id="skill-web-bar" class="progress-fill" style="width: 0%; background-color: var(--accent-blue); transition: width 1s ease-out;"></div></div>
-                    </div>
-                    
-                    <div class="mb-1">
-                        <div class="flex justify-between text-muted mb-1" style="font-size: 0.85rem; font-family: var(--font-mono);">
-                            <span>API Security</span><span id="skill-api-text">0%</span>
-                        </div>
-                        <div class="progress-bar"><div id="skill-api-bar" class="progress-fill" style="width: 0%; background-color: var(--accent-orange); transition: width 1s ease-out;"></div></div>
-                    </div>
-                    
-                    <div class="mb-1">
-                        <div class="flex justify-between text-muted mb-1" style="font-size: 0.85rem; font-family: var(--font-mono);">
-                            <span>Authentication</span><span id="skill-auth-text">0%</span>
-                        </div>
-                        <div class="progress-bar"><div id="skill-auth-bar" class="progress-fill" style="width: 0%; background-color: var(--accent-green); transition: width 1s ease-out;"></div></div>
-                    </div>
-                </div>
-
+            <div class="grid grid-cols-1 gap-2">
                 <div class="card flex-col gap-1">
-                    <h3>Recent Labs</h3>
-                    
-                    <div id="recent-lab-container" style="border-left: 2px solid var(--accent-blue); padding-left: 1rem; transition: border-color 0.5s;">
-                        <h4 style="margin:0;"><a href="/lab-detail.html">SecureShop Web Security Lab</a></h4>
-                        <p id="recent-lab-status" class="text-muted" style="font-size: 0.85rem; margin-top: 0.2rem;">In Progress</p>
-                    </div>
-
-                    <h3 class="mt-1">Recommended Labs</h3>
-                    
-                    <div style="border-left: 2px solid var(--accent-orange); padding-left: 1rem;">
-                        <h4 style="margin:0; opacity: 0.5;"><a href="/coming-soon.html" style="color:inherit;text-decoration:none;">Advanced SQL Injection (Coming Soon)</a></h4>
-                        <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.2rem;">Intermediate</p>
+                    <h3>Recent Operations (Orders)</h3>
+                    <p class="text-muted" style="font-size: 0.85rem;">Live view of your backend database interactions.</p>
+                    <div id="recent-operations-list" style="border-left: 2px solid var(--accent-blue); padding-left: 1rem; transition: border-color 0.5s;">
+                        <!-- Injected via JS -->
                     </div>
                 </div>
             </div>
@@ -107,7 +74,7 @@
             window.requestAnimationFrame(step);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const token = getToken();
             if (!token) {
                 window.location.href = '/login.html';
@@ -124,48 +91,40 @@
                 console.log("Could not decode token for username.");
             }
 
-            // Track Live Progress
-            const lab1Completed = localStorage.getItem('lab1_completed') === 'true';
+            // Fetch Real Stats from Backend
+            try {
+                const userRes = await fetchWithAuth(`${API_BASE}/users/me`);
+                if (userRes && userRes.ok) {
+                    const user = await userRes.json();
+                    document.getElementById('stat-clearance').textContent = user.role || 'USER';
+                }
 
-            if (lab1Completed) {
-                document.getElementById('stat-completed').style.color = 'var(--accent-green)';
-                document.getElementById('stat-progress').style.color = 'var(--text-muted)';
-                animateValue('stat-completed', 0, 1, 1000);
-                animateValue('stat-progress', 1, 0, 1000);
-                
-                // Update Recent Lab UI
-                document.getElementById('recent-lab-container').style.borderColor = 'var(--accent-green)';
-                document.getElementById('recent-lab-status').textContent = 'Completed';
-                document.getElementById('recent-lab-status').style.color = 'var(--accent-green)';
+                const ordersRes = await fetchWithAuth(`${API_BASE}/orders`);
+                if (ordersRes && ordersRes.ok) {
+                    const orders = await ordersRes.json();
+                    
+                    animateValue('stat-orders', 0, orders.length, 1000);
+                    
+                    const totalQty = orders.reduce((sum, o) => sum + o.quantity, 0);
+                    animateValue('stat-items', 0, totalQty, 1000);
 
-                // Animate Skills
-                document.getElementById('skill-web-bar').style.width = '100%';
-                animateValue('skill-web-text', 0, 100, 1000, true);
-                
-                document.getElementById('skill-api-bar').style.width = '40%';
-                animateValue('skill-api-text', 0, 40, 1000, true);
-
-                document.getElementById('skill-auth-bar').style.width = '60%';
-                animateValue('skill-auth-text', 0, 60, 1000, true);
-                
-                animateValue('stat-areas', 0, 4, 1000);
-            } else {
-                animateValue('stat-completed', 0, 0, 1000);
-                animateValue('stat-progress', 0, 0, 1000);
-                
-                document.getElementById('recent-lab-status').textContent = 'Not Started';
-                
-                // Animate Skills
-                document.getElementById('skill-web-bar').style.width = '0%';
-                animateValue('skill-web-text', 0, 0, 1000, true);
-                
-                document.getElementById('skill-api-bar').style.width = '0%';
-                animateValue('skill-api-text', 0, 0, 1000, true);
-
-                document.getElementById('skill-auth-bar').style.width = '0%';
-                animateValue('skill-auth-text', 0, 0, 1000, true);
-                
-                animateValue('stat-areas', 0, 0, 1000);
+                    const opsList = document.getElementById('recent-operations-list');
+                    if (orders.length === 0) {
+                        opsList.innerHTML = '<p class="text-muted" style="font-style: italic;">No database operations recorded yet.</p>';
+                    } else {
+                        opsList.innerHTML = '';
+                        orders.slice(0, 5).forEach(o => {
+                            opsList.innerHTML += `
+                                <div style="margin-bottom: 0.8rem;">
+                                    <h4 style="margin:0; font-family: var(--font-mono); color: var(--text-main);">>_ POST /api/orders [ID: ${o.id}]</h4>
+                                    <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.2rem;">Target Product: ${o.product_id} | Qty: ${o.quantity}</p>
+                                </div>
+                            `;
+                        });
+                    }
+                }
+            } catch(e) {
+                console.error("Failed to fetch real stats", e);
             }
         });
     </script>

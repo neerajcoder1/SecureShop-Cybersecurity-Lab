@@ -74,20 +74,11 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-2">
-                <!-- Lab Progress History -->
+            <div class="grid grid-cols-1 gap-2">
+                <!-- IDOR Testing Area (Real History) -->
                 <div class="card">
-                    <h3 class="mb-1">Lab History</h3>
-                    <p class="text-muted mb-1" style="font-size: 0.85rem;">Your completed cybersecurity modules.</p>
-                    <div id="lab-history-list">
-                        <!-- Injected via JS -->
-                    </div>
-                </div>
-
-                <!-- IDOR Testing Area -->
-                <div class="card">
-                    <h3 class="mb-1">IDOR Arena (Orders)</h3>
-                    <p class="text-muted mb-1" style="font-size: 0.85rem;">Attempt to fetch other users' orders using Burp Suite or browser tools to test Broken Access Control.</p>
+                    <h3 class="mb-1">Active Operations (Orders)</h3>
+                    <p class="text-muted mb-1" style="font-size: 0.85rem;">Live trace of your API payloads and database interactions.</p>
                     <div id="orders-list" class="flex-col gap-1 mt-1">
                         <!-- Injected via JS -->
                     </div>
@@ -132,29 +123,9 @@
                     <div class="id-row" style="border:none;"><span class="id-label">Clearance</span><span class="id-value">${role.toUpperCase()}</span></div>
                 `;
 
-                // Update Level based on Lab Progress
-                const lab1Completed = localStorage.getItem('lab1_completed') === 'true';
                 const badge = document.getElementById('user-badge');
-                const historyList = document.getElementById('lab-history-list');
-
-                if (lab1Completed) {
-                    badge.className = 'badge badge-beginner';
-                    badge.textContent = '🏆 Web Security Novice (Level 1)';
-                    
-                    historyList.innerHTML = `
-                        <div class="history-item flex justify-between items-center" style="border-left: 3px solid #2ea043;">
-                            <div>
-                                <div style="font-weight: 600; color: #c9d1d9;">SecureShop Auth Bypass</div>
-                                <div style="font-size: 0.8rem; color: #8b949e;">Module 01</div>
-                            </div>
-                            <span class="badge badge-beginner" style="background:transparent; border:none; color: #2ea043;">Completed</span>
-                        </div>
-                    `;
-                } else {
-                    badge.className = 'badge badge-info';
-                    badge.textContent = 'Unranked (Level 0)';
-                    historyList.innerHTML = `<p class="text-muted" style="font-style: italic;">No audit history found.</p>`;
-                }
+                badge.className = 'badge badge-info';
+                badge.textContent = `LEVEL ${id}`;
 
             } catch (e) {
                 console.error("Profile load error", e);
