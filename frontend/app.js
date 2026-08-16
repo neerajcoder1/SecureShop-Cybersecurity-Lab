@@ -18,7 +18,7 @@ function updateNav() {
   const nav = document.getElementById("main-nav");
   if (!nav) return;
 
-  const themeBtn = `<a href="#" onclick="toggleTheme(); return false;" class="btn-nav" style="border:none; padding:0.4rem; font-size:1.2rem;" title="Toggle Theme">🌓</a>`;
+  const themeBtn = `<a href="#" onclick="toggleTheme(); return false;" class="theme-toggle-btn" title="Toggle Theme"><span class="theme-toggle-icon"></span></a>`;
 
   if (token) {
     nav.innerHTML = `
