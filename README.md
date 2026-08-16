@@ -185,17 +185,76 @@ Security Reporting
 | **Security Headers**  | Inspect browser security controls         |
 
 ```
-# SQLMAP -
-<img width="957" height="395" alt="Screenshot 2026-08-15 122948" src="https://github.com/user-attachments/assets/45c2cdc5-2f7d-4ec9-872d-7d95a1500686" />
-
----
-
- <img width="957" height="395" alt="Screenshot 2026-08-15 124436" src="https://github.com/user-attachments/assets/7c27e419-b8fd-4f49-9157-f84782885977" />
-
----
-
-<img width="1919" height="882" alt="image" src="https://github.com/user-attachments/assets/71b55632-cecd-445d-9107-a2bcf4916d21" />
-
  ---
+ ## Project Roadmap
+
+SecureShop is the first lab in a growing open-source cybersecurity learning platform.
+
+### Phase 1 — SecureShop Lab Foundation
+**CURRENT — Building Now**
+
+Professional UI/UX, interactive testing environment, security documentation, and the core SecureShop cybersecurity lab.
+
+---
+
+### Phase 2 — Interactive Challenge Engine
+**COMING NEXT**
+
+Turn security testing into structured challenges with:
+
+- Interactive objectives
+- Challenge scenarios
+- Flags
+- Automated validation
+- Hints
+- Difficulty levels
+- Progress tracking
+
+---
+
+### Phase 3 — More Security Labs
+**ON THE HORIZON**
+
+Expand beyond SecureShop with dedicated labs for:
+
+- SQL Injection
+- XSS
+- IDOR
+- Authentication
+- JWT
+- API Security
+- CORS
+- File Upload Security
+- Command Injection
+- Web Reconnaissance
+
+---
+
+### Phase 4 — Cybersecurity Learning Platform
+**IN THE PIPELINE**
+
+Build the platform layer:
+
+- Learning paths
+- User progress
+- XP and achievements
+- Badges
+- Leaderboards
+- Challenge history
+- Beginner → Advanced tracks
+
+---
+
+### Phase 5 — Open-Source Security Ecosystem
+**LONG-TERM VISION**
+
+Create a community-driven cybersecurity practice ecosystem:
+
+- Community-created labs
+- Lab contributions
+- CTF-style environments
+- Advanced security challenges
+- Educational resources
+- Contributor recognition
 
 
