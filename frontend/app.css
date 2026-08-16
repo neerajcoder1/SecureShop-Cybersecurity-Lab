@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  /* Color Palette */
+  /* Dark Color Palette (Default) */
   --bg-dark: #0f1115;
   --bg-panel: #161b22;
   --bg-card: #1c2128;
@@ -21,6 +21,26 @@
 
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+:root[data-theme="light"] {
+  /* Light Color Palette */
+  --bg-dark: #f6f8fa;
+  --bg-panel: #ffffff;
+  --bg-card: #ffffff;
+  --border-subtle: #d0d7de;
+  --border-active: #8c959f;
+  
+  --text-main: #24292f;
+  --text-muted: #57606a;
+  --text-heading: #0969da;
+  
+  --accent-blue: #0969da;
+  --accent-blue-hover: #0349b4;
+  --accent-green: #1a7f37;
+  --accent-green-hover: #115e26;
+  --accent-red: #cf222e;
+  --accent-orange: #9a6700;
 }
 
 body {

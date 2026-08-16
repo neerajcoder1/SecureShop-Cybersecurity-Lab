@@ -18,6 +18,8 @@ function updateNav() {
   const nav = document.getElementById("main-nav");
   if (!nav) return;
 
+  const themeBtn = `<a href="#" onclick="toggleTheme(); return false;" class="btn-nav" style="border:none; padding:0.4rem; font-size:1.2rem;" title="Toggle Theme">🌓</a>`;
+
   if (token) {
     nav.innerHTML = `
             <a href="/index.html">Home</a>
@@ -26,6 +28,7 @@ function updateNav() {
             <a href="/dashboard.html">Dashboard</a>
             <a href="/profile.html">Profile</a>
             <a href="#" onclick="logout()" class="btn-nav">Logout</a>
+            ${themeBtn}
         `;
   } else {
     nav.innerHTML = `
@@ -35,6 +38,7 @@ function updateNav() {
             <a href="/docs.html">Docs</a>
             <a href="https://github.com/neerajcoder1/SecureShop-Cybersecurity-Lab" target="_blank">GitHub</a>
             <a href="/login.html" class="btn-nav">Login / Register</a>
+            ${themeBtn}
         `;
   }
 }
@@ -69,6 +73,21 @@ async function fetchWithAuth(url, options = {}) {
 
   return response;
 }
+
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+}
+
+// Initialize theme immediately to prevent flashing
+initTheme();
 
 document.addEventListener("DOMContentLoaded", () => {
   updateNav();
