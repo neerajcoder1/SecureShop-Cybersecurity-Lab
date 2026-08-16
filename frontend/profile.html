@@ -15,38 +15,161 @@
       <nav id="main-nav"></nav>
     </header>
 
+    <style>
+        .hacker-card {
+            background: linear-gradient(145deg, var(--bg-card), var(--bg-panel));
+            border: 1px solid var(--border-subtle);
+            border-left: 4px solid var(--accent-blue);
+            border-radius: 12px;
+            padding: 2rem;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: perspective(1000px) rotateX(2deg) rotateY(-2deg);
+            box-shadow: 20px 20px 40px rgba(0,0,0,0.2), -10px -10px 20px rgba(255,255,255,0.02);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-bottom: 2rem;
+        }
+        .hacker-card:hover {
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 0 20px rgba(88, 166, 255, 0.2);
+            border-left-color: var(--accent-green);
+        }
+        .hacker-card::after {
+            content: '';
+            position: absolute;
+            top: 10px; right: 10px;
+            width: 50px; height: 50px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="%2358a6ff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>') no-repeat center;
+            opacity: 0.1;
+            transform: translateZ(20px);
+        }
+        .id-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 0.5rem;
+        }
+        .id-label { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
+        .id-value { font-family: var(--font-mono); font-weight: 600; color: var(--text-main); }
+        .history-item {
+            background: rgba(13,17,23,0.5);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .history-item:hover {
+            transform: translateX(5px);
+            border-color: var(--accent-green);
+        }
+    </style>
+
     <div class="container layout-sidebar">
         
         <div class="sidebar-nav card">
             <h3 class="mb-1">Account settings</h3>
             <a href="/dashboard.html">Dashboard</a>
-            <a href="/profile.html" class="active">Profile & Orders</a>
+            <a href="/profile.html" class="active">Profile & History</a>
             <a href="#" onclick="logout()">Sign out</a>
         </div>
 
         <div>
-            <h2><span class="logo-icon">#</span> Identity Information</h2>
-            <div id="profile-info" class="card mt-1 mb-2 terminal"></div>
+            <!-- 3D Hacker ID Card -->
+            <div class="hacker-card">
+                <h2 style="margin-top: 0; color: var(--accent-blue); display: flex; justify-content: space-between;">
+                    <span><span class="logo-icon">#</span> Operative Identity</span>
+                    <span id="user-badge" class="badge badge-info" style="font-size: 0.8rem; transform: translateZ(10px);">Unranked</span>
+                </h2>
+                <div id="profile-info" class="mt-2" style="transform: translateZ(15px);">
+                    <!-- Injected via JS -->
+                    <p class="text-muted">Decrypting identity matrix...</p>
+                </div>
+            </div>
 
-            <h2><span class="logo-icon">#</span> Order History & IDOR Testing</h2>
-            <p class="text-muted mb-1">Attempt to fetch other users' orders using Burp Suite or the browser tools.</p>
-            <div id="orders-list" class="grid gap-1 mt-1"></div>
+            <div class="grid grid-cols-2 gap-2">
+                <!-- Lab Progress History -->
+                <div class="card">
+                    <h3 class="mb-1"><span class="logo-icon">></span> Lab History</h3>
+                    <p class="text-muted mb-1" style="font-size: 0.85rem;">Your completed cybersecurity modules.</p>
+                    <div id="lab-history-list">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <!-- IDOR Testing Area -->
+                <div class="card">
+                    <h3 class="mb-1"><span class="logo-icon">></span> IDOR Arena (Orders)</h3>
+                    <p class="text-muted mb-1" style="font-size: 0.85rem;">Attempt to fetch other users' orders using Burp Suite or browser tools to test Broken Access Control.</p>
+                    <div id="orders-list" class="flex-col gap-1 mt-1">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         async function loadProfile() {
             try {
-                const res = await fetchWithAuth(`${API_BASE}/users/me`);
-                if (res && res.ok) {
-                    const user = await res.json();
-                    const container = document.getElementById('profile-info');
-                    
-                    container.appendChild(safeCreateElement('div', `ID:       ${user.id}`));
-                    container.appendChild(safeCreateElement('div', `USERNAME: ${user.username}`));
-                    container.appendChild(safeCreateElement('div', `EMAIL:    ${user.email}`));
-                    container.appendChild(safeCreateElement('div', `ROLE:     ${user.role || 'user'}`));
+                // Fallback username if API fails
+                let username = 'Learner';
+                let email = 'Unknown';
+                let id = '001';
+                let role = 'user';
+
+                const token = getToken();
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    if (payload.sub) username = payload.sub;
+                } catch(e) {}
+
+                try {
+                    const res = await fetchWithAuth(`${API_BASE}/users/me`);
+                    if (res && res.ok) {
+                        const user = await res.json();
+                        id = user.id;
+                        username = user.username;
+                        email = user.email;
+                        role = user.role || 'user';
+                    }
+                } catch(e) {
+                    console.log("Using fallback profile data.");
                 }
+
+                const container = document.getElementById('profile-info');
+                container.innerHTML = `
+                    <div class="id-row"><span class="id-label">Operative ID</span><span class="id-value">OP-${String(id).padStart(4, '0')}</span></div>
+                    <div class="id-row"><span class="id-label">Handle</span><span class="id-value" style="color: var(--accent-blue);">${username}</span></div>
+                    <div class="id-row"><span class="id-label">Comms</span><span class="id-value">${email}</span></div>
+                    <div class="id-row" style="border:none;"><span class="id-label">Clearance</span><span class="id-value">${role.toUpperCase()}</span></div>
+                `;
+
+                // Update Level based on Lab Progress
+                const lab1Completed = localStorage.getItem('lab1_completed') === 'true';
+                const badge = document.getElementById('user-badge');
+                const historyList = document.getElementById('lab-history-list');
+
+                if (lab1Completed) {
+                    badge.className = 'badge badge-beginner';
+                    badge.textContent = '🏆 Web Security Novice (Level 1)';
+                    
+                    historyList.innerHTML = `
+                        <div class="history-item flex justify-between items-center" style="border-left: 3px solid var(--accent-green);">
+                            <div>
+                                <div style="font-weight: 600;">SecureShop Auth Bypass</div>
+                                <div class="text-muted" style="font-size: 0.8rem;">Module 01</div>
+                            </div>
+                            <span class="badge badge-beginner" style="background:transparent; border:none;">Completed</span>
+                        </div>
+                    `;
+                } else {
+                    badge.className = 'badge badge-info';
+                    badge.textContent = 'Unranked (Level 0)';
+                    historyList.innerHTML = `<p class="text-muted" style="font-style: italic;">No audit history found.</p>`;
+                }
+
             } catch (e) {
                 console.error("Profile load error", e);
             }
@@ -60,26 +183,23 @@
                     const container = document.getElementById('orders-list');
                     
                     if (orders.length === 0) {
-                        container.appendChild(safeCreateElement('p', 'No orders found in database.', 'text-muted'));
+                        container.innerHTML = '<div class="terminal text-muted" style="font-size:0.85rem;">[+] Database scan complete: No active orders found for this identity.</div>';
                         return;
                     }
 
+                    container.innerHTML = ''; // clear
                     orders.forEach(o => {
-                        const div = safeCreateElement('div', null, 'card flex justify-between items-center');
+                        const div = document.createElement('div');
+                        div.className = 'history-item flex justify-between items-center';
+                        div.style.borderLeft = '3px solid var(--accent-orange)';
                         
-                        const info = safeCreateElement('div');
-                        info.appendChild(safeCreateElement('div', `Order ID: ${o.id}`, 'terminal'));
-                        info.appendChild(safeCreateElement('div', `Product ID: ${o.product_id} | Qty: ${o.quantity}`, 'text-muted'));
-                        
-                        const badge = safeCreateElement('span', o.status, 'badge badge-info mt-1');
-                        info.appendChild(badge);
-                        
-                        div.appendChild(info);
-                        
-                        const verifyBtn = safeCreateElement('button', 'Test IDOR Protection', 'btn btn-outline');
-                        verifyBtn.onclick = () => fetchOrderDetails(o.id);
-                        div.appendChild(verifyBtn);
-
+                        div.innerHTML = `
+                            <div>
+                                <div class="terminal" style="font-size: 0.85rem; color: var(--accent-orange);">Order #${o.id}</div>
+                                <div class="text-muted" style="font-size: 0.8rem;">Prod: ${o.product_id} | Qty: ${o.quantity}</div>
+                            </div>
+                            <button class="btn btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;" onclick="fetchOrderDetails(${o.id})">Intercept</button>
+                        `;
                         container.appendChild(div);
                     });
                 }
