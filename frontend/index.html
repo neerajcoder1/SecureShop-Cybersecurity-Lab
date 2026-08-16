@@ -38,7 +38,7 @@
       <div class="container grid grid-cols-2 gap-2 items-center">
         <div style="text-align: left;">
           <style>
-            @keyframes blink { 50% { border-color: transparent; } }
+            @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
           </style>
           <h1 id="hero-title" style="font-size: 3.5rem; line-height: 1.1; min-height: 3.5em; margin-bottom: 0;"></h1>
           <p style="margin: 1.5rem 0; font-size: 1.2rem; max-width: 90%;">SecureShop is an open-source cybersecurity laboratory designed for hands-on web application security practice in an authorized environment.</p>
@@ -281,7 +281,7 @@
 
         function typeChar() {
             if (lineIdx >= lines.length) {
-                titleEl.innerHTML = currentHTML + '<span style="border-right: 0.1em solid var(--accent-green); animation: blink 1s step-end infinite;">&nbsp;</span>';
+                titleEl.innerHTML = currentHTML + '<span style="color: var(--accent-green); animation: blink 1s step-end infinite; font-weight: 400;">_</span>';
                 return;
             }
             
@@ -295,7 +295,7 @@
                 if (lineIdx === 2 && charIdx === line.length - 1) currentHTML += '</span>';
                 
                 charIdx++;
-                titleEl.innerHTML = currentHTML + '<span style="border-right: 0.1em solid var(--accent-green); animation: blink 1s step-end infinite;">&nbsp;</span>';
+                titleEl.innerHTML = currentHTML + '<span style="color: var(--accent-green); animation: blink 1s step-end infinite; font-weight: 400;">_</span>';
                 
                 setTimeout(typeChar, 30 + Math.random() * 40);
             } else {
