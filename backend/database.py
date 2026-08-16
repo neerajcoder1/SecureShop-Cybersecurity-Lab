@@ -76,6 +76,18 @@ def init_db():
         )
     ''')
 
+    # User Challenges Table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS user_challenges (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            challenge_id INTEGER NOT NULL,
+            completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(user_id) REFERENCES users(id),
+            UNIQUE(user_id, challenge_id)
+        )
+    ''')
+
     # Insert dummy products if none exist
     cursor.execute("SELECT COUNT(*) as count FROM products")
 

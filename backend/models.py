@@ -43,3 +43,20 @@ class ReviewResponse(BaseModel):
     product_id: int
     rating: int
     comment: Optional[str]
+
+class Challenge(BaseModel):
+    id: int
+    title: str
+    description: str
+    hint: str
+    difficulty: str
+    completed: bool = False
+
+class ChallengeSubmit(BaseModel):
+    challenge_id: int
+    flag: str
+
+class ChallengeResponse(BaseModel):
+    success: bool
+    message: str
+    badge_awarded: Optional[str] = None

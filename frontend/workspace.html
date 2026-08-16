@@ -49,6 +49,13 @@
                     </div>
                 </div>
 
+                <div class="card mb-1">
+                    <h3 class="mb-1">Challenges</h3>
+                    <div id="challenge-list" class="sidebar-nav">
+                        <div class="text-muted" style="font-size:0.85rem;">Loading...</div>
+                    </div>
+                </div>
+
                 <div class="card" id="progress-card">
                     <h3 class="mb-1">Lab Progress</h3>
                     <div class="progress-bar mb-1"><div class="progress-fill" id="lab-progress" style="width: 0%; transition: width 1s ease-in-out;"></div></div>
@@ -56,38 +63,14 @@
                         <span>Completion</span>
                         <span id="lab-percent">0%</span>
                     </div>
-                    <div id="badge-container" class="mt-1" style="display: none; text-align: center;">
-                        <span class="badge badge-beginner" style="font-size: 0.9rem; padding: 0.4rem 0.8rem;">🏆 Web Security Novice</span>
-                    </div>
                 </div>
             </div>
 
             <div>
-                <div class="challenge-card mb-2" id="challenge-card">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="terminal text-muted">CHALLENGE #01</span>
-                        <span id="challenge-status" class="badge badge-advanced" style="background:transparent; border-color:var(--text-muted); color:var(--text-muted);">Not Completed</span>
-                    </div>
-                    <h3 class="mb-1">Authentication Bypass Testing</h3>
-                    <p class="text-muted mb-1">Determine whether the application's authentication controls correctly reject invalid credentials or if they can be bypassed using SQL injection or malformed tokens.</p>
-                    <div class="flex gap-1 mt-1">
-                        <button class="btn btn-outline" onclick="showHint()">View Hint</button>
-                        <button class="btn btn-primary" onclick="attemptSubmit()">Submit Result</button>
-                    </div>
-                    
-                    <!-- Hidden Hint Box -->
-                    <div id="hint-box" class="mt-1" style="display: none; padding: 1rem; border-left: 3px solid var(--accent-orange); background: var(--bg-dark); font-size: 0.9rem;">
-                        <strong style="color: var(--accent-orange);">Hint:</strong> Open the Web Terminal below and type <code>curl /products</code> to observe how the API responds. Next, try running <code>sqlmap -u /login</code> to test the login portal for injection flaws.
-                    </div>
-
-                    <!-- Hidden Completion Report -->
-                    <div id="report-box" class="mt-1" style="display: none; padding: 1.5rem; border: 1px solid var(--accent-green); border-radius: 6px; background: rgba(35, 134, 54, 0.05);">
-                        <h3 style="color: var(--accent-green); margin-bottom: 0.5rem;">🎉 Challenge Completed!</h3>
-                        <p class="text-muted mb-1"><strong>Level:</strong> 1 (Beginner)</p>
-                        <p class="text-muted mb-1"><strong>Badge Awarded:</strong> 🏆 Web Security Novice</p>
-                        <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 1rem 0;">
-                        <p class="text-muted mb-2" style="font-size: 0.9rem;"><strong>Validation Report:</strong> You have successfully audited the authentication mechanisms. The backend properly parameterizes SQL queries and utilizes secure JWT validation, preventing unauthorized bypass.</p>
-                        <a href="/coming-soon.html" class="btn btn-primary" style="display: inline-block;">Proceed to Next Level ➔</a>
+                <div id="dynamic-challenge-container">
+                    <div class="card text-center text-muted" style="padding: 3rem; margin-bottom: 1rem;">
+                        <h3 style="color: var(--text-heading);">Select a Challenge</h3>
+                        <p>Choose a challenge from the sidebar to begin your engagement.</p>
                     </div>
                 </div>
 
@@ -105,6 +88,9 @@ Run 'submit_report' to validate the challenge.
         </div>
     </div>
     <script>
+        let allChallenges = [];
+        let currentChallengeId = null;
+
         function printTerm(text, className = '') {
             const out = document.getElementById('term-out');
             const span = document.createElement('span');
@@ -114,10 +100,132 @@ Run 'submit_report' to validate the challenge.
             out.scrollTop = out.scrollHeight;
         }
 
-        let labState = {
-            hasRunCurl: false,
-            hasRunSqlmap: false
-        };
+        async function loadChallenges() {
+            try {
+                const headers = {};
+                const token = getToken();
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+                
+                const res = await fetch(API_BASE + '/api/challenges', { headers });
+                if (!res.ok) throw new Error("Failed to load challenges");
+                
+                allChallenges = await res.json();
+                renderSidebar();
+                updateProgress();
+            } catch(e) {
+                console.error(e);
+                document.getElementById('challenge-list').innerHTML = `<div class="text-muted" style="padding: 1rem;">Error loading challenges. Is backend running?</div>`;
+            }
+        }
+
+        function renderSidebar() {
+            const listEl = document.getElementById('challenge-list');
+            listEl.innerHTML = '';
+            allChallenges.forEach(c => {
+                const a = document.createElement('a');
+                a.href = '#';
+                a.style.display = 'flex';
+                a.style.justifyContent = 'space-between';
+                a.onclick = (e) => { e.preventDefault(); selectChallenge(c.id); };
+                
+                let icon = c.completed ? '<span style="color:var(--accent-green)">✓</span>' : '<span></span>';
+                a.innerHTML = `<span>${c.title}</span> ${icon}`;
+                
+                if (c.id === currentChallengeId) a.classList.add('active');
+                listEl.appendChild(a);
+            });
+        }
+
+        function selectChallenge(id) {
+            currentChallengeId = id;
+            renderSidebar();
+            
+            const c = allChallenges.find(x => x.id === id);
+            if(!c) return;
+
+            let diffClass = c.difficulty === 'Beginner' ? 'badge-beginner' : (c.difficulty === 'Intermediate' ? 'badge-intermediate' : 'badge-advanced');
+            let statusBadge = c.completed ? `<span class="badge status-green" style="border-color:var(--accent-green);color:var(--accent-green);">Completed</span>` : `<span class="badge" style="background:transparent; border-color:var(--text-muted); color:var(--text-muted);">Not Completed</span>`;
+
+            let html = `
+                <div class="challenge-card mb-2 ${c.completed ? 'challenge-completed' : ''}" id="challenge-card">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="terminal text-muted">CHALLENGE #${c.id.toString().padStart(2, '0')}</span>
+                        ${statusBadge}
+                    </div>
+                    <h3 class="mb-1">${c.title} <span class="badge ${diffClass}" style="margin-left:0.5rem">${c.difficulty}</span></h3>
+                    <p class="text-muted mb-1">${c.description}</p>
+                    
+                    <div class="flex gap-1 mt-1">
+                        <button class="btn btn-outline" onclick="showHint()">View Hint</button>
+                    </div>
+                    
+                    <div id="hint-box" class="mt-1" style="display: none; padding: 1rem; border-left: 3px solid var(--accent-orange); background: var(--bg-dark); font-size: 0.9rem;">
+                        <strong style="color: var(--accent-orange);">Hint:</strong> ${c.hint}
+                    </div>
+                    
+                    <div id="report-box" class="mt-1" style="display: ${c.completed ? 'block' : 'none'}; padding: 1.5rem; border: 1px solid var(--accent-green); border-radius: 6px; background: rgba(35, 134, 54, 0.05);">
+                        <h3 style="color: var(--accent-green); margin-bottom: 0.5rem;">🎉 Challenge Completed!</h3>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">You have successfully validated this vulnerability.</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('dynamic-challenge-container').innerHTML = html;
+        }
+
+        function showHint() {
+            const hintBox = document.getElementById('hint-box');
+            if (hintBox) {
+                hintBox.style.display = hintBox.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        function updateProgress() {
+            const total = allChallenges.length;
+            if(total === 0) return;
+            const comp = allChallenges.filter(c => c.completed).length;
+            const pct = Math.round((comp / total) * 100);
+            document.getElementById('lab-progress').style.width = pct + '%';
+            document.getElementById('lab-percent').textContent = pct + '%';
+        }
+
+        async function submitFlag(flagStr) {
+            if(!currentChallengeId) {
+                printTerm('[-] Error: Select a challenge first.', 'term-err');
+                return;
+            }
+            printTerm(`[*] Validating flag against backend...`);
+            
+            try {
+                const headers = { 'Content-Type': 'application/json' };
+                const token = getToken();
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                const res = await fetch(API_BASE + '/api/challenges/submit', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({ challenge_id: currentChallengeId, flag: flagStr })
+                });
+                
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    printTerm(`[+] ${data.message}`, 'term-success');
+                    if(data.badge_awarded) {
+                        printTerm(`[+] Badge Unlocked: ${data.badge_awarded}`, 'term-success');
+                        showToast(`Awarded Badge: ${data.badge_awarded}`, "success");
+                    }
+                    
+                    // Mark local state as completed and refresh
+                    const c = allChallenges.find(x => x.id === currentChallengeId);
+                    if(c) c.completed = true;
+                    selectChallenge(currentChallengeId);
+                    updateProgress();
+                } else {
+                    printTerm(`[-] ${data.message || 'Validation failed.'}`, 'term-err');
+                }
+            } catch(e) {
+                printTerm(`[-] Network error occurred while validating flag.`, 'term-err');
+            }
+        }
 
         async function handleCommand(cmdStr) {
             const args = cmdStr.trim().split(' ').filter(Boolean);
@@ -128,43 +236,45 @@ Run 'submit_report' to validate the challenge.
 
             if (cmd === 'help') {
                 printTerm('Available commands:');
-                printTerm('  help          - Show this message');
-                printTerm('  clear         - Clear the terminal');
-                printTerm('  curl <url>    - Perform an HTTP GET request');
-                printTerm('  sqlmap -u <url> - Simulate SQL injection testing');
-                printTerm('  submit_report - Validate challenge completion');
+                printTerm('  help                - Show this message');
+                printTerm('  clear               - Clear the terminal');
+                printTerm('  curl <url>          - Perform an HTTP GET request');
+                printTerm('  sqlmap -u <url>     - Simulate SQL injection testing');
+                printTerm('  submit_flag <flag>  - Submit a CTF flag (e.g., submit_flag flag{...})');
             } else if (cmd === 'clear') {
                 document.getElementById('term-out').textContent = '';
-            } else if (cmd === 'submit_report') {
-                if (!labState.hasRunCurl || !labState.hasRunSqlmap) {
-                    printTerm('[-] Verification failed: Insufficient test coverage.', 'term-err');
-                    printTerm('[-] Hint: You must test the API using both curl and sqlmap before submitting.', 'term-err');
-                    showToast("[-] Please complete the required terminal commands first.", "error");
+            } else if (cmd === 'submit_flag') {
+                if (args.length < 2) {
+                    printTerm('[-] Usage: submit_flag flag{...}', 'term-err');
                     return;
                 }
-                printTerm('[*] Analyzing test coverage...', 'term-success');
-                setTimeout(() => {
-                    printTerm('[+] Verification passed. No critical vulnerabilities found.', 'term-success');
-                    printTerm('[+] Generating report...', 'term-success');
-                    validateChallenge();
-                }, 1000);
+                await submitFlag(args[1]);
             } else if (cmd === 'curl') {
-                labState.hasRunCurl = true;
                 if (args.length < 2) {
-                    printTerm('curl: try \'curl --help\' or \'curl --manual\' for more information', 'term-err');
+                    printTerm('curl: try \'curl --help\'', 'term-err');
                     return;
                 }
                 const url = args[1];
                 printTerm(`[*] Fetching ${url}...`);
                 try {
-                    const res = await fetch(url.startsWith('http') ? url : API_BASE + url);
+                    const headers = {};
+                    const token = getToken();
+                    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                    const res = await fetch(url.startsWith('http') ? url : API_BASE + url, { headers });
+                    
+                    printTerm(`HTTP/1.1 ${res.status} ${res.statusText}`, 'term-success');
+                    for (let [key, value] of res.headers.entries()) {
+                        printTerm(`${key}: ${value}`);
+                    }
+                    printTerm('');
+
                     const data = await res.text();
-                    printTerm(data);
+                    printTerm(data.length > 500 ? data.substring(0, 500) + '... (truncated)' : data);
                 } catch (e) {
-                    printTerm(`curl: (6) Could not resolve host: ${url}`, 'term-err');
+                    printTerm(`curl: Could not resolve host or fetch: ${url}`, 'term-err');
                 }
             } else if (cmd === 'sqlmap') {
-                labState.hasRunSqlmap = true;
                 printTerm('        ___');
                 printTerm('       __H__');
                 printTerm(' ___ ___[\']_____ ___ ___  {1.5.2#stable}');
@@ -172,75 +282,26 @@ Run 'submit_report' to validate the challenge.
                 printTerm('|___|_  ["]_|_|_|__,|  _|');
                 printTerm('      |_|V...       |_|   https://sqlmap.org');
                 printTerm('[*] starting @ ' + new Date().toLocaleTimeString());
-                setTimeout(() => printTerm('[*] testing connection to the target URL'), 500);
-                setTimeout(() => printTerm('[*] checking if the target is protected by some kind of WAF/IPS'), 1000);
-                setTimeout(() => printTerm('[-] all tested parameters do not appear to be injectable. The backend is properly parameterized.'), 2000);
+                setTimeout(() => printTerm('[-] Simulation only. Use curl for manual API testing and payload injection.'), 1000);
+            } else if (cmd === 'submit_report') {
+                printTerm('[-] Command deprecated. Please use: submit_flag <flag>', 'term-err');
             } else {
                 printTerm(`bash: ${cmd}: command not found`, 'term-err');
             }
         }
 
-        function showHint() {
-            const hintBox = document.getElementById('hint-box');
-            if (hintBox.style.display === 'none') {
-                hintBox.style.display = 'block';
-            } else {
-                hintBox.style.display = 'none';
-            }
-        }
-
-        function attemptSubmit() {
-            if (!labState.hasRunCurl || !labState.hasRunSqlmap) {
-                showToast("[-] Verification Failed: You have not executed the necessary tests in the Web Terminal.", "error");
-                printTerm('\n[-] UI Submission Rejected: Missing test coverage (curl/sqlmap required).', 'term-err');
-                return;
-            }
-            validateChallenge();
-        }
-
-        function validateChallenge() {
-            // Save state for dashboard tracking
-            localStorage.setItem('lab1_completed', 'true');
-
-            // Update Status Badge
-            const statusBadge = document.getElementById('challenge-status');
-            statusBadge.className = 'badge badge-beginner';
-            statusBadge.style = ''; // Remove overrides
-            statusBadge.textContent = 'Completed (Verified)';
-            statusBadge.classList.add('status-green');
-
-            // Update Card Border
-            document.getElementById('challenge-card').classList.add('challenge-completed');
-
-            // Hide hint if open
-            document.getElementById('hint-box').style.display = 'none';
-
-            // Animate Progress Bar
-            document.getElementById('lab-progress').style.width = '100%';
-            
-            // Animate Percent Text
-            let p = 0;
-            const iv = setInterval(() => {
-                p += 5;
-                document.getElementById('lab-percent').textContent = p + '%';
-                if (p >= 100) {
-                    clearInterval(iv);
-                    // Show Sidebar Badge
-                    document.getElementById('badge-container').style.display = 'block';
-                    // Show Full Report Box
-                    document.getElementById('report-box').style.display = 'block';
-                    printTerm('\n[+] Challenge #01 Completed. Badge Awarded!', 'term-success');
-                }
-            }, 50);
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('api-display').textContent = API_BASE;
-            if (getToken()) {
-                const authEl = document.getElementById('auth-status');
+            const apiDisplay = document.getElementById('api-display');
+            if (apiDisplay) apiDisplay.textContent = API_BASE;
+            
+            // Check auth status text if element exists
+            const authEl = document.getElementById('auth-status');
+            if (authEl && getToken()) {
                 authEl.className = 'status status-green';
                 authEl.textContent = 'Authenticated (JWT)';
             }
+            
+            loadChallenges();
 
             const termIn = document.getElementById('term-in');
             termIn.addEventListener('keydown', (e) => {
