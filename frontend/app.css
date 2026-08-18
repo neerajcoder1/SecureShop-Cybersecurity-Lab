@@ -105,54 +105,93 @@ pre {
 
 /* Navigation */
 header {
-  background-color: var(--bg-panel);
+  background-color: rgba(22, 27, 34, 0.85); /* Dark transparent */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-subtle);
-  padding: 1rem 1.5rem;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
+}
+
+[data-theme="light"] header {
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
 }
 
 .logo {
-  font-family: var(--font-mono);
-  font-size: 1.25rem;
+  font-family: var(--font-sans);
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--text-heading);
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  letter-spacing: -0.5px;
 }
 .logo-icon {
   color: var(--accent-blue);
+  filter: drop-shadow(0 0 8px rgba(88, 166, 255, 0.4));
 }
 
 nav#main-nav {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.8rem;
   align-items: center;
 }
 
 nav#main-nav a {
   color: var(--text-muted);
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 600;
   text-decoration: none;
+  position: relative;
+  transition: color 0.3s ease;
+  padding: 0.4rem 0;
 }
-nav#main-nav a:hover, nav#main-nav a.active {
+
+nav#main-nav a:not(.btn-nav):not(.theme-toggle-btn)::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--accent-blue);
+  transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 2px;
+}
+
+nav#main-nav a:hover:not(.btn-nav):not(.theme-toggle-btn)::after,
+nav#main-nav a.active:not(.btn-nav):not(.theme-toggle-btn)::after {
+  width: 100%;
+}
+
+nav#main-nav a:hover:not(.btn-nav), nav#main-nav a.active:not(.btn-nav) {
   color: var(--text-heading);
 }
+
 .btn-nav {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
+  background: var(--accent-blue);
+  color: #fff !important;
+  border: none;
+  padding: 0.55rem 1.4rem !important;
+  border-radius: 8px;
+  font-weight: 600 !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  box-shadow: 0 4px 12px rgba(88, 166, 255, 0.25);
+  letter-spacing: 0.2px;
 }
 .btn-nav:hover {
-  border-color: var(--accent-blue);
-  text-decoration: none !important;
+  background-color: var(--accent-blue-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(88, 166, 255, 0.4);
 }
 
 /* 3D Theme Toggle Button */
