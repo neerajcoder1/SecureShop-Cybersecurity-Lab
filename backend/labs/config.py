@@ -25,6 +25,24 @@ LABS = [
         "difficulty": "Intermediate",
         "xp_available": 450,
         "challenges_count": 4
+    },
+    {
+        "id": "auth",
+        "name": "Broken Authentication Lab",
+        "description": "Exploit weak passwords, insecure password resets, and JWT signature flaws.",
+        "category": "Authentication",
+        "difficulty": "Intermediate",
+        "xp_available": 350,
+        "challenges_count": 3
+    },
+    {
+        "id": "api",
+        "name": "API Security Lab",
+        "description": "Exploit REST API endpoints with BOLA, Mass Assignment, and Asset Management flaws.",
+        "category": "API Security",
+        "difficulty": "Intermediate",
+        "xp_available": 300,
+        "challenges_count": 3
     }
 ]
 
@@ -153,6 +171,70 @@ CHALLENGES = {
             "xp": 150,
             "flag": "flag{xss_context_attribute}",
             "badge": "🏆 Context Master"
+        }
+    ],
+    "auth": [
+        {
+            "id": 1,
+            "title": "Weak Admin Password",
+            "description": "The admin account is using a weak, easily guessable password.",
+            "hint": "Try common default passwords on the /api/labs/auth/login endpoint for the username 'admin'.",
+            "difficulty": "Beginner",
+            "xp": 50,
+            "flag": "flag{auth_weak_password}",
+            "badge": "🏆 Password Guesser"
+        },
+        {
+            "id": 2,
+            "title": "JWT Signature Bypass",
+            "description": "The application fails to verify JWT signatures properly if the algorithm is set to 'none'.",
+            "hint": "Send a GET request to /api/labs/auth/verify_token with a forged JWT where the header has alg: none and payload has role: admin.",
+            "difficulty": "Advanced",
+            "xp": 150,
+            "flag": "flag{auth_jwt_none_alg}",
+            "badge": "🏆 Token Forger"
+        },
+        {
+            "id": 3,
+            "title": "Insecure Password Reset",
+            "description": "The password reset API trusts user input for routing the reset email.",
+            "hint": "POST to /api/labs/auth/reset_password with username='admin' but change the 'email' parameter to your own.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{auth_insecure_reset}",
+            "badge": "🏆 Reset Hijacker"
+        }
+    ],
+    "api": [
+        {
+            "id": 1,
+            "title": "BOLA / IDOR",
+            "description": "Broken Object Level Authorization allows you to read private data of other users.",
+            "hint": "Fetch /api/labs/api/users/1 to see if the admin's data is exposed.",
+            "difficulty": "Beginner",
+            "xp": 100,
+            "flag": "flag{api_bola_access}",
+            "badge": "🏆 Object Breaker"
+        },
+        {
+            "id": 2,
+            "title": "Mass Assignment",
+            "description": "The profile update endpoint blindly accepts all JSON properties mapped to the user model.",
+            "hint": "Send a PUT request to /api/labs/api/profile and include '\"role\": \"admin\"' in the JSON body.",
+            "difficulty": "Intermediate",
+            "xp": 100,
+            "flag": "flag{api_mass_assignment}",
+            "badge": "🏆 Privilege Escalator"
+        },
+        {
+            "id": 3,
+            "title": "Improper Asset Management",
+            "description": "An old, deprecated API version is still running without authentication.",
+            "hint": "Try accessing the undocumented /api/labs/api/v0/debug endpoint.",
+            "difficulty": "Intermediate",
+            "xp": 100,
+            "flag": "flag{api_improper_assets}",
+            "badge": "🏆 Artifact Hunter"
         }
     ]
 }

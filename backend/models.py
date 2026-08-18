@@ -14,6 +14,14 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
+class PasswordReset(BaseModel):
+    username: str
+    email: str
+
+class ProfileUpdate(BaseModel):
+    email: Optional[EmailStr] = None
+    role: Optional[str] = None
+
 class ProductResponse(BaseModel):
     id: int
     name: str

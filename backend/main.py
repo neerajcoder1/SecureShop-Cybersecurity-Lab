@@ -646,3 +646,76 @@ def xss_lab_profile(name: str = ""):
     
     html_snippet = f'<input type="text" name="username" value="{name}">'
     return {"html_snippet": html_snippet, "flag": flag}
+
+# --- AUTHENTICATION LAB ---
+@app.post("/api/labs/auth/login")
+def auth_lab_login(user: models.UserLogin):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Weak Password"""
+    if user.username == "admin" and user.password == "admin123":
+        return {"success": True, "flag": "flag{auth_weak_password}"}
+    return {"success": False, "message": "Invalid credentials"}
+
+from fastapi import Request
+import base64
+import json
+
+@app.get("/api/labs/auth/verify_token")
+def auth_lab_verify_token(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - JWT None Algorithm"""
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing token")
+    
+    token = auth_header.split(" ")[1]
+    parts = token.split(".")
+    
+    if len(parts) < 2:
+        raise HTTPException(status_code=400, detail="Invalid token format")
+        
+    try:
+        # Decode without verification to simulate "alg: none" bypass
+        header = json.loads(base64.urlsafe_b64decode(parts[0] + "==").decode())
+        payload = json.loads(base64.urlsafe_b64decode(parts[1] + "==").decode())
+        
+        if header.get("alg", "").lower() == "none" and payload.get("role") == "admin":
+            return {"success": True, "flag": "flag{auth_jwt_none_alg}"}
+            
+        return {"success": False, "message": "Token verified, but not an admin or alg is not none."}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Error decoding token")
+
+@app.post("/api/labs/auth/reset_password")
+def auth_lab_reset_password(data: models.PasswordReset):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Insecure Password Reset"""
+    # Flaw: The API trusts the email provided by the user in the payload
+    if data.username == "admin" and data.email != "admin@secureshop.local" and "@" in data.email:
+        return {"success": True, "message": f"Password reset link sent to {data.email}", "flag": "flag{auth_insecure_reset}"}
+    return {"success": True, "message": f"Password reset link sent to {data.email}"}
+
+# --- API SECURITY LAB ---
+@app.get("/api/labs/api/users/{user_id}")
+def api_lab_get_user(user_id: int, current_user: dict = Depends(get_current_user)):
+    """INTENTIONALLY VULNERABLE ENDPOINT - BOLA / IDOR"""
+    # Flaw: Does not check if the requested user_id matches the current_user's ID
+    if user_id == 1: # Assuming user 1 is admin
+        return {"id": 1, "username": "admin", "email": "admin@secureshop.local", "role": "admin", "flag": "flag{api_bola_access}"}
+    return {"id": user_id, "message": "User data"}
+
+@app.put("/api/labs/api/profile")
+def api_lab_update_profile(profile: models.ProfileUpdate, current_user: dict = Depends(get_current_user)):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Mass Assignment"""
+    # Flaw: Blindly accepts the "role" parameter
+    if profile.role == "admin":
+        return {"success": True, "message": "Profile updated successfully.", "role": "admin", "flag": "flag{api_mass_assignment}"}
+    return {"success": True, "message": "Profile updated successfully.", "role": "user"}
+
+@app.get("/api/labs/api/v0/debug")
+def api_lab_v0_debug():
+    """INTENTIONALLY VULNERABLE ENDPOINT - Improper Asset Management"""
+    # Flaw: An unauthenticated legacy debug endpoint was left active
+    return {
+        "status": "legacy_debug_active",
+        "system_info": "Ubuntu 22.04 LTS, Python 3.10",
+        "db_connection": "sqlite:///secureshop.db",
+        "flag": "flag{api_improper_assets}"
+    }
