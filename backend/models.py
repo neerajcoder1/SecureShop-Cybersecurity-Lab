@@ -38,6 +38,18 @@ class EmailUpdate(BaseModel):
 class FetchRequest(BaseModel):
     url: str
 
+class HashRequest(BaseModel):
+    data: str
+    hash: str
+
+class CartItem(BaseModel):
+    item_id: int
+    quantity: int
+
+class TransferRequest(BaseModel):
+    account_id: int
+    amount: float
+
 class ProductResponse(BaseModel):
     id: int
     name: str

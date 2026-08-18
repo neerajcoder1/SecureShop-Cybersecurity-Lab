@@ -820,3 +820,77 @@ def network_host_header_injection(data: models.PasswordReset, request: Request):
         flag = "flag{network_host_header}"
         
     return {"success": True, "message": f"Password reset link generated: {reset_link}", "flag": flag}
+
+# --- CRYPTOGRAPHY LAB ---
+import random
+import hashlib
+
+@app.get("/api/labs/crypto/lottery")
+def crypto_lottery(guess: int = 0):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Weak RNG"""
+    # Flaw: Uses a predictable, weak pseudo-random number generator
+    random.seed(42) # Hardcoded seed makes it completely predictable
+    winning_number = random.randint(1, 1000)
+    if guess == winning_number:
+        return {"success": True, "message": "You won the lottery!", "flag": "flag{crypto_weak_rng}"}
+    return {"success": False, "message": f"Wrong guess. The winning number was {winning_number}."}
+
+@app.post("/api/labs/crypto/hash")
+def crypto_hash(data: models.HashRequest):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Insecure Hashing"""
+    # Flaw: Uses MD5 which is vulnerable to collision attacks
+    if hashlib.md5(data.data.encode()).hexdigest() == data.hash:
+        return {"success": True, "message": "Hash matched!", "flag": "flag{crypto_md5_collision}"}
+    return {"success": False, "message": "Hash mismatch!"}
+
+@app.get("/api/labs/crypto/encryption_key")
+def crypto_key(response: Response):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Hardcoded Secrets"""
+    # Flaw: Developer accidentally left the key in the headers
+    response.headers["X-Encryption-Key"] = "SuperSecretKey123!"
+    return {"success": True, "message": "API is functioning normally.", "flag": "flag{crypto_hardcoded_key}"}
+
+# --- BUSINESS LOGIC LAB ---
+import time
+
+coupon_uses = {}
+
+@app.get("/api/labs/logic/apply_coupon")
+def logic_apply_coupon(code: str, current_user: dict = Depends(get_current_user)):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Coupon Code Abuse"""
+    user_id = str(current_user['id'])
+    if code == "SAVE10":
+        uses = coupon_uses.get(user_id, 0)
+        coupon_uses[user_id] = uses + 1
+        if uses >= 3:
+            return {"success": True, "message": "Coupon applied successfully. Balance is negative!", "flag": "flag{logic_coupon_abuse}"}
+        return {"success": True, "message": f"Coupon applied. Uses: {uses + 1}"}
+    return {"success": False, "message": "Invalid coupon"}
+
+@app.post("/api/labs/logic/cart")
+def logic_cart(item: models.CartItem, current_user: dict = Depends(get_current_user)):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Trusting Client Data"""
+    # Flaw: Does not validate if quantity is positive
+    if item.quantity < 0:
+        return {"success": True, "message": "Cart updated with negative quantity! We owe you money.", "flag": "flag{logic_negative_quantity}"}
+    return {"success": True, "message": "Cart updated."}
+
+account_balances = {}
+
+@app.post("/api/labs/logic/transfer_funds")
+def logic_transfer(transfer: models.TransferRequest, current_user: dict = Depends(get_current_user)):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Race Condition (TOCTOU)"""
+    user_id = str(current_user['id'])
+    if user_id not in account_balances:
+        account_balances[user_id] = 100 # Initial balance
+        
+    balance = account_balances[user_id]
+    if balance >= transfer.amount:
+        # Flaw: Check is done here, but use is done later, allowing race conditions
+        time.sleep(0.5) # Simulate processing delay to make race window large enough
+        account_balances[user_id] -= transfer.amount
+        
+        if account_balances[user_id] < 0:
+            return {"success": True, "message": f"Funds transferred. Balance negative! ({account_balances[user_id]})", "flag": "flag{logic_race_condition}"}
+        return {"success": True, "message": f"Funds transferred successfully. Balance: {account_balances[user_id]}"}
+    return {"success": False, "message": "Insufficient funds."}

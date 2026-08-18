@@ -70,6 +70,24 @@ LABS = [
         "difficulty": "Advanced",
         "xp_available": 450,
         "challenges_count": 3
+    },
+    {
+        "id": "crypto",
+        "name": "Cryptography Lab",
+        "description": "Exploit Weak RNG, Insecure Hashing, and Hardcoded Secrets.",
+        "category": "Cryptography",
+        "difficulty": "Advanced",
+        "xp_available": 450,
+        "challenges_count": 3
+    },
+    {
+        "id": "logic",
+        "name": "Business Logic Lab",
+        "description": "Exploit Coupon Abuse, Trusting Client Data, and TOCTOU Race Conditions.",
+        "category": "Business Logic",
+        "difficulty": "Advanced",
+        "xp_available": 450,
+        "challenges_count": 3
     }
 ]
 
@@ -358,6 +376,70 @@ CHALLENGES = {
             "xp": 150,
             "flag": "flag{network_host_header}",
             "badge": "🏆 Header Hijacker"
+        }
+    ],
+    "crypto": [
+        {
+            "id": 1,
+            "title": "Weak RNG",
+            "description": "Exploit an endpoint that uses an insecure random number generator.",
+            "hint": "Call /api/labs/crypto/lottery multiple times to predict the outcome.",
+            "difficulty": "Beginner",
+            "xp": 100,
+            "flag": "flag{crypto_weak_rng}",
+            "badge": "🏆 RNG Predictor"
+        },
+        {
+            "id": 2,
+            "title": "Insecure Hashing",
+            "description": "Exploit an endpoint using an obsolete hashing algorithm (MD5) to verify data integrity.",
+            "hint": "POST /api/labs/crypto/hash with '{\"data\": \"admin\"}' and its MD5 hash.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{crypto_md5_collision}",
+            "badge": "🏆 Hash Cracker"
+        },
+        {
+            "id": 3,
+            "title": "Hardcoded Secrets",
+            "description": "Extract a hardcoded encryption key left behind in an API response.",
+            "hint": "Check the response headers or body of /api/labs/crypto/encryption_key.",
+            "difficulty": "Beginner",
+            "xp": 100,
+            "flag": "flag{crypto_hardcoded_key}",
+            "badge": "🏆 Secret Finder"
+        }
+    ],
+    "logic": [
+        {
+            "id": 1,
+            "title": "Coupon Code Abuse",
+            "description": "Apply a $10 off coupon recursively to achieve a negative balance.",
+            "hint": "Send GET /api/labs/logic/apply_coupon?code=SAVE10 multiple times.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{logic_coupon_abuse}",
+            "badge": "🏆 Discount Abuser"
+        },
+        {
+            "id": 2,
+            "title": "Trusting Client Data",
+            "description": "Submit a negative quantity to the shopping cart to decrease the total price.",
+            "hint": "POST /api/labs/logic/cart with '{\"item_id\": 1, \"quantity\": -5}'.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{logic_negative_quantity}",
+            "badge": "🏆 Negative Balance"
+        },
+        {
+            "id": 3,
+            "title": "Race Condition (TOCTOU)",
+            "description": "Exploit a Time-of-Check to Time-of-Use flaw in a simulated fund transfer.",
+            "hint": "POST /api/labs/logic/transfer_funds multiple times concurrently.",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{logic_race_condition}",
+            "badge": "🏆 Speed Racer"
         }
     ]
 }
