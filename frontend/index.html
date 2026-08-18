@@ -68,27 +68,73 @@
     <!-- HOW THE LAB WORKS -->
     <div class="container mt-2 pt-2">
       <h2 style="text-align: center; margin-bottom: 2rem;">Platform Initialization Sequence</h2>
-      <div class="pipeline-grid">
-        <div class="pipeline-node">
-          <div class="pipeline-step">[STEP 01]</div>
-          <h4 class="pipeline-title">Select Target</h4>
+      <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; flex-wrap: wrap;">
+        
+        <!-- Node 1 -->
+        <div style="flex: 1; min-width: 140px; text-align: center; padding: 1.5rem 1rem; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-subtle); border-top: 3px solid var(--accent-blue); box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.2s;">
+          <div style="background: rgba(88, 166, 255, 0.1); color: var(--accent-blue); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 1px;">[STEP 01]</div>
+          <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600;">Select Target</h4>
         </div>
-        <div class="pipeline-node">
-          <div class="pipeline-step">[STEP 02]</div>
-          <h4 class="pipeline-title">Review Intel</h4>
+
+        <!-- Arrow -->
+        <div style="color: var(--text-muted); display: flex; align-items: center; justify-content: center; min-width: 20px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
         </div>
-        <div class="pipeline-node">
-          <div class="pipeline-step">[STEP 03]</div>
-          <h4 class="pipeline-title">Execute Vectors</h4>
+
+        <!-- Node 2 -->
+        <div style="flex: 1; min-width: 140px; text-align: center; padding: 1.5rem 1rem; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-subtle); border-top: 3px solid var(--accent-blue); box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.2s;">
+          <div style="background: rgba(88, 166, 255, 0.1); color: var(--accent-blue); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 1px;">[STEP 02]</div>
+          <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600;">Review Intel</h4>
         </div>
-        <div class="pipeline-node">
-          <div class="pipeline-step">[STEP 04]</div>
-          <h4 class="pipeline-title">Compromise</h4>
+
+        <!-- Arrow -->
+        <div style="color: var(--text-muted); display: flex; align-items: center; justify-content: center; min-width: 20px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
         </div>
-        <div class="pipeline-node">
-          <div class="pipeline-step">[STEP 05]</div>
-          <h4 class="pipeline-title">Report Findings</h4>
+
+        <!-- Node 3 -->
+        <div style="flex: 1; min-width: 140px; text-align: center; padding: 1.5rem 1rem; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-subtle); border-top: 3px solid var(--accent-green); box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.2s;">
+          <div style="background: rgba(35, 134, 54, 0.1); color: var(--accent-green); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 1px;">[STEP 03]</div>
+          <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600;">Execute Vectors</h4>
         </div>
+
+        <!-- Arrow -->
+        <div style="color: var(--text-muted); display: flex; align-items: center; justify-content: center; min-width: 20px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </div>
+
+        <!-- Node 4 -->
+        <div style="flex: 1; min-width: 140px; text-align: center; padding: 1.5rem 1rem; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-subtle); border-top: 3px solid var(--accent-orange); box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.2s;">
+          <div style="background: rgba(210, 153, 34, 0.1); color: var(--accent-orange); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 1px;">[STEP 04]</div>
+          <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600;">Compromise</h4>
+        </div>
+
+        <!-- Arrow -->
+        <div style="color: var(--text-muted); display: flex; align-items: center; justify-content: center; min-width: 20px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </div>
+
+        <!-- Node 5 -->
+        <div style="flex: 1; min-width: 140px; text-align: center; padding: 1.5rem 1rem; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-subtle); border-top: 3px solid var(--text-main); box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.2s;">
+          <div style="background: rgba(201, 209, 217, 0.1); color: var(--text-main); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline><path d="M10.5 12.5L12 14l4-4"></path></svg>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 1px;">[STEP 05]</div>
+          <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600;">Report Findings</h4>
+        </div>
+
       </div>
     </div>
 
