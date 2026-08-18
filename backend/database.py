@@ -150,6 +150,25 @@ def init_db():
 
         logger.info("Inserted dummy products.")
 
+    # Insert default users if none exist
+    cursor.execute("SELECT COUNT(*) as count FROM users")
+    if cursor.fetchone()['count'] == 0:
+        from .auth import get_password_hash
+        admin_hash = get_password_hash("admin123")
+        user_hash = get_password_hash("password")
+        
+        dummy_users = [
+            ("admin", "admin@secureshop.local", admin_hash, "admin"),
+            ("user", "user@secureshop.local", user_hash, "user"),
+            ("test", "test@secureshop.local", user_hash, "user")
+        ]
+        
+        cursor.executemany(
+            "INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)",
+            dummy_users
+        )
+        logger.info("Inserted default users (admin, user, test).")
+
     conn.commit()
     conn.close()
 
