@@ -512,6 +512,17 @@ footer {
   border-left-color: var(--accent-green);
   box-shadow: 0 0 15px rgba(35, 134, 54, 0.1);
 }
+
+.pipeline-card {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease !important;
+  cursor: default;
+}
+.pipeline-card:hover {
+  transform: translateY(-8px) scale(1.03) !important;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important;
+  z-index: 10;
+}
+
 .pipeline-step {
   font-family: var(--font-mono);
   font-size: 0.9rem;
