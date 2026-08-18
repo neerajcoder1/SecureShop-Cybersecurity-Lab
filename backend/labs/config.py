@@ -43,6 +43,24 @@ LABS = [
         "difficulty": "Intermediate",
         "xp_available": 300,
         "challenges_count": 3
+    },
+    {
+        "id": "authz",
+        "name": "Authorization Lab",
+        "description": "Exploit Missing Function Level Access Control, IDOR modification, and Parameter Tampering.",
+        "category": "Authorization",
+        "difficulty": "Advanced",
+        "xp_available": 450,
+        "challenges_count": 3
+    },
+    {
+        "id": "browser",
+        "name": "Browser Security Lab",
+        "description": "Exploit Open Redirects, CORS misconfigurations, and Cross-Site Request Forgery (CSRF).",
+        "category": "Browser Security",
+        "difficulty": "Intermediate",
+        "xp_available": 350,
+        "challenges_count": 3
     }
 ]
 
@@ -235,6 +253,70 @@ CHALLENGES = {
             "xp": 100,
             "flag": "flag{api_improper_assets}",
             "badge": "🏆 Artifact Hunter"
+        }
+    ],
+    "authz": [
+        {
+            "id": 1,
+            "title": "Missing Function Level Access Control",
+            "description": "Access a restricted administrative endpoint without actually having an admin token.",
+            "hint": "Try sending a GET request to /api/labs/authz/admin_panel.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{authz_missing_flac}",
+            "badge": "🏆 Function Bypass"
+        },
+        {
+            "id": 2,
+            "title": "IDOR - Modification",
+            "description": "Modify another user's support ticket by tampering with the ID.",
+            "hint": "Send a PUT request to /api/labs/authz/tickets/1 with a JSON body to modify the admin's ticket.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{authz_idor_modification}",
+            "badge": "🏆 Ticket Tamperer"
+        },
+        {
+            "id": 3,
+            "title": "Parameter Tampering",
+            "description": "Exploit an insecure checkout endpoint by changing the total price of your cart.",
+            "hint": "Send a POST request to /api/labs/authz/checkout with '\"total_price\": 0' in the JSON body.",
+            "difficulty": "Advanced",
+            "xp": 150,
+            "flag": "flag{authz_param_tampering}",
+            "badge": "🏆 Discount Hacker"
+        }
+    ],
+    "browser": [
+        {
+            "id": 1,
+            "title": "Open Redirect",
+            "description": "Exploit a vulnerable redirect endpoint to redirect a victim to an external, malicious site.",
+            "hint": "Send a GET request to /api/labs/browser/redirect?url=http://evil.com",
+            "difficulty": "Beginner",
+            "xp": 100,
+            "flag": "flag{browser_open_redirect}",
+            "badge": "🏆 Traffic Controller"
+        },
+        {
+            "id": 2,
+            "title": "CORS Misconfiguration",
+            "description": "Find an endpoint that improperly reflects the Origin header, allowing attackers to steal data via cross-origin requests.",
+            "hint": "Send a GET request to /api/labs/browser/cors_data with an 'Origin: http://evil.com' header.",
+            "difficulty": "Intermediate",
+            "xp": 100,
+            "flag": "flag{browser_cors_misconfig}",
+            "badge": "🏆 Origin Spoof"
+        },
+        {
+            "id": 3,
+            "title": "Cross-Site Request Forgery (CSRF)",
+            "description": "Exploit a state-changing endpoint that lacks an Anti-CSRF token.",
+            "hint": "Send a POST request to /api/labs/browser/update_email with '\"email\": \"hacker@evil.com\"' but NO csrf_token parameter.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{browser_csrf_bypass}",
+            "badge": "🏆 Request Forger"
         }
     ]
 }

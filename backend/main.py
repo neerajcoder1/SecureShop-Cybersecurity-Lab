@@ -719,3 +719,56 @@ def api_lab_v0_debug():
         "db_connection": "sqlite:///secureshop.db",
         "flag": "flag{api_improper_assets}"
     }
+
+# --- AUTHORIZATION LAB ---
+@app.get("/api/labs/authz/admin_panel")
+def authz_admin_panel(current_user: dict = Depends(get_current_user)):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Missing Function Level Access Control"""
+    # Flaw: No check for current_user['role'] == 'admin'
+    return {"message": "Welcome to the secret admin panel!", "flag": "flag{authz_missing_flac}"}
+
+@app.put("/api/labs/authz/tickets/{ticket_id}")
+def authz_update_ticket(ticket_id: int, ticket: models.TicketUpdate, current_user: dict = Depends(get_current_user)):
+    """INTENTIONALLY VULNERABLE ENDPOINT - IDOR Modification"""
+    # Flaw: Does not check if the ticket belongs to the current user
+    if ticket_id == 1: # Admin's ticket
+        return {"success": True, "message": "Admin ticket updated!", "flag": "flag{authz_idor_modification}"}
+    return {"success": True, "message": f"Ticket {ticket_id} updated!"}
+
+@app.post("/api/labs/authz/checkout")
+def authz_checkout(cart: models.Checkout, current_user: dict = Depends(get_current_user)):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Parameter Tampering"""
+    # Flaw: Trusts the total_price parameter sent by the client
+    if cart.total_price <= 0:
+        return {"success": True, "message": "Order placed for free!", "flag": "flag{authz_param_tampering}"}
+    return {"success": True, "message": f"Order placed for ${cart.total_price}!"}
+
+# --- BROWSER SECURITY LAB ---
+from fastapi.responses import RedirectResponse
+
+@app.get("/api/labs/browser/redirect")
+def browser_redirect(url: str = ""):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Open Redirect"""
+    if "evil.com" in url.lower() or "hacker" in url.lower():
+        return {"success": True, "flag": "flag{browser_open_redirect}", "redirect_to": url}
+    return RedirectResponse(url="/" if not url else url)
+
+@app.get("/api/labs/browser/cors_data")
+def browser_cors_data(request: Request, response: Response):
+    """INTENTIONALLY VULNERABLE ENDPOINT - CORS Misconfiguration"""
+    origin = request.headers.get("Origin")
+    if origin:
+        # Flaw: Improperly reflects any origin
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        if "evil.com" in origin.lower() or "hacker" in origin.lower():
+            return {"secret_data": "This is sensitive user data.", "flag": "flag{browser_cors_misconfig}"}
+    return {"secret_data": "This is sensitive user data."}
+
+@app.post("/api/labs/browser/update_email")
+def browser_update_email(data: models.EmailUpdate, current_user: dict = Depends(get_current_user)):
+    """INTENTIONALLY VULNERABLE ENDPOINT - CSRF"""
+    # Flaw: Does not validate data.csrf_token, relies solely on Bearer token (simulating cookie auth)
+    if "evil.com" in data.email or "hacker" in data.email:
+        return {"success": True, "message": "Email updated without CSRF token!", "flag": "flag{browser_csrf_bypass}"}
+    return {"success": True, "message": f"Email updated to {data.email}."}

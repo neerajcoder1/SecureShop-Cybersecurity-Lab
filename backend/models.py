@@ -22,6 +22,19 @@ class ProfileUpdate(BaseModel):
     email: Optional[EmailStr] = None
     role: Optional[str] = None
 
+class TicketUpdate(BaseModel):
+    status: str
+    message: str
+
+class Checkout(BaseModel):
+    product_id: int
+    quantity: int
+    total_price: float
+
+class EmailUpdate(BaseModel):
+    email: EmailStr
+    csrf_token: Optional[str] = None
+
 class ProductResponse(BaseModel):
     id: int
     name: str
