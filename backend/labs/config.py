@@ -187,6 +187,24 @@ LABS = [
         "difficulty": "Advanced",
         "xp_available": 450,
         "challenges_count": 3
+    },
+    {
+        "id": "host_header",
+        "name": "Host Header Injection",
+        "description": "Exploit blind trust in the Host header for password resets, cache poisoning, and routing.",
+        "category": "Host Header Injection",
+        "difficulty": "Advanced",
+        "xp_available": 450,
+        "challenges_count": 3
+    },
+    {
+        "id": "api_sec",
+        "name": "Advanced API Security",
+        "description": "Exploit Mass Assignment, HTTP Parameter Pollution, and deprecated API endpoints.",
+        "category": "API Security",
+        "difficulty": "Intermediate",
+        "xp_available": 450,
+        "challenges_count": 3
     }
 ]
 
@@ -891,6 +909,70 @@ CHALLENGES = {
             "xp": 200,
             "flag": "flag{xxe_ssrf_fetch}",
             "badge": "🏆 XML Fetcher"
+        }
+    ],
+    "host_header": [
+        {
+            "id": 1,
+            "title": "Password Reset Poisoning",
+            "description": "Exploit blind trust in the Host header to poison a password reset link.",
+            "hint": "POST to /api/labs/host/reset with a custom 'Host: attacker.com' header.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{host_reset_poison}",
+            "badge": "🏆 Host Manipulator"
+        },
+        {
+            "id": 2,
+            "title": "Web Cache Poisoning",
+            "description": "Inject your Host header into a cached response to affect other users.",
+            "hint": "GET /api/labs/host/cache with 'Host: attacker.com'. Notice how it is reflected in a script tag.",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{host_cache_poison}",
+            "badge": "🏆 Cache Poisoner"
+        },
+        {
+            "id": 3,
+            "title": "Internal Routing Bypass",
+            "description": "Bypass a reverse proxy by supplying an internal virtual host.",
+            "hint": "GET /api/labs/host/internal with 'Host: internal-admin.local'.",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{host_routing_bypass}",
+            "badge": "🏆 Routing Evader"
+        }
+    ],
+    "api_sec": [
+        {
+            "id": 1,
+            "title": "Mass Assignment",
+            "description": "Elevate your privileges by injecting an unexpected parameter into a JSON payload.",
+            "hint": "POST to /api/labs/api_sec/mass_assignment with {\"username\": \"test\", \"is_admin\": true}",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{api_mass_assignment}",
+            "badge": "🏆 Mass Assigner"
+        },
+        {
+            "id": 2,
+            "title": "HTTP Parameter Pollution (HPP)",
+            "description": "Bypass a security filter by supplying duplicate parameters.",
+            "hint": "GET /api/labs/api_sec/hpp?id=safe&id=malicious (Different parsers process duplicate keys differently).",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{api_hpp_bypass}",
+            "badge": "🏆 Polluter"
+        },
+        {
+            "id": 3,
+            "title": "Improper Asset Management",
+            "description": "Find and exploit a deprecated, insecure API version.",
+            "hint": "Send a GET request to /api/v1/labs/api_sec/deprecated instead of the main API.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{api_deprecated_v1}",
+            "badge": "🏆 Archaeologist"
         }
     ]
 }

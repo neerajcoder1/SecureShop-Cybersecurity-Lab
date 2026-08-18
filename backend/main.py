@@ -1444,3 +1444,83 @@ async def xxe_ssrf(request: Request):
         return {"success": True, "message": f"Parsed XML: {rendered_text}"}
     except Exception as e:
         return {"success": False, "message": f"XML Parse Error: {str(e)}"}
+
+# --- HOST HEADER INJECTION LAB ---
+@app.post("/api/labs/host/reset")
+async def host_reset(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Password Reset Poisoning"""
+    host = request.headers.get("host", "")
+    
+    if "attacker.com" in host:
+        return {"success": True, "message": f"Password reset link sent: https://{host}/reset?token=123", "flag": "flag{host_reset_poison}"}
+        
+    return {"success": True, "message": f"Password reset link sent: https://{host}/reset?token=123"}
+
+@app.get("/api/labs/host/cache")
+async def host_cache(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Web Cache Poisoning"""
+    host = request.headers.get("host", "")
+    html = f"<script src='https://{host}/static/tracker.js'></script>"
+    
+    if "attacker.com" in host:
+        return {"success": True, "message": "Cache Poisoned!", "html": html, "flag": "flag{host_cache_poison}"}
+        
+    return {"success": True, "message": "Cached response.", "html": html}
+
+@app.get("/api/labs/host/internal")
+async def host_internal(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Internal Routing Bypass"""
+    host = request.headers.get("host", "")
+    
+    if host == "internal-admin.local":
+        return {"success": True, "message": "Welcome to the internal admin portal.", "flag": "flag{host_routing_bypass}"}
+        
+    return {"success": False, "message": "Access Denied. External traffic blocked."}
+
+# --- ADVANCED API SECURITY LAB ---
+@app.post("/api/labs/api_sec/mass_assignment")
+async def api_mass_assignment(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Mass Assignment"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    user = {"username": "guest", "is_admin": False}
+    user.update(body)
+    
+    if user.get("is_admin") is True:
+         return {"success": True, "message": "Admin privileges granted via Mass Assignment!", "flag": "flag{api_mass_assignment}"}
+         
+    return {"success": False, "message": "Profile updated as standard user."}
+
+@app.get("/api/labs/api_sec/hpp")
+async def api_hpp(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - HTTP Parameter Pollution"""
+    query_string = request.url.query
+    if not query_string:
+         return {"success": False, "message": "Missing 'id' parameter."}
+         
+    params = query_string.split("&")
+    first_id = None
+    last_id = None
+    
+    for p in params:
+        if p.startswith("id="):
+            val = p.split("=")[1]
+            if first_id is None:
+                first_id = val
+            last_id = val
+            
+    if first_id != "safe":
+        return {"success": False, "message": "WAF Blocked Request: Invalid ID"}
+        
+    if last_id == "malicious":
+        return {"success": True, "message": "HPP Filter Bypass successful! Backend processed 'malicious'.", "flag": "flag{api_hpp_bypass}"}
+        
+    return {"success": True, "message": f"Processed ID: {last_id}"}
+
+@app.get("/api/v1/labs/api_sec/deprecated")
+async def api_deprecated():
+    """INTENTIONALLY VULNERABLE ENDPOINT - Deprecated API / Improper Asset Management"""
+    return {"success": True, "message": "Welcome to the deprecated v1 API! It lacks authentication.", "flag": "flag{api_deprecated_v1}"}
