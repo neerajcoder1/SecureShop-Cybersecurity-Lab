@@ -142,6 +142,24 @@ LABS = [
         "difficulty": "Expert",
         "xp_available": 600,
         "challenges_count": 3
+    },
+    {
+        "id": "oauth",
+        "name": "OAuth & SSO Security",
+        "description": "Exploit flawed state validation, redirect URI manipulation, and implicit flow.",
+        "category": "OAuth Security",
+        "difficulty": "Advanced",
+        "xp_available": 450,
+        "challenges_count": 3
+    },
+    {
+        "id": "cors",
+        "name": "CORS Misconfigurations",
+        "description": "Bypass Cross-Origin Resource Sharing via reflected origins, null, and regex bypasses.",
+        "category": "CORS Misconfigurations",
+        "difficulty": "Intermediate",
+        "xp_available": 450,
+        "challenges_count": 3
     }
 ]
 
@@ -686,6 +704,70 @@ CHALLENGES = {
             "xp": 150,
             "flag": "flag{deserialization_jwt_none}",
             "badge": "🏆 Token Forger II"
+        }
+    ],
+    "oauth": [
+        {
+            "id": 1,
+            "title": "Flawed State Parameter",
+            "description": "Exploit a missing or unvalidated state parameter to launch an OAuth CSRF attack.",
+            "hint": "GET /api/labs/oauth/login?code=hacker_code without a state parameter.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{oauth_flawed_state}",
+            "badge": "🏆 State Manipulator"
+        },
+        {
+            "id": 2,
+            "title": "Redirect URI Manipulation",
+            "description": "Exploit an insecure regex validation to steal the OAuth authorization code.",
+            "hint": "GET /api/labs/oauth/callback?redirect_uri=https://trusted.com.attacker.com",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{oauth_redirect_bypass}",
+            "badge": "🏆 URI Stealer"
+        },
+        {
+            "id": 3,
+            "title": "Implicit Flow Token Leak",
+            "description": "Simulate stealing an access token leaked in the URL fragment via Referer headers.",
+            "hint": "GET /api/labs/oauth/implicit with an 'Origin: attacker.com' header to simulate a cross-origin leak.",
+            "difficulty": "Expert",
+            "xp": 250,
+            "flag": "flag{oauth_implicit_leak}",
+            "badge": "🏆 Fragment Stealer"
+        }
+    ],
+    "cors": [
+        {
+            "id": 1,
+            "title": "Reflected Origin",
+            "description": "Bypass CORS by exploiting a server that blindly reflects any Origin header.",
+            "hint": "GET /api/labs/cors/reflected with 'Origin: https://malicious.com'.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{cors_reflected_origin}",
+            "badge": "🏆 Origin Reflector"
+        },
+        {
+            "id": 2,
+            "title": "Null Origin Trusted",
+            "description": "Bypass CORS by supplying the 'null' origin.",
+            "hint": "GET /api/labs/cors/null with 'Origin: null'.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{cors_null_origin}",
+            "badge": "🏆 Null Trusted"
+        },
+        {
+            "id": 3,
+            "title": "Prefix/Suffix Regex Bypass",
+            "description": "Bypass a flawed origin check that only verifies if the domain starts with a trusted string.",
+            "hint": "GET /api/labs/cors/prefix with 'Origin: https://trusted.com.attacker.com'.",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{cors_prefix_bypass}",
+            "badge": "🏆 Regex Evader"
         }
     ]
 }

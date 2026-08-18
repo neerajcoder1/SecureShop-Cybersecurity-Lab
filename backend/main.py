@@ -1162,3 +1162,66 @@ async def deserialization_jwt_none(request: Request):
         pass
         
     return {"success": False, "message": "Invalid token."}
+
+# --- OAUTH & SSO LAB ---
+@app.get("/api/labs/oauth/login")
+async def oauth_login(code: str = None, state: str = None):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Flawed State Parameter"""
+    if not code:
+        return {"success": False, "message": "Missing authorization code"}
+    return {"success": True, "message": "OAuth login successful! State validation bypassed.", "flag": "flag{oauth_flawed_state}"}
+
+@app.get("/api/labs/oauth/callback")
+async def oauth_callback(redirect_uri: str = None):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Redirect URI Manipulation"""
+    if not redirect_uri:
+        return {"success": False, "message": "Missing redirect_uri"}
+    import re
+    if re.search(r"trusted\.com", redirect_uri):
+        if "attacker.com" in redirect_uri:
+            return {"success": True, "message": f"Redirecting to malicious URI: {redirect_uri}", "flag": "flag{oauth_redirect_bypass}"}
+        return {"success": True, "message": "Redirecting to trusted URI"}
+    return {"success": False, "message": "Invalid redirect_uri"}
+
+@app.get("/api/labs/oauth/implicit")
+async def oauth_implicit(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Implicit Flow Token Leak"""
+    origin = request.headers.get("origin", "")
+    if "attacker.com" in origin:
+         return {"success": True, "message": "Token leaked to attacker origin!", "flag": "flag{oauth_implicit_leak}"}
+    return {"success": False, "message": "Token safe... for now."}
+
+# --- CORS LAB ---
+@app.get("/api/labs/cors/reflected")
+async def cors_reflected(request: Request, response: Response):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Reflected Origin"""
+    origin = request.headers.get("origin", "")
+    if origin:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        if "malicious.com" in origin:
+            return {"success": True, "message": "CORS Reflected Origin Bypass!", "flag": "flag{cors_reflected_origin}"}
+        return {"success": True, "message": "CORS data."}
+    return {"success": False, "message": "Missing Origin header."}
+
+@app.get("/api/labs/cors/null")
+async def cors_null(request: Request, response: Response):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Null Origin Trusted"""
+    origin = request.headers.get("origin", "")
+    if origin == "null":
+        response.headers["Access-Control-Allow-Origin"] = "null"
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        return {"success": True, "message": "CORS Null Origin Trusted!", "flag": "flag{cors_null_origin}"}
+    return {"success": False, "message": "Origin not allowed."}
+
+@app.get("/api/labs/cors/prefix")
+async def cors_prefix(request: Request, response: Response):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Prefix Regex Bypass"""
+    origin = request.headers.get("origin", "")
+    if origin.startswith("https://trusted.com"):
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        if origin != "https://trusted.com":
+             return {"success": True, "message": "CORS Regex Bypass!", "flag": "flag{cors_prefix_bypass}"}
+        return {"success": True, "message": "CORS data."}
+    return {"success": False, "message": "Origin not allowed."}
