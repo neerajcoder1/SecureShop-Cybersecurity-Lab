@@ -3,9 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecureShop Lab - User Profile</title>
+    <title>SecureShop Lab - Hacker Profile</title>
     <link rel="stylesheet" href="app.css">
     <script src="app.js"></script>
+    <style>
+        .profile-header {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .avatar-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 0 20px rgba(88, 166, 255, 0.3);
+        }
+        .profile-stats {
+            flex-grow: 1;
+        }
+        .rank-title {
+            color: var(--accent-orange);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .progress-container {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            height: 8px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--accent-green);
+            width: 0%;
+            transition: width 1s ease-out;
+        }
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .badge-card {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            opacity: 0.4;
+            filter: grayscale(100%);
+        }
+        .badge-card.unlocked {
+            opacity: 1;
+            filter: none;
+            border-color: var(--accent-blue);
+            background: rgba(88, 166, 255, 0.05);
+        }
+        .badge-card.unlocked:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(88, 166, 255, 0.2);
+        }
+        .badge-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .cert-banner {
+            background: linear-gradient(90deg, rgba(210, 153, 34, 0.1), rgba(210, 153, 34, 0.05));
+            border: 1px solid var(--accent-orange);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+        }
+        .btn-gold {
+            background: var(--accent-orange);
+            color: #000;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .btn-gold:hover {
+            background: #e3a92b;
+        }
+        .btn-gold.disabled {
+            background: #444;
+            color: #888;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -15,172 +122,189 @@
       <nav id="main-nav"></nav>
     </header>
 
-    <style>
-        .hacker-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-left: 4px solid var(--accent-blue);
-            border-radius: 8px;
-            padding: 2rem;
-            position: relative;
-            margin-bottom: 2rem;
-        }
-        .hacker-card::after {
-            content: '';
-            position: absolute;
-            top: 10px; right: 10px;
-            width: 50px; height: 50px;
-            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="%2358a6ff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>') no-repeat center;
-            opacity: 0.1;
-        }
-        .id-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 0.5rem;
-        }
-        .id-label { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
-        .id-value { font-family: var(--font-mono); font-weight: 600; color: var(--text-main); }
-        .history-item {
-            background: #000000;
-            color: #c9d1d9;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-        }
-    </style>
-
-    <div class="container layout-sidebar">
+    <div class="container">
         
-        <div class="sidebar-nav card">
-            <h3 class="mb-1">Account settings</h3>
-            <a href="/dashboard.html">Dashboard</a>
-            <a href="/profile.html" class="active">Profile & History</a>
-            <a href="#" onclick="logout()">Sign out</a>
-        </div>
-
-        <div>
-            <!-- Flat Hacker ID Card -->
-            <div class="hacker-card">
-                <h2 style="margin-top: 0; color: var(--accent-blue); display: flex; justify-content: space-between;">
-                    <span>Operative Identity</span>
-                    <span id="user-badge" class="badge badge-info" style="font-size: 0.8rem;">Unranked</span>
-                </h2>
-                <div id="profile-info" class="mt-2">
-                    <!-- Injected via JS -->
-                    <p class="text-muted">Decrypting identity matrix...</p>
+        <div class="profile-header">
+            <div class="avatar-circle" id="profile-avatar">?</div>
+            <div class="profile-stats">
+                <h1 style="margin: 0 0 0.5rem 0;" id="profile-name">Loading...</h1>
+                <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 0.5rem;">
+                    <span class="badge badge-info" id="profile-role">USER</span>
+                    <span class="rank-title" id="profile-rank">Novice Hacker</span>
                 </div>
-            </div>
-
-            <div class="grid grid-cols-1 gap-2">
-                <!-- IDOR Testing Area (Real History) -->
-                <div class="card">
-                    <div class="flex justify-between items-center mb-1">
-                        <h3 style="margin:0;">Active Operations (Orders)</h3>
-                        <button class="btn-danger" onclick="clearHistory()">Wipe Logs</button>
-                    </div>
-                    <p class="text-muted mb-1" style="font-size: 0.85rem;">Live trace of your API payloads and database interactions.</p>
-                    <div id="orders-list" class="flex-col gap-1 mt-1">
-                        <!-- Injected via JS -->
-                    </div>
+                
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted); margin-top: 1rem;">
+                    <span>Current XP: <strong id="profile-xp" style="color: var(--text-main);">0</strong></span>
+                    <span id="next-rank-text">Next Rank: 500 XP</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="xp-progress"></div>
                 </div>
             </div>
         </div>
+
+        <div class="cert-banner">
+            <div>
+                <h3 style="margin: 0 0 0.5rem 0; color: var(--accent-orange);">Official Certificate of Completion</h3>
+                <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Reach 1000 XP to unlock your official SecureShop certification.</p>
+            </div>
+            <div>
+                <a href="/certificate.html" id="btn-cert" class="btn-gold disabled" onclick="return checkCertAccess(event)">Claim Certificate</a>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 2rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.5rem;">Earned Badges</h2>
+        <div class="badge-grid" id="badge-container">
+            <!-- Badges rendered via JS -->
+            <p class="text-muted">Loading badges...</p>
+        </div>
+
     </div>
 
     <script>
-        async function loadProfile() {
+        const RANKS = [
+            { xp: 0, title: 'Script Kiddie' },
+            { xp: 200, title: 'Novice Hacker' },
+            { xp: 500, title: 'Security Analyst' },
+            { xp: 1000, title: 'Bug Bounty Hunter' },
+            { xp: 2000, title: 'Elite Operator' }
+        ];
+
+        // All 33 possible badges across 11 categories
+        const ALL_BADGES = [
+            "🏆 SQL Master", "🏆 Auth Bypass", "🏆 File Reader",
+            "🏆 Scope Invader", "🏆 Token Forger", "🏆 Admin Hijacker",
+            "🏆 BOLA Explorer", "🏆 BFLA Master", "🏆 Mass Assigner",
+            "🏆 XSS Reflector", "🏆 XSS Storer", "🏆 DOM Hacker",
+            "🏆 Logic Bender", "🏆 Cookie Monster", "🏆 CSRF Exploiter",
+            "🏆 Internal Explorer", "🏆 Shell Popper", "🏆 Header Hijacker",
+            "🏆 RNG Predictor", "🏆 Hash Cracker", "🏆 Secret Finder",
+            "🏆 Discount Abuser", "🏆 Negative Balance", "🏆 Speed Racer",
+            "🏆 Schema Dumper", "🏆 Node Crawler", "🏆 Batch Attacker",
+            "🏆 Template Hacker", "🏆 Entity Exploiter", "🏆 Time Lord",
+            "🏆 Protocol Smuggler", "🏆 Origin Spoof", "🏆 Cache Poisoner"
+        ];
+
+        let currentXP = 0;
+
+        async function loadProfileData() {
             try {
-                // Fallback username if API fails
                 let username = 'Learner';
-                let email = 'Unknown';
-                let id = '001';
                 let role = 'user';
 
-                const token = getToken();
-                try {
-                    const payload = JSON.parse(atob(token.split('.')[1]));
-                    if (payload.sub) username = payload.sub;
-                } catch(e) {}
+                // Try to get XP from localStorage first
+                const savedXp = parseInt(localStorage.getItem('secureshop_xp')) || 0;
+                currentXP = savedXp;
 
-                try {
-                    const res = await fetchWithAuth(`${API_BASE}/users/me`);
-                    if (res && res.ok) {
-                        const user = await res.json();
-                        id = user.id;
-                        username = user.username;
-                        email = user.email;
-                        role = user.role || 'user';
-                    }
-                } catch(e) {
-                    console.log("Using fallback profile data.");
+                const token = getToken();
+                if (token) {
+                    try {
+                        const payload = JSON.parse(atob(token.split('.')[1]));
+                        if (payload.sub) username = payload.sub;
+                    } catch(e) {}
+
+                    try {
+                        const res = await fetchWithAuth(`${API_BASE}/users/me`);
+                        if (res && res.ok) {
+                            const user = await res.json();
+                            username = user.username;
+                            role = user.role || 'user';
+                        }
+                    } catch(e) { }
                 }
 
-                const container = document.getElementById('profile-info');
-                container.innerHTML = `
-                    <div class="id-row"><span class="id-label">Operative ID</span><span class="id-value">OP-${String(id).padStart(4, '0')}</span></div>
-                    <div class="id-row"><span class="id-label">Handle</span><span class="id-value" style="color: var(--accent-blue);">${username}</span></div>
-                    <div class="id-row"><span class="id-label">Comms</span><span class="id-value">${email}</span></div>
-                    <div class="id-row" style="border:none;"><span class="id-label">Clearance</span><span class="id-value">${role.toUpperCase()}</span></div>
-                `;
+                document.getElementById('profile-name').textContent = username;
+                document.getElementById('profile-avatar').textContent = username.charAt(0).toUpperCase();
+                document.getElementById('profile-role').textContent = role.toUpperCase();
+                
+                // Animate XP
+                animateValue('profile-xp', 0, currentXP, 1000);
 
-                const badge = document.getElementById('user-badge');
-                badge.className = 'badge badge-info';
-                badge.textContent = `LEVEL ${id}`;
+                // Calculate Rank
+                let currentRank = RANKS[0];
+                let nextRank = RANKS[1];
+                for (let i = 0; i < RANKS.length; i++) {
+                    if (currentXP >= RANKS[i].xp) {
+                        currentRank = RANKS[i];
+                        nextRank = RANKS[i+1] || null;
+                    }
+                }
+
+                document.getElementById('profile-rank').textContent = currentRank.title;
+                
+                if (nextRank) {
+                    document.getElementById('next-rank-text').textContent = `Next Rank: ${nextRank.xp} XP`;
+                    const progress = Math.min(100, Math.max(0, (currentXP / nextRank.xp) * 100));
+                    setTimeout(() => {
+                        document.getElementById('xp-progress').style.width = `${progress}%`;
+                    }, 100);
+                } else {
+                    document.getElementById('next-rank-text').textContent = `Max Rank Reached!`;
+                    setTimeout(() => {
+                        document.getElementById('xp-progress').style.width = `100%`;
+                    }, 100);
+                }
+
+                // Check Cert Status
+                const btnCert = document.getElementById('btn-cert');
+                if (currentXP >= 1000) {
+                    btnCert.classList.remove('disabled');
+                }
+
+                renderBadges();
 
             } catch (e) {
                 console.error("Profile load error", e);
             }
         }
 
-        async function loadOrders() {
+        function renderBadges() {
+            const container = document.getElementById('badge-container');
+            container.innerHTML = '';
+            
+            // Get unlocked badges from localStorage
+            let unlocked = [];
             try {
-                const res = await fetchWithAuth(`${API_BASE}/orders`);
-                if (res && res.ok) {
-                    const orders = await res.json();
-                    const container = document.getElementById('orders-list');
-                    
-                    if (orders.length === 0) {
-                        container.innerHTML = '<div class="terminal text-muted" style="font-size:0.85rem; background: #000000; border: 1px solid #30363d; color: #8b949e;">[+] Database scan complete: No active orders found for this identity.</div>';
-                        return;
-                    }
-
-                    container.innerHTML = ''; // clear
-                    orders.forEach(o => {
-                        const div = document.createElement('div');
-                        div.className = 'history-item flex justify-between items-center';
-                        div.style.borderLeft = '3px solid #d29922'; // accent-orange hardcoded for dark mode
-                        
-                        div.innerHTML = `
-                            <div>
-                                <div style="font-size: 0.85rem; color: #d29922; font-family: var(--font-mono);">Order #${o.id}</div>
-                                <div style="font-size: 0.8rem; color: #8b949e;">Prod: ${o.product_id} | Qty: ${o.quantity}</div>
-                            </div>
-                            <button class="btn btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; border-color: #30363d; color: #c9d1d9;" onclick="fetchOrderDetails(${o.id})">Intercept</button>
-                        `;
-                        container.appendChild(div);
-                    });
-                }
-            } catch (e) {
-                console.error("Orders load error", e);
-            }
+                unlocked = JSON.parse(localStorage.getItem('secureshop_completed_flags')) || [];
+            } catch(e) {}
+            
+            ALL_BADGES.forEach((badgeName, index) => {
+                const isUnlocked = index < unlocked.length;
+                const card = document.createElement('div');
+                card.className = `badge-card ${isUnlocked ? 'unlocked' : ''}`;
+                card.innerHTML = `
+                    <div class="badge-icon">${badgeName.split(' ')[0]}</div>
+                    <div style="font-weight: bold; font-size: 0.9rem;">${badgeName.substring(2)}</div>
+                    ${isUnlocked ? '<div style="font-size:0.7rem; color:var(--accent-green); margin-top:0.5rem;">UNLOCKED</div>' : '<div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.5rem;">LOCKED</div>'}
+                `;
+                container.appendChild(card);
+            });
         }
 
-        async function fetchOrderDetails(id) {
-            try {
-                const res = await fetchWithAuth(`${API_BASE}/orders/${id}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    showToast(`[+] SUCCESS: Fetched order details for ID ${data.id}.\n\nTry intercepting this request in Burp Suite and changing the ID to an order that doesn't belong to you to test for Broken Access Control.`, "success");
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            if (!obj) return;
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
                 } else {
-                    const data = await res.json();
-                    showToast(`[-] ACCESS DENIED: ${data.detail}.\n\nIDOR Protection is active and prevented unauthorized access.`, "error");
+                    obj.innerHTML = end;
                 }
-            } catch (e) {
-                showToast('[-] Network error during API call.', 'error');
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function checkCertAccess(e) {
+            if (currentXP < 1000) {
+                e.preventDefault();
+                showToast("You need at least 1000 XP to claim your certificate!", "error");
+                return false;
             }
+            return true;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -188,10 +312,8 @@
                 window.location.href = '/login.html';
                 return;
             }
-            loadProfile();
-            loadOrders();
+            loadProfileData();
         });
     </script>
 </body>
 </html>
-
