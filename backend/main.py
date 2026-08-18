@@ -8,6 +8,10 @@ import os
 import pickle
 import base64
 import yaml
+import subprocess
+import time
+import jinja2
+from lxml import etree
 
 from . import database, models, auth
 from .labs.config import LABS, CHALLENGES
@@ -1225,3 +1229,218 @@ async def cors_prefix(request: Request, response: Response):
              return {"success": True, "message": "CORS Regex Bypass!", "flag": "flag{cors_prefix_bypass}"}
         return {"success": True, "message": "CORS data."}
     return {"success": False, "message": "Origin not allowed."}
+
+# --- COMMAND INJECTION LAB ---
+@app.post("/api/labs/cmd/ping")
+async def cmd_ping(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Basic Command Injection"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    ip = body.get("ip", "")
+    
+    try:
+        import platform
+        cmd = f"ping -n 1 {ip}" if platform.system().lower() == "windows" else f"ping -c 1 {ip}"
+        
+        process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = process.communicate(timeout=5)
+        output = out.decode() + err.decode()
+        
+        if "whoami" in ip or "ls" in ip or "cat" in ip or "dir" in ip:
+             return {"success": True, "message": f"Command executed successfully!\n{output}", "flag": "flag{cmd_basic_concat}"}
+        return {"success": True, "message": f"Ping results:\n{output}"}
+    except Exception as e:
+        return {"success": False, "message": f"Error: {str(e)}"}
+
+@app.post("/api/labs/cmd/blind")
+async def cmd_blind(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Blind Command Injection"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    ip = body.get("ip", "")
+    
+    try:
+        import platform
+        cmd = f"ping -n 1 {ip}" if platform.system().lower() == "windows" else f"ping -c 1 {ip}"
+        start_time = time.time()
+        process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process.communicate(timeout=10)
+        end_time = time.time()
+        
+        if end_time - start_time >= 4:
+            return {"success": True, "message": "Ping executed.", "flag": "flag{cmd_blind_sleep}"}
+            
+        return {"success": True, "message": "Ping executed."}
+    except subprocess.TimeoutExpired:
+        return {"success": True, "message": "Ping executed.", "flag": "flag{cmd_blind_sleep}"}
+    except Exception as e:
+        return {"success": False, "message": "Error occurred."}
+
+@app.post("/api/labs/cmd/filter")
+async def cmd_filter(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Filter Bypass"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    ip = body.get("ip", "")
+    
+    if " " in ip or ";" in ip:
+        return {"success": False, "message": "Hacking Attempt Detected! Spaces and semicolons are blocked."}
+        
+    try:
+        import platform
+        cmd = f"ping -n 1 {ip}" if platform.system().lower() == "windows" else f"ping -c 1 {ip}"
+        process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = process.communicate(timeout=5)
+        output = out.decode() + err.decode()
+        
+        if "IFS" in ip or "|" in ip or "&" in ip or "`" in ip or "$" in ip:
+             return {"success": True, "message": f"Command executed successfully!\n{output}", "flag": "flag{cmd_filter_bypass}"}
+        return {"success": True, "message": f"Ping results:\n{output}"}
+    except Exception as e:
+        return {"success": False, "message": f"Error: {str(e)}"}
+
+# --- SSTI LAB ---
+@app.post("/api/labs/ssti/math")
+async def ssti_math(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Template Math Evaluation"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    template_str = body.get("template", "")
+    
+    try:
+        template = jinja2.Template(f"Hello {template_str}!")
+        rendered = template.render()
+        
+        if "49" in rendered and "*" in template_str:
+            return {"success": True, "message": rendered, "flag": "flag{ssti_basic_math}"}
+        return {"success": True, "message": rendered}
+    except Exception as e:
+        return {"success": False, "message": f"Template Error: {str(e)}"}
+
+@app.post("/api/labs/ssti/env")
+async def ssti_env(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Env Dump"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    template_str = body.get("template", "")
+    
+    try:
+        mock_config = {"SECRET_KEY": "super_secret_key_123", "DB_PASS": "admin123"}
+        template = jinja2.Template(f"Hello {template_str}!")
+        rendered = template.render(config=mock_config)
+        
+        if "super_secret_key_123" in rendered or "admin123" in rendered:
+            return {"success": True, "message": rendered, "flag": "flag{ssti_env_dump}"}
+        return {"success": True, "message": rendered}
+    except Exception as e:
+        return {"success": False, "message": f"Template Error: {str(e)}"}
+
+@app.post("/api/labs/ssti/rce")
+async def ssti_rce(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - RCE via subclasses"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    template_str = body.get("template", "")
+    
+    try:
+        template = jinja2.Template(f"Hello {template_str}!")
+        rendered = template.render()
+        
+        if "__subclasses__" in template_str and ("popen" in template_str or "system" in template_str):
+            return {"success": True, "message": f"RCE triggered!\n{rendered[:200]}", "flag": "flag{ssti_rce_subclasses}"}
+        return {"success": True, "message": rendered}
+    except Exception as e:
+        return {"success": False, "message": f"Template Error: {str(e)}"}
+
+# --- XXE LAB ---
+@app.post("/api/labs/xxe/lfi")
+async def xxe_lfi(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - XXE LFI"""
+    try:
+        xml_data = await request.body()
+    except Exception:
+        return {"success": False, "message": "Invalid Request"}
+    
+    if not xml_data:
+        return {"success": False, "message": "Missing XML data"}
+        
+    try:
+        parser = etree.XMLParser(resolve_entities=True, no_network=False)
+        root = etree.fromstring(xml_data, parser)
+        
+        rendered_text = "".join(root.itertext())
+        if "root:x:0:0" in rendered_text or "daemon:x:1:1" in rendered_text or "windows" in rendered_text.lower():
+             return {"success": True, "message": f"File read successfully!\n{rendered_text[:200]}", "flag": "flag{xxe_basic_lfi}"}
+             
+        if "SYSTEM" in xml_data.decode() and ("file://" in xml_data.decode() or "c:/" in xml_data.decode().lower()):
+             return {"success": True, "message": f"Local file inclusion triggered!\n{rendered_text[:200]}", "flag": "flag{xxe_basic_lfi}"}
+
+        return {"success": True, "message": f"Parsed XML: {rendered_text}"}
+    except Exception as e:
+        return {"success": False, "message": f"XML Parse Error: {str(e)}"}
+
+@app.post("/api/labs/xxe/dos")
+async def xxe_dos(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - XXE Billion Laughs DoS"""
+    try:
+        xml_data = await request.body()
+    except Exception:
+        return {"success": False, "message": "Invalid Request"}
+    
+    if not xml_data:
+        return {"success": False, "message": "Missing XML data"}
+        
+    try:
+        xml_str = xml_data.decode()
+        if "lol9" in xml_str and "&lol8;" in xml_str:
+            return {"success": True, "message": "Server Memory Exhausted! (Simulated DoS)", "flag": "flag{xxe_billion_laughs}"}
+            
+        parser = etree.XMLParser(resolve_entities=True, huge_tree=True)
+        root = etree.fromstring(xml_data, parser)
+        rendered_text = "".join(root.itertext())
+
+        return {"success": True, "message": f"Parsed XML: {rendered_text}"}
+    except Exception as e:
+        return {"success": False, "message": f"XML Parse Error: {str(e)}"}
+
+@app.post("/api/labs/xxe/ssrf")
+async def xxe_ssrf(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - XXE SSRF"""
+    try:
+        xml_data = await request.body()
+    except Exception:
+        return {"success": False, "message": "Invalid Request"}
+    
+    if not xml_data:
+        return {"success": False, "message": "Missing XML data"}
+        
+    try:
+        xml_str = xml_data.decode()
+        if "169.254.169.254" in xml_str or "localhost:8000/api/internal-admin" in xml_str:
+             return {"success": True, "message": "SSRF triggered via XML external entity! Fetched internal resource.", "flag": "flag{xxe_ssrf_fetch}"}
+             
+        parser = etree.XMLParser(resolve_entities=True, no_network=False)
+        root = etree.fromstring(xml_data, parser)
+        rendered_text = "".join(root.itertext())
+
+        return {"success": True, "message": f"Parsed XML: {rendered_text}"}
+    except Exception as e:
+        return {"success": False, "message": f"XML Parse Error: {str(e)}"}

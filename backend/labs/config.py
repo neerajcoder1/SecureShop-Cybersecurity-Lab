@@ -160,6 +160,33 @@ LABS = [
         "difficulty": "Intermediate",
         "xp_available": 450,
         "challenges_count": 3
+    },
+    {
+        "id": "cmd_injection",
+        "name": "Command Injection",
+        "description": "Execute arbitrary OS commands via basic concatenation, blind injection, and filter bypass.",
+        "category": "Command Injection",
+        "difficulty": "Expert",
+        "xp_available": 600,
+        "challenges_count": 3
+    },
+    {
+        "id": "ssti",
+        "name": "Server-Side Template Injection",
+        "description": "Exploit Jinja2 templates to evaluate math, dump env vars, and execute code via __subclasses__.",
+        "category": "SSTI",
+        "difficulty": "Expert",
+        "xp_available": 600,
+        "challenges_count": 3
+    },
+    {
+        "id": "xxe",
+        "name": "XML External Entity (XXE)",
+        "description": "Exploit XML parsers to read local files, trigger SSRF, and execute DoS attacks.",
+        "category": "XXE Injection",
+        "difficulty": "Advanced",
+        "xp_available": 450,
+        "challenges_count": 3
     }
 ]
 
@@ -768,6 +795,102 @@ CHALLENGES = {
             "xp": 200,
             "flag": "flag{cors_prefix_bypass}",
             "badge": "🏆 Regex Evader"
+        }
+    ],
+    "cmd_injection": [
+        {
+            "id": 1,
+            "title": "Basic Command Concatenation",
+            "description": "Inject an OS command via a semicolon (;) or ampersand (&&).",
+            "hint": "POST to /api/labs/cmd/ping with {\"ip\": \"127.0.0.1; whoami\"}",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{cmd_basic_concat}",
+            "badge": "🏆 Shell Hacker"
+        },
+        {
+            "id": 2,
+            "title": "Blind Time-Based Injection",
+            "description": "Exploit blind command injection by making the server sleep.",
+            "hint": "POST to /api/labs/cmd/blind with {\"ip\": \"127.0.0.1; sleep 5\"}",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{cmd_blind_sleep}",
+            "badge": "🏆 Time Lord"
+        },
+        {
+            "id": 3,
+            "title": "Filter Bypass (${IFS})",
+            "description": "Bypass a filter that blocks spaces and semicolons.",
+            "hint": "POST to /api/labs/cmd/filter with {\"ip\": \"127.0.0.1|cat${IFS}/etc/passwd\"}",
+            "difficulty": "Expert",
+            "xp": 250,
+            "flag": "flag{cmd_filter_bypass}",
+            "badge": "🏆 Filter Evader"
+        }
+    ],
+    "ssti": [
+        {
+            "id": 1,
+            "title": "Template Math Evaluation",
+            "description": "Prove template injection by evaluating a mathematical expression.",
+            "hint": "POST to /api/labs/ssti/math with {\"template\": \"{{ 7 * 7 }}\"}",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{ssti_basic_math}",
+            "badge": "🏆 Template Math"
+        },
+        {
+            "id": 2,
+            "title": "Environment Variable Dump",
+            "description": "Dump the server's environment variables or configuration.",
+            "hint": "POST to /api/labs/ssti/env with {\"template\": \"{{ config.items() }}\"}",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{ssti_env_dump}",
+            "badge": "🏆 Env Stealer"
+        },
+        {
+            "id": 3,
+            "title": "RCE via __subclasses__",
+            "description": "Achieve Remote Code Execution by traversing the Python MRO.",
+            "hint": "POST to /api/labs/ssti/rce with a payload using ''.__class__.__mro__[1].__subclasses__() to run os.popen.",
+            "difficulty": "Expert",
+            "xp": 250,
+            "flag": "flag{ssti_rce_subclasses}",
+            "badge": "🏆 SSTI Master"
+        }
+    ],
+    "xxe": [
+        {
+            "id": 1,
+            "title": "Local File Inclusion (LFI)",
+            "description": "Read a local file using a custom external XML entity.",
+            "hint": "POST XML to /api/labs/xxe/lfi defining an entity <!ENTITY xxe SYSTEM 'file:///etc/passwd'> and echoing it.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{xxe_basic_lfi}",
+            "badge": "🏆 XML Reader"
+        },
+        {
+            "id": 2,
+            "title": "Billion Laughs (DoS)",
+            "description": "Attempt to exhaust server memory using nested XML entities.",
+            "hint": "POST a classic Billion Laughs XML payload to /api/labs/xxe/dos.",
+            "difficulty": "Expert",
+            "xp": 250,
+            "flag": "flag{xxe_billion_laughs}",
+            "badge": "🏆 Laughing Hacker"
+        },
+        {
+            "id": 3,
+            "title": "SSRF via XXE",
+            "description": "Force the XML parser to fetch an internal URL.",
+            "hint": "POST XML to /api/labs/xxe/ssrf with <!ENTITY xxe SYSTEM 'http://169.254.169.254/latest/meta-data/'>.",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{xxe_ssrf_fetch}",
+            "badge": "🏆 XML Fetcher"
         }
     ]
 }
