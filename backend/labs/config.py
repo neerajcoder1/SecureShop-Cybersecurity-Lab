@@ -124,6 +124,24 @@ LABS = [
         "difficulty": "Expert",
         "xp_available": 600,
         "challenges_count": 3
+    },
+    {
+        "id": "ssrf",
+        "name": "Server-Side Request Forgery",
+        "description": "Exploit basic internal access, blind port scanning, and cloud metadata theft.",
+        "category": "SSRF",
+        "difficulty": "Advanced",
+        "xp_available": 450,
+        "challenges_count": 3
+    },
+    {
+        "id": "deserialization",
+        "name": "Insecure Deserialization",
+        "description": "Exploit Python pickle RCE, YAML deserialization, and JWT None algorithm.",
+        "category": "Insecure Deserialization",
+        "difficulty": "Expert",
+        "xp_available": 600,
+        "challenges_count": 3
     }
 ]
 
@@ -604,6 +622,70 @@ CHALLENGES = {
             "xp": 200,
             "flag": "flag{nosql_array_bypass}",
             "badge": "🏆 Array Injector"
+        }
+    ],
+    "ssrf": [
+        {
+            "id": 1,
+            "title": "Basic Internal SSRF",
+            "description": "Exploit a URL fetching feature to access an internal admin endpoint.",
+            "hint": "POST to /api/labs/ssrf/fetch with {\"url\": \"http://localhost:8000/api/internal-admin\"}.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{ssrf_basic_internal}",
+            "badge": "🏆 Internal Scanner"
+        },
+        {
+            "id": 2,
+            "title": "Blind SSRF",
+            "description": "Exploit a blind SSRF to verify if a service is running on the internal network.",
+            "hint": "POST to /api/labs/ssrf/blind with {\"url\": \"http://localhost:8000\"}. (Any successful connection works)",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{ssrf_blind_ping}",
+            "badge": "🏆 Blind Spotter"
+        },
+        {
+            "id": 3,
+            "title": "Cloud Metadata Exfiltration",
+            "description": "Trick the server into fetching its simulated AWS IAM security credentials.",
+            "hint": "POST to /api/labs/ssrf/fetch with {\"url\": \"http://169.254.169.254/latest/meta-data/iam/security-credentials/\"}.",
+            "difficulty": "Expert",
+            "xp": 250,
+            "flag": "flag{ssrf_cloud_metadata}",
+            "badge": "🏆 Cloud Stealer"
+        }
+    ],
+    "deserialization": [
+        {
+            "id": 1,
+            "title": "Python Pickle RCE",
+            "description": "Exploit an insecure endpoint that unpickles user-supplied base64 data.",
+            "hint": "POST to /api/labs/deserialization/pickle with a malicious base64-encoded pickle object.",
+            "difficulty": "Expert",
+            "xp": 250,
+            "flag": "flag{deserialization_pickle_rce}",
+            "badge": "🏆 Pickle Rick"
+        },
+        {
+            "id": 2,
+            "title": "YAML Deserialization",
+            "description": "Exploit the insecure yaml.load() function to execute code.",
+            "hint": "POST to /api/labs/deserialization/yaml with yaml payload containing !!python/object/apply:os.system.",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{deserialization_yaml_rce}",
+            "badge": "🏆 YAML Hacker"
+        },
+        {
+            "id": 3,
+            "title": "JWT 'None' Algorithm",
+            "description": "Forge a JWT token by changing the algorithm to 'None' and stripping the signature.",
+            "hint": "POST to /api/labs/deserialization/jwt_none with {\"token\": \"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VybmFtZSI6ImFkbWluIn0.\"} (Notice the trailing dot and no signature).",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{deserialization_jwt_none}",
+            "badge": "🏆 Token Forger II"
         }
     ]
 }

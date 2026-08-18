@@ -5,6 +5,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from datetime import timedelta
 from typing import List
 import os
+import requests
+import pickle
+import base64
+import yaml
 
 from . import database, models, auth
 from .labs.config import LABS, CHALLENGES
@@ -1032,3 +1036,130 @@ async def nosql_array(request: Request):
     if isinstance(doc_id, dict) and "$in" in doc_id:
         return {"success": True, "message": "Access granted to multiple documents!", "flag": "flag{nosql_array_bypass}"}
     return {"success": False, "message": "Access denied."}
+
+# --- SSRF LAB ---
+@app.get("/api/internal-admin")
+async def internal_admin(request: Request):
+    """HIDDEN INTERNAL ENDPOINT FOR SSRF"""
+    client_host = request.client.host
+    if client_host == "127.0.0.1" or client_host == "localhost":
+        return {"success": True, "message": "Welcome, internal admin.", "flag": "flag{ssrf_basic_internal}"}
+    return {"success": False, "message": "Access Denied. Internal network only."}
+
+@app.post("/api/labs/ssrf/fetch")
+async def ssrf_fetch(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - SSRF Fetch"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    url = body.get("url", "")
+    
+    if "169.254.169.254" in url and "iam" in url:
+        return {"success": True, "message": "Fetched metadata: {\"AccessKeyId\": \"AKIAIOSFODNN7EXAMPLE\"}", "flag": "flag{ssrf_cloud_metadata}"}
+    
+    try:
+        import httpx
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, timeout=2.0)
+            
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                if "flag{ssrf_basic_internal}" in str(data):
+                    return {"success": True, "message": "Internal admin accessed!", "data": data, "flag": "flag{ssrf_basic_internal}"}
+            except:
+                pass
+            return {"success": True, "message": "URL fetched successfully.", "data": response.text[:200]}
+    except Exception as e:
+        return {"success": False, "message": f"Failed to fetch URL: {str(e)}"}
+    return {"success": False, "message": "Request failed."}
+
+@app.post("/api/labs/ssrf/blind")
+async def ssrf_blind(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Blind SSRF"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    url = body.get("url", "")
+    
+    try:
+        import httpx
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, timeout=2.0)
+            
+        if response.status_code == 200:
+            if "localhost" in url or "127.0.0.1" in url:
+                return {"success": True, "message": "Service is UP.", "flag": "flag{ssrf_blind_ping}"}
+            return {"success": True, "message": "Service is UP."}
+    except Exception:
+        return {"success": False, "message": "Service is DOWN."}
+    return {"success": False, "message": "Service is DOWN."}
+
+# --- DESERIALIZATION LAB ---
+@app.post("/api/labs/deserialization/pickle")
+async def deserialization_pickle(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Python Pickle RCE"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    data = body.get("data", "")
+    
+    try:
+        obj = pickle.loads(base64.b64decode(data))
+        return {"success": True, "message": f"Object deserialized: {obj}", "flag": "flag{deserialization_pickle_rce}"}
+    except Exception as e:
+        return {"success": False, "message": f"Deserialization failed: {str(e)}"}
+
+@app.post("/api/labs/deserialization/yaml")
+async def deserialization_yaml(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - YAML Deserialization"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    data = body.get("data", "")
+    
+    try:
+        obj = yaml.load(data, Loader=yaml.Loader)
+        if "apply" in data or "os.system" in data:
+            return {"success": True, "message": "RCE via YAML!", "flag": "flag{deserialization_yaml_rce}"}
+        return {"success": True, "message": f"YAML loaded: {obj}"}
+    except Exception as e:
+        return {"success": False, "message": f"YAML error: {str(e)}"}
+
+@app.post("/api/labs/deserialization/jwt_none")
+async def deserialization_jwt_none(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - JWT None Algorithm"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    token = body.get("token", "")
+    
+    try:
+        header_b64 = token.split(".")[0]
+        header_b64 += "=" * ((4 - len(header_b64) % 4) % 4)
+        import json
+        header = json.loads(base64.b64decode(header_b64).decode())
+        
+        if header.get("alg", "").lower() == "none":
+            parts = token.split(".")
+            if len(parts) >= 2:
+                payload_b64 = parts[1]
+                payload_b64 += "=" * ((4 - len(payload_b64) % 4) % 4)
+                payload = json.loads(base64.b64decode(payload_b64).decode())
+                
+                if payload.get("username") == "admin":
+                    return {"success": True, "message": "Logged in as admin via None algorithm bypass!", "flag": "flag{deserialization_jwt_none}"}
+    except Exception:
+        pass
+        
+    return {"success": False, "message": "Invalid token."}
