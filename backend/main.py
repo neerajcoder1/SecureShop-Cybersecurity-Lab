@@ -12,6 +12,10 @@ import subprocess
 import time
 import jinja2
 from lxml import etree
+import random
+import asyncio
+import urllib.parse
+from fastapi.responses import HTMLResponse
 
 from . import database, models, auth
 from .labs.config import LABS, CHALLENGES
@@ -1524,3 +1528,213 @@ async def api_hpp(request: Request):
 async def api_deprecated():
     """INTENTIONALLY VULNERABLE ENDPOINT - Deprecated API / Improper Asset Management"""
     return {"success": True, "message": "Welcome to the deprecated v1 API! It lacks authentication.", "flag": "flag{api_deprecated_v1}"}
+
+# --- PATH TRAVERSAL LAB ---
+@app.get("/api/labs/path/read")
+async def path_read(file: str = ""):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Path Traversal"""
+    if not file:
+        return {"success": False, "message": "Missing 'file' parameter."}
+        
+    decoded_file = urllib.parse.unquote(file)
+    
+    if "%2e%2e%2f" in file.lower() or "%252e" in file.lower():
+         return {"success": True, "message": "Double URL Encoding Bypass successful!", "flag": "flag{path_double_encode}"}
+         
+    if "%00.txt" in file or "\x00.txt" in decoded_file:
+         return {"success": True, "message": "Null Byte Extension Bypass successful!", "flag": "flag{path_null_byte}"}
+         
+    if "../" in decoded_file or "..\\" in decoded_file:
+         if "windows" in decoded_file.lower() or "passwd" in decoded_file.lower() or "win.ini" in decoded_file.lower():
+             return {"success": True, "message": "Directory Traversal successful!", "flag": "flag{path_basic_traversal}"}
+             
+    return {"success": False, "message": f"File '{file}' not found or access denied."}
+
+# --- OPEN REDIRECT LAB ---
+@app.get("/api/labs/redirect")
+async def open_redirect(url: str = ""):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Open Redirect"""
+    if not url:
+        return {"success": False, "message": "Missing 'url' parameter."}
+        
+    if url.startswith(" ") and "attacker.com" in url:
+        return {"success": True, "message": "Whitespace URL validation bypass successful!", "flag": "flag{redirect_whitespace}"}
+        
+    if url.startswith("//attacker.com"):
+        return {"success": True, "message": "Protocol-Relative Open Redirect successful!", "flag": "flag{redirect_protocol_relative}"}
+        
+    if url.startswith("http://attacker.com") or url.startswith("https://attacker.com"):
+        return {"success": True, "message": "Basic Open Redirect successful!", "flag": "flag{redirect_basic}"}
+        
+    return {"success": True, "message": f"Redirecting to {url}..."}
+
+# --- ADVANCED CRYPTO LAB ---
+@app.get("/api/labs/crypto/prng")
+async def crypto_prng():
+    """INTENTIONALLY VULNERABLE ENDPOINT - Insecure PRNG"""
+    val = random.random()
+    return {"success": True, "message": f"Your password reset token is {val}. Did you predict it?", "flag": "flag{crypto_prng_predict}"}
+
+@app.post("/api/labs/crypto/ecb")
+async def crypto_ecb(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - ECB Manipulation"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+        
+    ct = body.get("ciphertext", "")
+    if "admin_block_hex" in ct:
+        return {"success": True, "message": "AES-ECB Block cut-and-paste successful! You are Admin.", "flag": "flag{crypto_ecb_penguin}"}
+        
+    return {"success": False, "message": "Invalid ECB ciphertext block."}
+
+@app.post("/api/labs/crypto/md5")
+async def crypto_md5(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - MD5 Collision"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+        
+    data = body.get("data", "")
+    if "collision_payload" in data:
+        return {"success": True, "message": "MD5 Hash Collision detected. Integrity check bypassed!", "flag": "flag{crypto_md5_collision}"}
+        
+    return {"success": False, "message": "Data does not match the target MD5 hash."}
+
+# --- DOM & FRONTEND ATTACKS LAB ---
+@app.get("/api/labs/dom/xss", response_class=HTMLResponse)
+async def dom_xss():
+    html = """
+    <html>
+      <body>
+        <h1>DOM XSS Lab</h1>
+        <div id="greeting"></div>
+        <script>
+           var hash = window.location.hash.substring(1);
+           if (hash) {
+               document.getElementById("greeting").innerHTML = decodeURIComponent(hash);
+           }
+        </script>
+        <!-- flag{dom_xss_hash} -->
+      </body>
+    </html>
+    """
+    return html
+
+@app.get("/api/labs/dom/prototype", response_class=HTMLResponse)
+async def dom_prototype():
+    html = """
+    <html>
+      <body>
+        <h1>Prototype Pollution Lab</h1>
+        <script>
+            function merge(target, source) {
+                for (let attr in source) {
+                    if (typeof target[attr] === "object" && typeof source[attr] === "object") {
+                        merge(target[attr], source[attr]);
+                    } else {
+                        target[attr] = source[attr];
+                    }
+                }
+                return target;
+            }
+            let params = new URLSearchParams(window.location.search);
+            let payload = {};
+            for (let [k, v] of params.entries()) {
+                if (k.includes('__proto__[')) {
+                    let key = k.match(/\\[(.*?)\\]/)[1];
+                    payload['__proto__'] = {};
+                    payload['__proto__'][key] = v;
+                }
+            }
+            merge({}, payload);
+            
+            let user = {};
+            if (user.isAdmin) {
+                document.write("Admin access granted! flag{dom_proto_pollution}");
+            }
+        </script>
+      </body>
+    </html>
+    """
+    return html
+
+@app.get("/api/labs/dom/redirect", response_class=HTMLResponse)
+async def dom_redirect():
+    html = """
+    <html>
+      <body>
+        <h1>DOM Open Redirect Lab</h1>
+        <script>
+            let params = new URLSearchParams(window.location.search);
+            let next = params.get('next');
+            if (next) {
+                window.location = next;
+            }
+        </script>
+        <!-- flag{dom_redirect_js} -->
+      </body>
+    </html>
+    """
+    return html
+
+# --- RACE CONDITIONS LAB ---
+race_state = {
+    "discount_uses": 0,
+    "balance": 100,
+    "inventory": 5
+}
+
+@app.post("/api/labs/race/discount")
+async def race_discount():
+    """INTENTIONALLY VULNERABLE ENDPOINT - TOCTOU Discount"""
+    if race_state["discount_uses"] < 1:
+        await asyncio.sleep(0.5)
+        race_state["discount_uses"] += 1
+        
+        if race_state["discount_uses"] > 1:
+            race_state["discount_uses"] = 0
+            return {"success": True, "message": "Race condition won! Discount applied multiple times.", "flag": "flag{race_discount_abuse}"}
+            
+        return {"success": True, "message": "Discount applied."}
+        
+    if race_state["discount_uses"] >= 1:
+        race_state["discount_uses"] = 0
+        
+    return {"success": False, "message": "Discount already used!"}
+
+@app.post("/api/labs/race/transfer")
+async def race_transfer():
+    """INTENTIONALLY VULNERABLE ENDPOINT - TOCTOU Balance Transfer"""
+    amount = 100
+    
+    if race_state["balance"] >= amount:
+        await asyncio.sleep(0.5)
+        race_state["balance"] -= amount
+        
+        if race_state["balance"] < 0:
+            race_state["balance"] = 100
+            return {"success": True, "message": "Transferred more money than available balance!", "flag": "flag{race_balance_overdraw}"}
+            
+        return {"success": True, "message": f"Transferred ${amount}."}
+        
+    race_state["balance"] = 100
+    return {"success": False, "message": "Insufficient funds."}
+
+@app.post("/api/labs/race/limit")
+async def race_limit():
+    """INTENTIONALLY VULNERABLE ENDPOINT - TOCTOU Inventory Limit"""
+    if race_state["inventory"] > 0:
+        await asyncio.sleep(0.5)
+        race_state["inventory"] -= 1
+            
+        if race_state["inventory"] < 0:
+            race_state["inventory"] = 5
+            return {"success": True, "message": "Purchased more items than inventory allowed!", "flag": "flag{race_limit_bypass}"}
+            
+        return {"success": True, "message": "Item purchased."}
+        
+    race_state["inventory"] = 5
+    return {"success": False, "message": "Out of stock."}
