@@ -271,7 +271,7 @@ nav#main-nav a:hover:not(.btn-nav), nav#main-nav a.active:not(.btn-nav) {
   background: var(--bg-dark) !important;
   border: 1px solid var(--border-subtle) !important;
   border-radius: 8px !important;
-  padding: 0.8rem 1.2rem !important;
+  padding: 0.8rem 1.2rem;
   font-family: var(--font-sans) !important;
   color: var(--text-main) !important;
   box-shadow: 
