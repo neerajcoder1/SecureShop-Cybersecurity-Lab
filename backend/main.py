@@ -5,7 +5,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from datetime import timedelta
 from typing import List
 import os
-import requests
 import pickle
 import base64
 import yaml
