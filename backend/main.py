@@ -772,3 +772,51 @@ def browser_update_email(data: models.EmailUpdate, current_user: dict = Depends(
     if "evil.com" in data.email or "hacker" in data.email:
         return {"success": True, "message": "Email updated without CSRF token!", "flag": "flag{browser_csrf_bypass}"}
     return {"success": True, "message": f"Email updated to {data.email}."}
+
+# --- NETWORK SECURITY LAB ---
+import urllib.request
+import urllib.error
+
+@app.post("/api/labs/network/fetch")
+def network_ssrf_fetch(data: models.FetchRequest):
+    """INTENTIONALLY VULNERABLE ENDPOINT - SSRF"""
+    # Flaw: No validation on the URL being fetched
+    try:
+        req = urllib.request.Request(data.url)
+        with urllib.request.urlopen(req, timeout=3) as response:
+            content = response.read().decode('utf-8')
+            return {"success": True, "content": content}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+@app.get("/api/labs/network/internal/secret")
+def network_internal_secret(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - SSRF Target"""
+    # This endpoint is supposed to be internal only
+    client_host = request.client.host
+    if client_host in ["127.0.0.1", "::1", "localhost"]:
+        return {"success": True, "secret": "Super secret internal data", "flag": "flag{network_ssrf_internal}"}
+    raise HTTPException(status_code=403, detail="Forbidden: Internal access only")
+
+@app.get("/api/labs/network/ping")
+def network_ping(host: str = "127.0.0.1"):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Command Injection"""
+    # Flaw: Blindly concatenating user input into a command string
+    # We simulate the execution for safety
+    import re
+    if re.search(r'[;&|]\s*(whoami|ls|cat|id)', host.lower()):
+        return {"success": True, "output": f"PING {host}\n...\nroot\n", "flag": "flag{network_command_injection}"}
+    return {"success": True, "output": f"PING {host}\n64 bytes from {host}: icmp_seq=1 ttl=64 time=0.042 ms"}
+
+@app.post("/api/labs/network/reset_password")
+def network_host_header_injection(data: models.PasswordReset, request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Host Header Injection"""
+    # Flaw: Using the Host header to generate a password reset link
+    host_header = request.headers.get("Host", "")
+    reset_link = f"http://{host_header}/reset?token=12345"
+    
+    flag = None
+    if "evil.com" in host_header.lower() or "hacker" in host_header.lower():
+        flag = "flag{network_host_header}"
+        
+    return {"success": True, "message": f"Password reset link generated: {reset_link}", "flag": flag}

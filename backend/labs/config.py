@@ -61,6 +61,15 @@ LABS = [
         "difficulty": "Intermediate",
         "xp_available": 350,
         "challenges_count": 3
+    },
+    {
+        "id": "network",
+        "name": "Network Security Lab",
+        "description": "Exploit Server-Side Request Forgery (SSRF), Command Injection, and Host Header Injection.",
+        "category": "Network Security",
+        "difficulty": "Advanced",
+        "xp_available": 450,
+        "challenges_count": 3
     }
 ]
 
@@ -317,6 +326,38 @@ CHALLENGES = {
             "xp": 150,
             "flag": "flag{browser_csrf_bypass}",
             "badge": "🏆 Request Forger"
+        }
+    ],
+    "network": [
+        {
+            "id": 1,
+            "title": "Server-Side Request Forgery (SSRF)",
+            "description": "Force the server to request an internal API that is only accessible from the loopback interface.",
+            "hint": "POST to /api/labs/network/fetch with '\"url\": \"http://localhost:8000/api/labs/network/internal/secret\"'.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{network_ssrf_internal}",
+            "badge": "🏆 Internal Explorer"
+        },
+        {
+            "id": 2,
+            "title": "OS Command Injection",
+            "description": "Exploit a network diagnostic tool by appending a malicious command payload.",
+            "hint": "Send a GET request to /api/labs/network/ping?host=127.0.0.1;whoami",
+            "difficulty": "Advanced",
+            "xp": 150,
+            "flag": "flag{network_command_injection}",
+            "badge": "🏆 Shell Popper"
+        },
+        {
+            "id": 3,
+            "title": "Host Header Injection",
+            "description": "Exploit a password reset endpoint that dynamically generates the reset link based on the HTTP Host header.",
+            "hint": "Send a POST request to /api/labs/network/reset_password but change the 'Host' header to 'evil.com'.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{network_host_header}",
+            "badge": "🏆 Header Hijacker"
         }
     ]
 }

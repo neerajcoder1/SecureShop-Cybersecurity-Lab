@@ -35,6 +35,9 @@ class EmailUpdate(BaseModel):
     email: EmailStr
     csrf_token: Optional[str] = None
 
+class FetchRequest(BaseModel):
+    url: str
+
 class ProductResponse(BaseModel):
     id: int
     name: str
