@@ -24,6 +24,7 @@ function updateNav() {
     nav.innerHTML = `
             <a href="/index.html">Home</a>
             <a href="/labs.html">Labs</a>
+            <a href="/leaderboard.html">Leaderboard</a>
             <a href="/docs.html">Docs</a>
             <a href="/videos.html">Tutorials</a>
             <a href="/dashboard.html">Dashboard</a>

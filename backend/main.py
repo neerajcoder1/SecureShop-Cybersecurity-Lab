@@ -262,6 +262,25 @@ def read_users_me(
         "completed_challenges": total_completed
     }
 
+@app.get("/api/leaderboard")
+def get_leaderboard():
+    query = """
+        SELECT u.username, u.role, 
+               COALESCE(SUM(uc.xp_awarded), 0) as total_xp, 
+               COUNT(uc.id) as challenges_completed
+        FROM users u
+        LEFT JOIN user_challenges uc ON u.id = uc.user_id
+        GROUP BY u.id
+        ORDER BY total_xp DESC
+        LIMIT 50
+    """
+    results = database.execute_read_query(query)
+    # Ensure values are integers
+    for r in results:
+        r["total_xp"] = int(r["total_xp"]) if r["total_xp"] else 0
+        r["challenges_completed"] = int(r["challenges_completed"]) if r["challenges_completed"] else 0
+    return results
+
 
 # =========================
 # ORDERS
@@ -550,9 +569,23 @@ def sqli_lab_search(q: str = ""):
         cursor.execute(query)
         rows = [dict(row) for row in cursor.fetchall()]
         
-        # Give UNION flag if they successfully injected UNION
-        if "' UNION" in q.upper():
-            return {"results": rows, "flag": "flag{sqli_union_version}"}
+        flags = []
+        
+        # 1. Blind SQLi Concept
+        if "1=1" in q or "1=2" in q or "true" in q.lower():
+            flags.append("flag{sqli_blind_concept}")
+            
+        # 2. UNION Version
+        if "' UNION" in q.upper() and "sqlite_version" in q.lower():
+            flags.append("flag{sqli_union_version}")
+            
+        # 3. Data Extraction
+        if "super_secret" in q.lower() and "' UNION" in q.upper():
+            flags.append("flag{sqli_data_extraction}")
+            rows.append({"id": 999, "name": "super_secret", "description": "Here is the data extraction flag: flag{sqli_data_extraction}"})
+            
+        if flags:
+            return {"results": rows, "flags": flags, "message": "Multiple flags unlocked!" if len(flags)>1 else "Flag unlocked!"}
             
         return {"results": rows}
     except Exception as e:
@@ -605,8 +638,11 @@ def xss_lab_comment(comment: str):
 @app.get("/api/labs/xss/profile")
 def xss_lab_profile(name: str = ""):
     """INTENTIONALLY VULNERABLE ENDPOINT - Context-aware XSS"""
-    html = f'<input type="text" name="profile_name" value="{name}">'
     flag = None
-    if '"><script>' in name.lower() or '" autofocus onfocus="' in name.lower():
+    # To bypass an attribute context (e.g., <input value="... ">), you need ">
+    # followed by a script payload or an event handler (e.g. " onmouseover="alert(1)")
+    if ('"' in name or "'" in name) and (">" in name or "onmouseover" in name.lower() or "onerror" in name.lower()):
         flag = "flag{xss_context_attribute}"
-    return {"html": html, "flag": flag}
+    
+    html_snippet = f'<input type="text" name="username" value="{name}">'
+    return {"html_snippet": html_snippet, "flag": flag}

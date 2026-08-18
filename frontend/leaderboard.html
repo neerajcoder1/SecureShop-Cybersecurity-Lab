@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureShop Lab - Global Leaderboard</title>
+    <link rel="stylesheet" href="app.css">
+    <script src="app.js"></script>
+    <style>
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--bg-card);
+        }
+        .leaderboard-table th {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .leaderboard-table tr:hover {
+            background-color: var(--bg-card);
+        }
+        .rank-1 { color: #FFD700; font-weight: bold; font-size: 1.2rem; }
+        .rank-2 { color: #C0C0C0; font-weight: bold; font-size: 1.1rem; }
+        .rank-3 { color: #CD7F32; font-weight: bold; font-size: 1.05rem; }
+        .rank-other { color: var(--text-muted); }
+        .username-cell { font-family: var(--font-mono); }
+        .xp-cell { color: var(--accent-orange); font-weight: bold; }
+        .badge-admin { background-color: rgba(220, 38, 38, 0.2); color: #ef4444; }
+    </style>
+</head>
+<body>
+    <header>
+      <div class="logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon" style="margin-right: 8px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="8 10 11 13 8 16"></polyline><line x1="13" y1="16" x2="16" y2="16"></line></svg> SecureShop Cybersecurity Lab
+      </div>
+      <nav id="main-nav"></nav>
+    </header>
+
+    <div class="container layout-sidebar">
+        <div class="sidebar-nav card">
+            <h3 class="mb-1">Platform</h3>
+            <a href="/labs.html">Available Labs</a>
+            <a href="/leaderboard.html" class="active">Global Leaderboard</a>
+            <a href="/dashboard.html">My Dashboard</a>
+        </div>
+
+        <div>
+            <div class="flex justify-between items-center mb-2">
+                <div>
+                    <h2 id="welcome-msg" style="margin-bottom: 0.5rem;">Global Leaderboard</h2>
+                    <p class="text-muted" style="margin: 0;">Top hackers ranked by total XP earned.</p>
+                </div>
+                <div style="font-size: 3rem; color: var(--accent-orange);">🏆</div>
+            </div>
+
+            <div class="card flex-col gap-1">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">Rank</th>
+                            <th style="width: 40%;">Hacker</th>
+                            <th style="width: 25%;">Challenges</th>
+                            <th style="width: 25%;">Total XP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <tr><td colspan="4" class="text-center text-muted">Loading rankings...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = getToken();
+            if (!token) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                const res = await fetchWithAuth(`${API_BASE}/leaderboard`);
+                if (res && res.ok) {
+                    const data = await res.json();
+                    const tbody = document.getElementById('leaderboard-body');
+                    tbody.innerHTML = '';
+                    
+                    if (data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No users found on the leaderboard.</td></tr>';
+                        return;
+                    }
+
+                    data.forEach((user, index) => {
+                        const rank = index + 1;
+                        let rankHtml = '';
+                        if (rank === 1) rankHtml = '<span class="rank-1">🥇 1</span>';
+                        else if (rank === 2) rankHtml = '<span class="rank-2">🥈 2</span>';
+                        else if (rank === 3) rankHtml = '<span class="rank-3">🥉 3</span>';
+                        else rankHtml = `<span class="rank-other">#${rank}</span>`;
+
+                        const roleBadge = user.role === 'admin' ? '<span class="badge badge-admin" style="font-size: 0.7rem; padding: 2px 6px; margin-left: 8px;">ADMIN</span>' : '';
+
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${rankHtml}</td>
+                                <td class="username-cell">${user.username} ${roleBadge}</td>
+                                <td>${user.challenges_completed}</td>
+                                <td class="xp-cell">${user.total_xp} XP</td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch(e) {
+                console.error("Failed to fetch leaderboard", e);
+                document.getElementById('leaderboard-body').innerHTML = '<tr><td colspan="4" class="text-center" style="color: var(--term-err);">Error loading leaderboard.</td></tr>';
+            }
+        });
+    </script>
+</body>
+</html>
