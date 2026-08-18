@@ -88,6 +88,24 @@ LABS = [
         "difficulty": "Advanced",
         "xp_available": 450,
         "challenges_count": 3
+    },
+    {
+        "id": "graphql",
+        "name": "GraphQL Security Lab",
+        "description": "Exploit Introspection, BOLA in Resolvers, and Query Batching.",
+        "category": "GraphQL Security",
+        "difficulty": "Advanced",
+        "xp_available": 450,
+        "challenges_count": 3
+    },
+    {
+        "id": "adv_inject",
+        "name": "Advanced Injection Lab",
+        "description": "Exploit Server-Side Template Injection (SSTI), XXE, and Blind Command Injection.",
+        "category": "Advanced Injection",
+        "difficulty": "Expert",
+        "xp_available": 600,
+        "challenges_count": 3
     }
 ]
 
@@ -440,6 +458,70 @@ CHALLENGES = {
             "xp": 200,
             "flag": "flag{logic_race_condition}",
             "badge": "🏆 Speed Racer"
+        }
+    ],
+    "graphql": [
+        {
+            "id": 1,
+            "title": "Introspection Enabled",
+            "description": "Dump the entire GraphQL API schema to find hidden endpoints.",
+            "hint": "POST to /api/labs/graphql with query '{ __schema { types { name } } }'.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{graphql_introspection}",
+            "badge": "🏆 Schema Dumper"
+        },
+        {
+            "id": 2,
+            "title": "BOLA in Resolvers",
+            "description": "Query a user by ID to extract the admin's private flag.",
+            "hint": "POST to /api/labs/graphql with query '{ user(id: 1) { email flag } }'.",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{graphql_bola_resolver}",
+            "badge": "🏆 Node Crawler"
+        },
+        {
+            "id": 3,
+            "title": "Query Batching (Rate Limit Bypass)",
+            "description": "Send an array of queries in a single request to brute-force an OTP.",
+            "hint": "POST an array of queries to /api/labs/graphql: [{'query': '{ verifyOTP(code: \"1234\") }'}, ...]",
+            "difficulty": "Expert",
+            "xp": 250,
+            "flag": "flag{graphql_query_batching}",
+            "badge": "🏆 Batch Attacker"
+        }
+    ],
+    "adv_inject": [
+        {
+            "id": 1,
+            "title": "Server-Side Template Injection (SSTI)",
+            "description": "Exploit a vulnerable template renderer to evaluate mathematical expressions.",
+            "hint": "Send GET /api/labs/adv_inject/template?name={{7*7}}",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{adv_inject_ssti}",
+            "badge": "🏆 Template Hacker"
+        },
+        {
+            "id": 2,
+            "title": "XML External Entity (XXE)",
+            "description": "Exploit an insecure XML parser to read internal files.",
+            "hint": "POST XML to /api/labs/adv_inject/xml with a SYSTEM entity.",
+            "difficulty": "Expert",
+            "xp": 250,
+            "flag": "flag{adv_inject_xxe}",
+            "badge": "🏆 Entity Exploiter"
+        },
+        {
+            "id": 3,
+            "title": "Blind Command Injection",
+            "description": "Exploit an asynchronous ping service using time-based blind injection.",
+            "hint": "POST to /api/labs/adv_inject/ping_async with a sleep payload.",
+            "difficulty": "Expert",
+            "xp": 250,
+            "flag": "flag{adv_inject_blind_cmd}",
+            "badge": "🏆 Time Lord"
         }
     ]
 }

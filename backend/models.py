@@ -50,6 +50,9 @@ class TransferRequest(BaseModel):
     account_id: int
     amount: float
 
+class PingRequest(BaseModel):
+    host: str
+
 class ProductResponse(BaseModel):
     id: int
     name: str

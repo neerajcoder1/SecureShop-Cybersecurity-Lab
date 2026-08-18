@@ -894,3 +894,73 @@ def logic_transfer(transfer: models.TransferRequest, current_user: dict = Depend
             return {"success": True, "message": f"Funds transferred. Balance negative! ({account_balances[user_id]})", "flag": "flag{logic_race_condition}"}
         return {"success": True, "message": f"Funds transferred successfully. Balance: {account_balances[user_id]}"}
     return {"success": False, "message": "Insufficient funds."}
+
+# --- GRAPHQL SECURITY LAB ---
+@app.post("/api/labs/graphql")
+async def graphql_endpoint(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - GraphQL"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"error": "Invalid JSON"}
+
+    def process_query(q_str):
+        q_str_compact = q_str.replace(" ", "").replace("\n", "")
+        # 1. Introspection
+        if "__schema" in q_str_compact:
+            return {"data": {"__schema": {"types": [{"name": "User"}]}}, "flag": "flag{graphql_introspection}"}
+        # 2. BOLA in Resolvers
+        if "user(id:1)" in q_str_compact and "email" in q_str_compact:
+            return {"data": {"user": {"email": "admin@secureshop.local", "flag": "flag{graphql_bola_resolver}"}}}
+        # 3. Query Batching
+        if "verifyOTP" in q_str_compact:
+            return {"data": {"verifyOTP": False}}
+        return {"data": {}}
+
+    if isinstance(body, list):
+        # 3. Query Batching Bypass
+        if len(body) >= 50:
+            # If they batch many queries at once, they bypass rate limits
+            for item in body:
+                if "verifyOTP" in item.get("query", ""):
+                    return {"data": "OTP Brute-forced!", "flag": "flag{graphql_query_batching}"}
+        
+        results = []
+        for item in body:
+            results.append(process_query(item.get("query", "")))
+        return results
+    else:
+        return process_query(body.get("query", ""))
+
+# --- ADVANCED INJECTION LAB ---
+@app.get("/api/labs/adv_inject/template")
+def adv_inject_template(name: str = "Guest"):
+    """INTENTIONALLY VULNERABLE ENDPOINT - SSTI"""
+    # Flaw: Evaluates the name parameter
+    if "{{7*7}}" in name or "49" in name:
+        return {"success": True, "rendered": f"Hello 49", "flag": "flag{adv_inject_ssti}"}
+    return {"success": True, "rendered": f"Hello {name}"}
+
+@app.post("/api/labs/adv_inject/xml")
+async def adv_inject_xml(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - XXE"""
+    body = await request.body()
+    body_str = body.decode('utf-8', errors='ignore')
+    # Flaw: Insecure XML parsing (simulated)
+    if "<!ENTITY" in body_str and "SYSTEM" in body_str:
+        return {"success": True, "message": "XML parsed. root:x:0:0:root:/root:/bin/bash", "flag": "flag{adv_inject_xxe}"}
+    return {"success": True, "message": "XML parsed successfully."}
+
+@app.post("/api/labs/adv_inject/ping_async")
+def adv_inject_ping_async(data: models.PingRequest):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Blind Command Injection"""
+    # Flaw: Command is executed asynchronously, output is not returned
+    if "sleep" in data.host:
+        import time
+        import re
+        m = re.search(r'sleep\s+(\d+)', data.host)
+        if m:
+            sleep_time = int(m.group(1))
+            time.sleep(min(sleep_time, 5)) # Sleep up to 5 seconds
+            return {"success": True, "message": "Ping started in background.", "flag": "flag{adv_inject_blind_cmd}"}
+    return {"success": True, "message": "Ping started in background."}
