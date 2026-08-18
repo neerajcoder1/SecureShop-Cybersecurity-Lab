@@ -166,14 +166,20 @@
 
     <!-- REGISTRATION BENEFITS -->
     <div class="container mt-2 pt-2">
-      <div class="card" style="border-left: 4px solid var(--accent-blue); background: var(--bg-card); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-        <div class="flex justify-between items-center" style="gap: 1.5rem; flex-wrap: wrap;">
+      <div style="background: linear-gradient(135deg, rgba(88, 166, 255, 0.1) 0%, rgba(28, 33, 40, 0.8) 100%); border: 1px solid rgba(88, 166, 255, 0.3); border-left: 4px solid var(--accent-blue); border-radius: 8px; padding: 2rem; box-shadow: 0 10px 30px rgba(88, 166, 255, 0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 35px rgba(88, 166, 255, 0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(88, 166, 255, 0.1)';">
+        <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;">
+          <div style="background: rgba(88, 166, 255, 0.15); color: var(--accent-blue); width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: inset 0 0 10px rgba(88, 166, 255, 0.2);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
           <div style="flex: 1; min-width: 300px;">
-            <h3 style="margin-bottom: 0.5rem; color: var(--accent-blue);">Track Your Hacker Journey</h3>
-            <p class="text-muted" style="margin-bottom: 0; font-size: 0.95rem;">You can practice the labs entirely anonymously. However, creating a free account allows you to track your performance, see where you stand out in your cybersecurity knowledge, earn completion badges, and unlock exclusive video tutorials!</p>
+            <h3 style="margin-bottom: 0.5rem; color: var(--accent-blue); font-size: 1.5rem;">Track Your Hacker Journey</h3>
+            <p class="text-muted" style="margin-bottom: 0; font-size: 1.05rem; line-height: 1.6;">You can practice the labs anonymously, but creating a free account allows you to track your performance, earn completion badges, monitor your leaderboard rank, and unlock exclusive video tutorials!</p>
           </div>
           <div style="flex-shrink: 0;">
-            <a href="/login.html" class="btn btn-outline" style="padding: 0.6rem 1.2rem; font-weight: 600;">Create Free Account</a>
+            <a href="/login.html" class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-weight: 600; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 15px rgba(35, 134, 54, 0.3);">
+              Create Free Account
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+            </a>
           </div>
         </div>
       </div>
