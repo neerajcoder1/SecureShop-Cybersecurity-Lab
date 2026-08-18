@@ -7,110 +7,210 @@
     <link rel="stylesheet" href="app.css">
     <script src="app.js"></script>
     <style>
+    <style>
+        .profile-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
         .profile-header {
-            background: var(--bg-card);
+            background: linear-gradient(135deg, rgba(88, 166, 255, 0.1) 0%, var(--bg-card) 100%);
             border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            padding: 2rem;
+            border-radius: 16px;
+            padding: 3rem 2.5rem;
             display: flex;
             align-items: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
+            gap: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        [data-theme="light"] .profile-header {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--accent-blue);
         }
         .avatar-circle {
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
-            font-weight: bold;
+            font-size: 3.5rem;
+            font-weight: 700;
             color: white;
-            box-shadow: 0 0 20px rgba(88, 166, 255, 0.3);
+            box-shadow: 0 0 30px rgba(88, 166, 255, 0.4), inset 0 0 10px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+            border: 4px solid var(--bg-panel);
         }
         .profile-stats {
             flex-grow: 1;
         }
+        .profile-name {
+            font-size: 2.2rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--text-heading);
+            letter-spacing: -0.5px;
+        }
+        .role-badge {
+            background: rgba(88, 166, 255, 0.15);
+            color: var(--accent-blue);
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            border: 1px solid rgba(88, 166, 255, 0.3);
+        }
         .rank-title {
             color: var(--accent-orange);
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
         .progress-container {
             width: 100%;
-            background: rgba(255,255,255,0.05);
-            border-radius: 4px;
-            height: 8px;
-            margin-top: 0.5rem;
-            overflow: hidden;
-        }
-        .progress-bar {
-            height: 100%;
-            background: var(--accent-green);
-            width: 0%;
-            transition: width 1s ease-out;
-        }
-        .badge-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        .badge-card {
             background: rgba(0,0,0,0.2);
             border: 1px solid var(--border-subtle);
             border-radius: 8px;
+            height: 12px;
+            margin-top: 0.8rem;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+        [data-theme="light"] .progress-container {
+            background: rgba(0,0,0,0.05);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-green), #4ade80);
+            width: 0%;
+            transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 10px rgba(35, 134, 54, 0.5);
+            border-radius: 8px;
+        }
+        .xp-text {
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 0.95rem; 
+            color: var(--text-muted); 
+            margin-top: 1.5rem;
+            font-weight: 500;
+        }
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        .badge-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
             padding: 1.5rem 1rem;
             text-align: center;
-            transition: transform 0.2s, box-shadow 0.2s;
-            opacity: 0.4;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0.5;
             filter: grayscale(100%);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
         }
         .badge-card.unlocked {
             opacity: 1;
             filter: none;
-            border-color: var(--accent-blue);
-            background: rgba(88, 166, 255, 0.05);
+            border-color: rgba(88, 166, 255, 0.4);
+            background: linear-gradient(180deg, rgba(88, 166, 255, 0.05) 0%, var(--bg-card) 100%);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        [data-theme="light"] .badge-card.unlocked {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+        .badge-card.unlocked::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: var(--accent-blue);
         }
         .badge-card.unlocked:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(88, 166, 255, 0.2);
+            box-shadow: 0 15px 30px rgba(88, 166, 255, 0.2);
+            border-color: var(--accent-blue);
         }
         .badge-icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 2.8rem;
+            margin-bottom: 0.8rem;
+            display: inline-block;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+        }
+        .badge-card.unlocked .badge-icon {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+        .badge-card.unlocked:hover .badge-icon {
+            transform: scale(1.2) rotate(5deg);
         }
         .cert-banner {
-            background: linear-gradient(90deg, rgba(210, 153, 34, 0.1), rgba(210, 153, 34, 0.05));
-            border: 1px solid var(--accent-orange);
-            border-radius: 8px;
-            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(210, 153, 34, 0.15) 0%, var(--bg-card) 100%);
+            border: 1px solid rgba(210, 153, 34, 0.4);
+            border-radius: 12px;
+            padding: 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 2rem;
+            margin-top: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        [data-theme="light"] .cert-banner {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .cert-banner::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--accent-orange);
         }
         .btn-gold {
-            background: var(--accent-orange);
+            background: linear-gradient(135deg, var(--accent-orange) 0%, #e3a92b 100%);
             color: #000;
             border: none;
-            padding: 0.8rem 1.5rem;
-            font-weight: bold;
-            border-radius: 4px;
+            padding: 0.9rem 1.8rem;
+            font-weight: 700;
+            font-size: 1.05rem;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-decoration: none;
+            box-shadow: 0 5px 15px rgba(210, 153, 34, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         .btn-gold:hover {
-            background: #e3a92b;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(210, 153, 34, 0.5);
         }
         .btn-gold.disabled {
-            background: #444;
-            color: #888;
+            background: var(--bg-dark);
+            color: var(--text-muted);
             cursor: not-allowed;
+            box-shadow: none;
+            border: 1px solid var(--border-subtle);
+            transform: none;
         }
     </style>
 </head>
@@ -122,19 +222,22 @@
       <nav id="main-nav"></nav>
     </header>
 
-    <div class="container">
+    <div class="container profile-container mt-2 pt-2">
         
         <div class="profile-header">
             <div class="avatar-circle" id="profile-avatar">?</div>
             <div class="profile-stats">
-                <h1 style="margin: 0 0 0.5rem 0;" id="profile-name">Loading...</h1>
-                <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 0.5rem;">
-                    <span class="badge badge-info" id="profile-role">USER</span>
-                    <span class="rank-title" id="profile-rank">Novice Hacker</span>
+                <h1 class="profile-name" id="profile-name">Loading...</h1>
+                <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 0.8rem;">
+                    <span class="role-badge" id="profile-role">USER</span>
+                    <span class="rank-title" id="profile-rank">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                        Novice Hacker
+                    </span>
                 </div>
                 
-                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted); margin-top: 1rem;">
-                    <span>Current XP: <strong id="profile-xp" style="color: var(--text-main);">0</strong></span>
+                <div class="xp-text">
+                    <span>Current XP: <strong id="profile-xp" style="color: var(--text-heading); font-size: 1.1rem;">0</strong></span>
                     <span id="next-rank-text">Next Rank: 500 XP</span>
                 </div>
                 <div class="progress-container">
@@ -145,15 +248,24 @@
 
         <div class="cert-banner">
             <div>
-                <h3 style="margin: 0 0 0.5rem 0; color: var(--accent-orange);">Official Certificate of Completion</h3>
-                <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Reach 1000 XP to unlock your official SecureShop certification.</p>
+                <h3 style="margin: 0 0 0.5rem 0; color: var(--accent-orange); font-size: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+                    Official Certificate of Completion
+                </h3>
+                <p style="margin: 0; color: var(--text-muted); font-size: 1rem; max-width: 600px;">Reach 1000 XP across all vulnerable labs to unlock your official SecureShop certification.</p>
             </div>
             <div>
-                <a href="/certificate.html" id="btn-cert" class="btn-gold disabled" onclick="return checkCertAccess(event)">Claim Certificate</a>
+                <a href="/certificate.html" id="btn-cert" class="btn-gold disabled" onclick="return checkCertAccess(event)">
+                    Claim Certificate
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
             </div>
         </div>
 
-        <h2 style="margin-top: 2rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.5rem;">Earned Badges</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem; margin-top: 3rem;">
+            <h2 style="margin: 0; font-size: 1.8rem;">Earned Badges</h2>
+            <span class="text-muted" style="font-size: 0.9rem; font-weight: 600;" id="badge-count">0/33 Unlocked</span>
+        </div>
         <div class="badge-grid" id="badge-container">
             <!-- Badges rendered via JS -->
             <p class="text-muted">Loading badges...</p>
@@ -268,14 +380,16 @@
                 unlocked = JSON.parse(localStorage.getItem('secureshop_completed_flags')) || [];
             } catch(e) {}
             
+            document.getElementById('badge-count').textContent = `${unlocked.length}/${ALL_BADGES.length} Unlocked`;
+
             ALL_BADGES.forEach((badgeName, index) => {
                 const isUnlocked = index < unlocked.length;
                 const card = document.createElement('div');
                 card.className = `badge-card ${isUnlocked ? 'unlocked' : ''}`;
                 card.innerHTML = `
                     <div class="badge-icon">${badgeName.split(' ')[0]}</div>
-                    <div style="font-weight: bold; font-size: 0.9rem;">${badgeName.substring(2)}</div>
-                    ${isUnlocked ? '<div style="font-size:0.7rem; color:var(--accent-green); margin-top:0.5rem;">UNLOCKED</div>' : '<div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.5rem;">LOCKED</div>'}
+                    <div style="font-weight: 600; font-size: 1rem; color: var(--text-heading);">${badgeName.substring(2)}</div>
+                    ${isUnlocked ? '<div style="font-size:0.75rem; font-weight: 700; color:var(--accent-green); margin-top:0.8rem; letter-spacing: 1px;">UNLOCKED</div>' : '<div style="font-size:0.75rem; font-weight: 700; color:var(--text-muted); margin-top:0.8rem; letter-spacing: 1px;">LOCKED</div>'}
                 `;
                 container.appendChild(card);
             });
