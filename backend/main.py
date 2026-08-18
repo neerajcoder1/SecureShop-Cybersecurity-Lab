@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Response
+from fastapi import FastAPI, Depends, HTTPException, status, Response, Request, UploadFile, File
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -964,3 +964,71 @@ def adv_inject_ping_async(data: models.PingRequest):
             time.sleep(min(sleep_time, 5)) # Sleep up to 5 seconds
             return {"success": True, "message": "Ping started in background.", "flag": "flag{adv_inject_blind_cmd}"}
     return {"success": True, "message": "Ping started in background."}
+
+# --- FILE UPLOAD LAB ---
+@app.post("/api/labs/file_upload/basic")
+async def file_upload_basic(file: UploadFile = File(...)):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Basic Extension Bypass"""
+    if file.filename.endswith(".php"):
+        return {"success": True, "message": f"File {file.filename} uploaded successfully. Shell executed!", "flag": "flag{upload_basic_bypass}"}
+    return {"success": True, "message": f"File {file.filename} uploaded successfully."}
+
+@app.post("/api/labs/file_upload/content_type")
+async def file_upload_content_type(file: UploadFile = File(...)):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Content-Type Bypass"""
+    if file.content_type in ["image/jpeg", "image/png"]:
+        if file.filename.endswith(".php"):
+            return {"success": True, "message": "Image uploaded! Wait... this is a shell!", "flag": "flag{upload_content_type_spoof}"}
+        return {"success": True, "message": "Image uploaded successfully."}
+    return {"success": False, "message": "Invalid file type. Only images are allowed."}
+
+@app.post("/api/labs/file_upload/path_traversal")
+async def file_upload_path_traversal(file: UploadFile = File(...)):
+    """INTENTIONALLY VULNERABLE ENDPOINT - Path Traversal Upload"""
+    if "../" in file.filename or "..\\" in file.filename:
+        return {"success": True, "message": f"File written to /var/www/html/uploads/{file.filename}... System compromised!", "flag": "flag{upload_path_traversal}"}
+    return {"success": True, "message": f"File written to /var/www/html/uploads/{file.filename}"}
+
+# --- NOSQL INJECTION LAB ---
+@app.post("/api/labs/nosql/auth_bypass")
+async def nosql_auth_bypass(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - NoSQL $ne Authentication Bypass"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    username = body.get("username", "")
+    password = body.get("password", "")
+    
+    if username == "admin" and isinstance(password, dict) and "$ne" in password:
+        return {"success": True, "message": "Logged in as admin!", "flag": "flag{nosql_auth_bypass}"}
+    return {"success": False, "message": "Invalid credentials"}
+
+@app.post("/api/labs/nosql/regex")
+async def nosql_regex(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - NoSQL Data Extraction via Regex"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    reset_token = body.get("reset_token", "")
+    
+    if isinstance(reset_token, dict) and "$regex" in reset_token:
+        return {"success": True, "message": "Regex match found!", "flag": "flag{nosql_regex_extract}"}
+    return {"success": False, "message": "User not found."}
+
+@app.post("/api/labs/nosql/array")
+async def nosql_array(request: Request):
+    """INTENTIONALLY VULNERABLE ENDPOINT - NoSQL $in Array Bypass"""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"success": False, "message": "Invalid JSON"}
+    
+    doc_id = body.get("doc_id", "")
+    
+    if isinstance(doc_id, dict) and "$in" in doc_id:
+        return {"success": True, "message": "Access granted to multiple documents!", "flag": "flag{nosql_array_bypass}"}
+    return {"success": False, "message": "Access denied."}

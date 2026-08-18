@@ -106,6 +106,24 @@ LABS = [
         "difficulty": "Expert",
         "xp_available": 600,
         "challenges_count": 3
+    },
+    {
+        "id": "file_upload",
+        "name": "Insecure File Uploads",
+        "description": "Exploit basic extension bypass, content-type spoofing, and path traversal.",
+        "category": "File Uploads",
+        "difficulty": "Advanced",
+        "xp_available": 450,
+        "challenges_count": 3
+    },
+    {
+        "id": "nosql",
+        "name": "NoSQL Injection Lab",
+        "description": "Exploit authentication bypass with $ne, data extraction with $regex, and $in operators.",
+        "category": "NoSQL Injection",
+        "difficulty": "Expert",
+        "xp_available": 600,
+        "challenges_count": 3
     }
 ]
 
@@ -522,6 +540,70 @@ CHALLENGES = {
             "xp": 250,
             "flag": "flag{adv_inject_blind_cmd}",
             "badge": "🏆 Time Lord"
+        }
+    ],
+    "file_upload": [
+        {
+            "id": 1,
+            "title": "Basic Extension Bypass",
+            "description": "Upload a PHP web shell to an endpoint that fails to check file extensions.",
+            "hint": "Upload a file named shell.php to /api/labs/file_upload/basic.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{upload_basic_bypass}",
+            "badge": "🏆 Shell Uploader"
+        },
+        {
+            "id": 2,
+            "title": "Content-Type Bypass",
+            "description": "Bypass validation by altering the Content-Type header of a malicious upload.",
+            "hint": "Upload shell.php to /api/labs/file_upload/content_type, but change Content-Type to image/jpeg in Burp.",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{upload_content_type_spoof}",
+            "badge": "🏆 MIME Spoofer"
+        },
+        {
+            "id": 3,
+            "title": "Path Traversal Upload",
+            "description": "Overwrite system files by injecting path traversal characters into the filename.",
+            "hint": "Upload to /api/labs/file_upload/path_traversal with filename ../../../etc/cron.d/malware.",
+            "difficulty": "Expert",
+            "xp": 250,
+            "flag": "flag{upload_path_traversal}",
+            "badge": "🏆 Traversal Master"
+        }
+    ],
+    "nosql": [
+        {
+            "id": 1,
+            "title": "Authentication Bypass ($ne)",
+            "description": "Bypass the login by using the MongoDB Not-Equal operator.",
+            "hint": "POST to /api/labs/nosql/auth_bypass with {\"username\": \"admin\", \"password\": {\"$ne\": \"wrong\"}}.",
+            "difficulty": "Intermediate",
+            "xp": 150,
+            "flag": "flag{nosql_auth_bypass}",
+            "badge": "🏆 $ne Hacker"
+        },
+        {
+            "id": 2,
+            "title": "Data Extraction ($regex)",
+            "description": "Use Regular Expressions to blindly extract the flag character-by-character.",
+            "hint": "POST to /api/labs/nosql/regex with {\"username\": \"admin\", \"reset_token\": {\"$regex\": \"^flag{a.*\"}}.",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{nosql_regex_extract}",
+            "badge": "🏆 Regex Ninja"
+        },
+        {
+            "id": 3,
+            "title": "Array Operator Bypass ($in)",
+            "description": "Bypass ID validation by injecting an array operator.",
+            "hint": "POST to /api/labs/nosql/array with {\"doc_id\": {\"$in\": [1, 2, 3]}}.",
+            "difficulty": "Advanced",
+            "xp": 200,
+            "flag": "flag{nosql_array_bypass}",
+            "badge": "🏆 Array Injector"
         }
     ]
 }
