@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,6 +6,44 @@
     <title>SecureShop Lab - Documentation</title>
     <link rel="stylesheet" href="app.css">
     <script src="app.js"></script>
+    <style>
+        .docs-sidebar { border-radius: 12px; border: 1px solid var(--border-subtle); box-shadow: 0 10px 30px rgba(0,0,0,0.15); background: var(--bg-card); }
+        .docs-sidebar h3 { font-size: 1.1rem; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; font-weight: 700; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border-subtle); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .docs-sidebar a { display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 0.9rem; border-radius: 8px; color: var(--text-muted); font-weight: 500; transition: all 0.2s ease; text-decoration: none; margin-bottom: 0.2rem; }
+        .docs-sidebar a:hover { background: rgba(88,166,255,0.08); color: var(--text-main); }
+        .docs-sidebar a.active { background: rgba(88,166,255,0.12); color: var(--accent-blue); font-weight: 600; }
+        .doc-section { display: none; }
+        .doc-hero { background: linear-gradient(135deg, rgba(88,166,255,0.1) 0%, var(--bg-card) 100%); border: 1px solid rgba(88,166,255,0.2); border-radius: 12px; padding: 2.5rem; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 1.5rem; }
+        [data-theme="light"] .doc-hero { box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .doc-hero-icon { background: rgba(88,166,255,0.15); color: var(--accent-blue); width: 70px; height: 70px; border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: inset 0 0 15px rgba(88,166,255,0.2); }
+        .doc-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 5px 20px rgba(0,0,0,0.1); transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+        [data-theme="light"] .doc-card { box-shadow: 0 5px 20px rgba(0,0,0,0.04); }
+        .doc-card:hover { border-color: rgba(88,166,255,0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        [data-theme="light"] .doc-card:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.07); }
+        .doc-card-title { font-size: 1.3rem; font-weight: 700; margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.6rem; }
+        .doc-warning { background: rgba(210,153,34,0.08); border: 1px solid rgba(210,153,34,0.4); border-left: 4px solid var(--accent-orange); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; display: flex; align-items: flex-start; gap: 1rem; }
+        .doc-warning-icon { color: var(--accent-orange); flex-shrink: 0; margin-top: 2px; }
+        .doc-warning h4 { color: var(--accent-orange); font-weight: 700; letter-spacing: 1px; font-size: 0.95rem; margin: 0 0 0.4rem 0; }
+        .code-block { background: rgba(13,17,23,0.9); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 1.5rem; margin-top: 1rem; font-family: var(--font-mono); box-shadow: inset 0 2px 10px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
+        [data-theme="light"] .code-block { background: rgba(246,248,250,0.9); border-color: rgba(0,0,0,0.1); box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
+        .code-block::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; }
+        .code-block.blue::before { background: var(--accent-blue); }
+        .code-block.red::before { background: #f85149; }
+        .code-block.green::before { background: var(--accent-green); }
+        .code-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 0.8rem; }
+        .code-label.blue { color: var(--accent-blue); }
+        .code-label.red { color: #f85149; }
+        .code-label.green { color: var(--accent-green); }
+        .code-cmd { color: var(--accent-blue); font-weight: 600; font-size: 0.95rem; }
+        .code-arg { color: var(--accent-orange); }
+        .code-comment { color: var(--text-muted); font-size: 0.9rem; }
+        .code-example { color: var(--accent-green); margin-top: 0.8rem; }
+        pre code { font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.6; color: var(--text-main); }
+        .coming-soon { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 2rem; text-align: center; background: var(--bg-card); border-radius: 12px; border: 1px dashed var(--border-subtle); }
+        .coming-soon-icon { color: var(--text-muted); margin-bottom: 1.5rem; opacity: 0.4; }
+        .coming-soon h2 { color: var(--text-muted); font-size: 2rem; margin-bottom: 0.5rem; }
+        .coming-soon p { max-width: 500px; color: var(--text-muted); margin-bottom: 2rem; font-size: 1.1rem; }
+    </style>
 </head>
 <body>
     <header>
@@ -15,139 +53,224 @@
       <nav id="main-nav"></nav>
     </header>
 
-    <div class="container layout-sidebar">
-        
-        <div class="sidebar-nav card" id="docs-sidebar">
-            <h3 class="mb-1">Documentation</h3>
-            <a href="#" onclick="switchDoc('getting-started'); return false;" class="active" id="nav-getting-started">Getting Started</a>
-            <a href="#" onclick="switchDoc('testing'); return false;" id="nav-testing">Testing Methodology</a>
-            <a href="#" onclick="switchDoc('api'); return false;" id="nav-api">API Reference</a>
-            <a href="#" onclick="switchDoc('security'); return false;" id="nav-security">Security Controls</a>
-            <a href="#" onclick="switchDoc('contributing'); return false;" id="nav-contributing">Contributing</a>
+    <div class="container layout-sidebar mt-2 pt-2">
+        <div class="sidebar-nav docs-sidebar" id="docs-sidebar">
+            <h3>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                Docs
+            </h3>
+            <a href="#" onclick="switchDoc('getting-started'); return false;" class="active" id="nav-getting-started">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 16 12 12 16"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                Getting Started
+            </a>
+            <a href="#" onclick="switchDoc('testing'); return false;" id="nav-testing">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                Testing Methodology
+            </a>
+            <a href="#" onclick="switchDoc('api'); return false;" id="nav-api">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                API Reference
+            </a>
+            <a href="#" onclick="switchDoc('security'); return false;" id="nav-security">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                Security Controls
+            </a>
+            <a href="#" onclick="switchDoc('contributing'); return false;" id="nav-contributing">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Contributing
+            </a>
         </div>
 
         <div id="docs-content-container">
-            
+
             <!-- GETTING STARTED -->
-            <div id="section-getting-started" class="doc-section">
-                <h2>Getting Started</h2>
-                <p class="text-muted mb-2">Welcome to SecureShop Lab. This platform provides an isolated, secure backend designed to teach defensive programming and cyber-hygiene.</p>
-
-                <div class="card mb-2" style="border-left: 4px solid var(--accent-orange); background: rgba(210, 153, 34, 0.05);">
-                    <h3 class="mb-1" style="color: var(--accent-orange);">AUTHORIZED TESTING ONLY</h3>
-                    <p class="text-muted">SecureShop is intended for educational and authorized security testing.<br>Never test websites, APIs, accounts, or infrastructure that you do not own or have explicit permission to assess.</p>
-                </div>
-
-                <h3 class="mb-1">Web Terminal & Lab Methodology</h3>
-                <p class="text-muted mb-2">SecureShop integrates a live Web Terminal directly into your workspace. Instead of needing external tools installed locally, you can practice reconnaissance and exploit methodologies directly in your browser using simulated tools.</p>
-
-                <div class="card mb-2">
-                    <h3 class="mb-1" style="color: var(--accent-blue);">HTTP & API Inspection</h3>
-                    <p class="text-muted mb-1"><strong>Theory:</strong> Modern web applications rely on APIs (Application Programming Interfaces) to fetch data. Attackers often inspect HTTP requests to find hidden endpoints, analyze response headers for version information, or manipulate parameters (like <code>?id=1</code>) to test for IDOR (Insecure Direct Object Reference) vulnerabilities.</p>
-                    <div class="terminal mt-1" style="background: #000000; padding: 1rem; border-radius: 6px; border: 1px solid #30363d; color: #c9d1d9;">
-                        <div style="color: #58a6ff; margin-bottom: 0.5rem; font-weight: 600;">Command: <code>curl</code></div>
-                        <div style="color: #8b949e; margin-bottom: 0.3rem;">Usage: <code>curl [URL]</code></div>
-                        <div style="color: #8b949e;">Description: Sends a GET request to the target URL and returns the raw HTTP response body. Useful for footprinting APIs.</div>
-                        <div style="color: #2ea043; margin-top: 0.8rem;">Example: <code>curl /products</code></div>
+            <div id="section-getting-started" class="doc-section" style="display:block;">
+                <div class="doc-hero">
+                    <div class="doc-hero-icon">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 16 12 12 16"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                    </div>
+                    <div>
+                        <h2 style="margin:0 0 0.4rem 0; font-size:2rem; color:var(--text-heading);">Getting Started</h2>
+                        <p class="text-muted" style="margin:0; font-size:1.05rem;">Welcome to the SecureShop Cybersecurity Lab — your hands-on training ground for web vulnerabilities.</p>
                     </div>
                 </div>
 
-                <div class="card mb-2">
-                    <h3 class="mb-1" style="color: var(--accent-red);">SQL Injection (SQLi)</h3>
-                    <p class="text-muted mb-1"><strong>Theory:</strong> SQL Injection occurs when untrusted user input is directly concatenated into a database query string. This allows an attacker to manipulate the query logic (e.g., bypassing login via <code>' OR 1=1--</code>). SecureShop defends against this by strictly using <em>Parameterized Queries</em>, meaning user input is treated only as data, never as executable code.</p>
-                    <div class="terminal mt-1" style="background: #000000; padding: 1rem; border-radius: 6px; border: 1px solid #30363d; color: #c9d1d9;">
-                        <div style="color: #58a6ff; margin-bottom: 0.5rem; font-weight: 600;">Command: <code>sqlmap</code></div>
-                        <div style="color: #8b949e; margin-bottom: 0.3rem;">Usage: <code>sqlmap -u [URL]</code></div>
-                        <div style="color: #8b949e;">Description: An automated SQL injection and database takeover tool. In this lab, the terminal simulates an automated barrage of time-based, boolean-based, and error-based payloads to test the robustness of the target endpoint.</div>
-                        <div style="color: #2ea043; margin-top: 0.8rem;">Example: <code>sqlmap -u /login</code></div>
+                <div class="doc-warning">
+                    <div class="doc-warning-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </div>
+                    <div>
+                        <h4>AUTHORIZED TESTING ONLY</h4>
+                        <p class="text-muted" style="margin:0; font-size:0.95rem;">SecureShop is for educational and authorized security testing only. Never test websites, APIs, or infrastructure that you do not own or have explicit written permission to assess.</p>
                     </div>
                 </div>
 
-                <div class="card mb-2">
-                    <h3 class="mb-1" style="color: var(--accent-green);">Challenge Validation</h3>
-                    <p class="text-muted mb-1"><strong>Theory:</strong> Security isn't just about breaking things; it's about verifying fixes. After completing your attack simulations, you must validate that the system's defenses (like JWT validation and parameterized queries) are functioning correctly and that no critical vulnerabilities remain.</p>
-                    <div class="terminal mt-1" style="background: #000000; padding: 1rem; border-radius: 6px; border: 1px solid #30363d; color: #c9d1d9;">
-                        <div style="color: #58a6ff; margin-bottom: 0.5rem; font-weight: 600;">Command: <code>submit_report</code></div>
-                        <div style="color: #8b949e; margin-bottom: 0.3rem;">Usage: <code>submit_report</code></div>
-                        <div style="color: #8b949e;">Description: Triggers the validation engine to assess your lab progress, update your live dashboard stats, and award you completion badges.</div>
+                <div class="doc-card">
+                    <h3 class="doc-card-title" style="color:var(--accent-blue);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+                        HTTP &amp; API Inspection
+                    </h3>
+                    <p class="text-muted" style="line-height:1.7; margin-bottom:0;">Modern web applications rely on APIs to fetch data. Attackers inspect HTTP requests to find hidden endpoints, analyze response headers, or manipulate parameters like <code style="background:rgba(88,166,255,0.1); color:var(--accent-blue); padding:2px 6px; border-radius:4px;">?id=1</code> to test for IDOR vulnerabilities.</p>
+                    <div class="code-block blue">
+                        <div class="code-label blue">COMMAND &mdash; curl</div>
+                        <div><span class="code-cmd">curl</span> <span class="code-arg">[URL]</span></div>
+                        <div class="code-comment" style="margin-top:0.5rem;"># Sends a GET request and returns the raw HTTP response body.</div>
+                        <div class="code-comment"># Useful for footprinting APIs and inspecting response headers.</div>
+                        <div class="code-example"><span class="code-comment">$ </span>curl /products</div>
+                    </div>
+                </div>
+
+                <div class="doc-card">
+                    <h3 class="doc-card-title" style="color:#f85149;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                        SQL Injection (SQLi)
+                    </h3>
+                    <p class="text-muted" style="line-height:1.7; margin-bottom:0;">SQL Injection occurs when untrusted input is concatenated into a query string, allowing attackers to bypass login via payloads like <code style="background:rgba(248,81,73,0.1); color:#f85149; padding:2px 6px; border-radius:4px;">' OR 1=1--</code>. SecureShop defends this using <strong>Parameterized Queries</strong>.</p>
+                    <div class="code-block red">
+                        <div class="code-label red">COMMAND &mdash; sqlmap</div>
+                        <div><span class="code-cmd">sqlmap</span> <span class="code-arg">-u [URL]</span></div>
+                        <div class="code-comment" style="margin-top:0.5rem;"># Automated SQL injection and database takeover tool.</div>
+                        <div class="code-comment"># Simulates time-based, boolean-based, and error-based payload attacks.</div>
+                        <div class="code-example"><span class="code-comment">$ </span>sqlmap -u /login</div>
+                    </div>
+                </div>
+
+                <div class="doc-card">
+                    <h3 class="doc-card-title" style="color:var(--accent-green);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        Challenge Validation
+                    </h3>
+                    <p class="text-muted" style="line-height:1.7; margin-bottom:0;">Security isn't just about breaking things — it's about verifying fixes. After completing your attack simulations, validate that the system's defenses are functioning correctly and claim your completion badge.</p>
+                    <div class="code-block green">
+                        <div class="code-label green">COMMAND &mdash; submit_report</div>
+                        <div><span class="code-cmd">submit_report</span></div>
+                        <div class="code-comment" style="margin-top:0.5rem;"># Triggers the validation engine to assess your lab progress.</div>
+                        <div class="code-comment"># Updates your live dashboard stats and awards completion badges.</div>
+                        <div class="code-example"><span class="code-comment">$ </span>submit_report</div>
                     </div>
                 </div>
             </div>
 
             <!-- SECURITY CONTROLS -->
-            <div id="section-security" class="doc-section" style="display: none;">
-                <h2>Security Controls Documentation</h2>
-                <p class="text-muted mb-2">This lab demonstrates secure coding practices to prevent common web vulnerabilities. Compare the vulnerable patterns against the secure implementations used in this environment.</p>
-
-                <div class="card mb-2">
-                    <h3>1. SQL Injection Prevention</h3>
-                    <p class="text-muted"><span class="badge badge-advanced">Vulnerable Pattern</span> String concatenation allows attackers to inject malicious SQL commands.</p>
-                    <pre><code class="terminal"># INTENTIONALLY VULNERABLE PATTERN
-query = "SELECT * FROM products WHERE name LIKE '%" + q + "%'"
-cursor.execute(query)</code></pre>
-                    
-                    <p class="text-muted mt-1"><span class="badge badge-beginner">Secure Implementation</span> Parameterized queries ensure input is treated strictly as data, not executable code.</p>
-                    <pre><code class="terminal"># SECURE PATTERN
-query = "SELECT * FROM products WHERE name LIKE ?"
-search_term = f"%{q}%"
-cursor.execute(query, (search_term,))</code></pre>
+            <div id="section-security" class="doc-section">
+                <div class="doc-hero" style="background: linear-gradient(135deg, rgba(35,134,54,0.1) 0%, var(--bg-card) 100%); border-color: rgba(35,134,54,0.2);">
+                    <div class="doc-hero-icon" style="background:rgba(35,134,54,0.15); color:var(--accent-green); box-shadow:inset 0 0 15px rgba(35,134,54,0.2);">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <div>
+                        <h2 style="margin:0 0 0.4rem 0; font-size:2rem; color:var(--text-heading);">Security Controls</h2>
+                        <p class="text-muted" style="margin:0; font-size:1.05rem;">Compare vulnerable patterns against the secure implementations used in this environment.</p>
+                    </div>
                 </div>
 
-                <div class="card mb-2">
-                    <h3>2. IDOR (Insecure Direct Object Reference) Prevention</h3>
-                    <p class="text-muted"><span class="badge badge-advanced">Vulnerable Pattern</span> Fetching a resource by ID without verifying ownership.</p>
-                    <pre><code class="terminal"># INTENTIONALLY VULNERABLE PATTERN
-@app.get("/api/orders/{order_id}")
+                <div class="doc-card">
+                    <h3 class="doc-card-title">
+                        <span style="background:rgba(248,81,73,0.12); color:#f85149; border:1px solid rgba(248,81,73,0.3); padding:3px 8px; border-radius:6px; font-size:0.8rem; font-weight:700; letter-spacing:0.5px;">01</span>
+                        SQL Injection Prevention
+                    </h3>
+                    <p class="text-muted" style="margin-bottom:1rem;"><span class="badge badge-advanced" style="margin-right:0.5rem;">Vulnerable Pattern</span>String concatenation allows attackers to inject malicious SQL commands.</p>
+                    <div class="code-block red">
+                        <div class="code-label red">VULNERABLE &mdash; DO NOT USE</div>
+                        <pre><code>query = "SELECT * FROM products WHERE name LIKE '%" + q + "%'"
+cursor.execute(query)</code></pre>
+                    </div>
+                    <p class="text-muted" style="margin:1.5rem 0 1rem;"><span class="badge badge-beginner" style="margin-right:0.5rem;">Secure Pattern</span>Parameterized queries treat input strictly as data, never as code.</p>
+                    <div class="code-block green">
+                        <div class="code-label green">SECURE &mdash; USE THIS</div>
+                        <pre><code>query = "SELECT * FROM products WHERE name LIKE ?"
+search_term = f"%{q}%"
+cursor.execute(query, (search_term,))</code></pre>
+                    </div>
+                </div>
+
+                <div class="doc-card">
+                    <h3 class="doc-card-title">
+                        <span style="background:rgba(248,81,73,0.12); color:#f85149; border:1px solid rgba(248,81,73,0.3); padding:3px 8px; border-radius:6px; font-size:0.8rem; font-weight:700; letter-spacing:0.5px;">02</span>
+                        IDOR Prevention
+                    </h3>
+                    <p class="text-muted" style="margin-bottom:1rem;"><span class="badge badge-advanced" style="margin-right:0.5rem;">Vulnerable Pattern</span>Fetching a resource by ID without verifying ownership.</p>
+                    <div class="code-block red">
+                        <div class="code-label red">VULNERABLE &mdash; DO NOT USE</div>
+                        <pre><code>@app.get("/api/orders/{order_id}")
 def get_order(order_id: int):
-    # Missing authorization check!
+    # No ownership check — any user can access any order!
     return db.query("SELECT * FROM orders WHERE id = ?", (order_id,))</code></pre>
-                    
-                    <p class="text-muted mt-1"><span class="badge badge-beginner">Secure Implementation</span> Verifying the requested object belongs to the authenticated user.</p>
-                    <pre><code class="terminal"># SECURE PATTERN
-@app.get("/api/orders/{order_id}")
+                    </div>
+                    <p class="text-muted" style="margin:1.5rem 0 1rem;"><span class="badge badge-beginner" style="margin-right:0.5rem;">Secure Pattern</span>Verify the resource belongs to the authenticated user.</p>
+                    <div class="code-block green">
+                        <div class="code-label green">SECURE &mdash; USE THIS</div>
+                        <pre><code>@app.get("/api/orders/{order_id}")
 def get_order(order_id: int, current_user = Depends(get_current_user)):
     order = db.query("SELECT * FROM orders WHERE id = ?", (order_id,))
     if order["user_id"] != current_user["id"]:
-        raise HTTPException(status_code=404) # 404 prevents enumeration
+        raise HTTPException(status_code=404)  # 404 prevents enumeration
     return order</code></pre>
+                    </div>
                 </div>
 
-                <div class="card mb-2">
-                    <h3>3. XSS (Cross-Site Scripting) Prevention</h3>
-                    <p class="text-muted"><span class="badge badge-advanced">Vulnerable Pattern</span> Directly injecting untrusted data into the DOM using innerHTML.</p>
-                    <pre><code class="terminal">// INTENTIONALLY VULNERABLE PATTERN
-const reviewDiv = document.createElement('div');
-reviewDiv.innerHTML = userReview.comment; // Allows script execution</code></pre>
-                    
-                    <p class="text-muted mt-1"><span class="badge badge-beginner">Secure Implementation</span> Using textContent to ensure data is safely encoded.</p>
-                    <pre><code class="terminal">// SECURE PATTERN
-const reviewDiv = document.createElement('div');
-reviewDiv.textContent = userReview.comment; // Safely escapes HTML entities</code></pre>
+                <div class="doc-card">
+                    <h3 class="doc-card-title">
+                        <span style="background:rgba(248,81,73,0.12); color:#f85149; border:1px solid rgba(248,81,73,0.3); padding:3px 8px; border-radius:6px; font-size:0.8rem; font-weight:700; letter-spacing:0.5px;">03</span>
+                        XSS Prevention
+                    </h3>
+                    <p class="text-muted" style="margin-bottom:1rem;"><span class="badge badge-advanced" style="margin-right:0.5rem;">Vulnerable Pattern</span>Injecting untrusted data directly into the DOM via innerHTML.</p>
+                    <div class="code-block red">
+                        <div class="code-label red">VULNERABLE &mdash; DO NOT USE</div>
+                        <pre><code>const div = document.createElement('div');
+div.innerHTML = userReview.comment; // Allows script tag execution</code></pre>
+                    </div>
+                    <p class="text-muted" style="margin:1.5rem 0 1rem;"><span class="badge badge-beginner" style="margin-right:0.5rem;">Secure Pattern</span>Use textContent to safely encode user-supplied data.</p>
+                    <div class="code-block green">
+                        <div class="code-label green">SECURE &mdash; USE THIS</div>
+                        <pre><code>const div = document.createElement('div');
+div.textContent = userReview.comment; // HTML entities auto-escaped</code></pre>
+                    </div>
                 </div>
             </div>
 
             <!-- TESTING METHODOLOGY -->
-            <div id="section-testing" class="doc-section text-center" style="display: none; padding: 4rem 0;">
-                <h1 style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;">Testing Methodology</h1>
-                <h3 style="color: var(--accent-orange);">🚧 Module Coming Soon</h3>
-                <p class="text-muted mb-2">We are currently building comprehensive guides for web application penetration testing methodologies.</p>
-                <button class="btn btn-primary" onclick="switchDoc('getting-started')">Go Back to Getting Started</button>
+            <div id="section-testing" class="doc-section">
+                <div class="coming-soon">
+                    <div class="coming-soon-icon">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                    </div>
+                    <h2>Testing Methodology</h2>
+                    <p>Comprehensive guides for web application penetration testing methodologies are under development.</p>
+                    <button class="btn btn-primary" style="display:flex; align-items:center; gap:0.5rem;" onclick="switchDoc('getting-started')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        Back to Getting Started
+                    </button>
+                </div>
             </div>
 
             <!-- API REFERENCE -->
-            <div id="section-api" class="doc-section text-center" style="display: none; padding: 4rem 0;">
-                <h1 style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;">API Reference</h1>
-                <h3 style="color: var(--accent-orange);">🚧 Module Coming Soon</h3>
-                <p class="text-muted mb-2">Interactive API documentation (Swagger/OpenAPI) is currently being integrated.</p>
-                <button class="btn btn-primary" onclick="switchDoc('getting-started')">Go Back to Getting Started</button>
+            <div id="section-api" class="doc-section">
+                <div class="coming-soon">
+                    <div class="coming-soon-icon">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                    </div>
+                    <h2>API Reference</h2>
+                    <p>Interactive Swagger/OpenAPI documentation is currently being integrated into this platform.</p>
+                    <button class="btn btn-primary" style="display:flex; align-items:center; gap:0.5rem;" onclick="switchDoc('getting-started')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        Back to Getting Started
+                    </button>
+                </div>
             </div>
 
             <!-- CONTRIBUTING -->
-            <div id="section-contributing" class="doc-section text-center" style="display: none; padding: 4rem 0;">
-                <h1 style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;">Contributing</h1>
-                <h3 style="color: var(--accent-orange);">🚧 Module Coming Soon</h3>
-                <p class="text-muted mb-2">Guidelines for submitting new labs, vulnerability patterns, and pull requests will be available shortly.</p>
-                <button class="btn btn-primary" onclick="switchDoc('getting-started')">Go Back to Getting Started</button>
+            <div id="section-contributing" class="doc-section">
+                <div class="coming-soon">
+                    <div class="coming-soon-icon">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    </div>
+                    <h2>Contributing</h2>
+                    <p>Guidelines for submitting new labs, vulnerability patterns, and pull requests will be published here shortly.</p>
+                    <button class="btn btn-primary" style="display:flex; align-items:center; gap:0.5rem;" onclick="switchDoc('getting-started')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        Back to Getting Started
+                    </button>
+                </div>
             </div>
 
         </div>
@@ -155,22 +278,14 @@ reviewDiv.textContent = userReview.comment; // Safely escapes HTML entities</cod
 
     <script>
         function switchDoc(categoryId) {
-            // Hide all sections
             document.querySelectorAll('.doc-section').forEach(el => el.style.display = 'none');
-            
-            // Show target section
             const target = document.getElementById('section-' + categoryId);
             if (target) target.style.display = 'block';
-
-            // Update sidebar active state
             document.querySelectorAll('#docs-sidebar a').forEach(el => el.classList.remove('active'));
             const activeLink = document.getElementById('nav-' + categoryId);
             if (activeLink) activeLink.classList.add('active');
-            
-            // Scroll to top
             window.scrollTo(0, 0);
         }
     </script>
 </body>
 </html>
-
